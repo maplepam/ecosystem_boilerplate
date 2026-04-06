@@ -17,6 +17,7 @@ import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_i
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_input_field_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_input_form_field_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_linear_progress_catalog_entry.dart';
+import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_menu_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_navigation_drawer_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_scaffold_with_drawer_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_search_field_catalog_entry.dart';
@@ -39,6 +40,7 @@ List<WidgetCatalogEntry> builtInWidgetLibraryEntries() {
       northstarTextLinkCatalogEntry(),
       northstarBreadcrumbCatalogEntry(),
       northstarLinearProgressCatalogEntry(),
+      northstarMenuCatalogEntry(),
       northstarIconLibraryCatalogEntry(),
       northstarTypographyRolesCatalogEntry(),
       northstarScaffoldWithDrawerCatalogEntry(),

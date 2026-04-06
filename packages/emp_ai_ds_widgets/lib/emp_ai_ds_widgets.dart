@@ -25,6 +25,7 @@ export 'package:emp_ai_ds_widgets/src/display/northstar_filter_dropdown.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_input_field.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_input_form_field.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_linear_progress.dart';
+export 'package:emp_ai_ds_widgets/src/display/northstar_menu.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_search_field.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_stacked_avatars.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_text_link.dart';

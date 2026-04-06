@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 /// [NorthstarChip], [NorthstarDivider], [NorthstarLinearProgress], [NorthstarBadge],
 /// [NorthstarTextLink], [NorthstarAvatar], [NorthstarStackedAvatars], [NorthstarAccordion],
 /// [NorthstarBanner], [NorthstarBreadcrumb], [NorthstarInputField],
-/// [NorthstarFilterDropdown], [NorthstarAllFiltersButton],
+/// [NorthstarFilterDropdown], [NorthstarMenuField], [NorthstarAllFiltersButton],
 /// [DashboardLayoutBuilder],
 /// [NorthstarNavigationDrawer], …) and a unique
 /// [elementId] per sub-control. Format: `ds:<automationId>:<elementId>`.
@@ -112,6 +112,18 @@ abstract final class DsAutomationKeys {
 
   /// [NorthstarFilterDropdown] surface / hit target.
   static const String elementFilterDropdown = 'filter_dropdown';
+
+  /// [NorthstarMenuField] closed trigger.
+  static const String elementMenuTrigger = 'menu_trigger';
+
+  /// [NorthstarMenuPanel] root surface.
+  static const String elementMenuPanel = 'menu_panel';
+
+  /// Search field inside [NorthstarMenuPanel].
+  static const String elementMenuSearch = 'menu_search';
+
+  /// [NorthstarMenuPanel] row; composed as `…_${item.id}`.
+  static const String elementMenuItem = 'menu_item';
 
   /// [NorthstarAllFiltersButton] surface / hit target.
   static const String elementAllFilters = 'all_filters';

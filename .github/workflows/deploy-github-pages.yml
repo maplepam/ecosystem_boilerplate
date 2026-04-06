@@ -1,0 +1,63 @@
+# Builds `apps/emp_ai_boilerplate_app` for web and deploys to GitHub Pages.
+#
+# One-time repo setup:
+# 1. Settings → Pages → Build and deployment → Source: **GitHub Actions**
+# 2. If the repository is renamed, update `BASE_HREF` below to match
+#    `https://<owner>.github.io/<repo>/` (leading and trailing slashes).
+
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+env:
+  # Must match GitHub project Pages URL: /<repository-name>/
+  BASE_HREF: /ecosystem_boilerplate/
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Workspace + Melos
+        run: |
+          dart pub get
+          dart run melos bootstrap
+
+      - name: Verify generated mini-app catalog
+        run: dart run tool/generate_miniapps.dart
+
+      - name: Build web
+        run: |
+          cd apps/emp_ai_boilerplate_app
+          flutter build web --release --base-href "${{ env.BASE_HREF }}"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/emp_ai_boilerplate_app/build/web
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

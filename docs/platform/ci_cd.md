@@ -134,6 +134,16 @@ This workspace ships [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml
 
 For Bitbucket / Bitrise secret injection and **`build_defines.ci.json`**, use the sections above; mirror the **same steps** your org uses in other hosts.
 
+### GitHub Pages (Flutter web)
+
+This repo includes [`.github/workflows/deploy-github-pages.yml`](../../.github/workflows/deploy-github-pages.yml). On each push to **`main`** it runs **`flutter build web --release`** for **`apps/emp_ai_boilerplate_app`** and publishes the **`build/web`** output via **GitHub Actions** (official **Pages** deployment).
+
+**Enable once in the repository:** *Settings → Pages → Build and deployment → Source:* select **GitHub Actions** (not “Deploy from a branch”).
+
+**Base path:** the workflow sets **`BASE_HREF`** to **`/ecosystem_boilerplate/`** so assets load correctly at **`https://<owner>.github.io/ecosystem_boilerplate/`**. If you **rename the repository**, edit **`BASE_HREF`** in that workflow to match **`/<new-repo-name>/`** (must start and end with **`/`**).
+
+The Pages build does **not** pass **`--dart-define-from-file`**; it relies on the same compile-time defaults as a plain **`flutter build web`**. For a production site with secrets, generate a CI JSON in the workflow (see above) and add **`--dart-define-from-file=…`** to the **`flutter build web`** step.
+
 ---
 
 ## emapta repo pointers
