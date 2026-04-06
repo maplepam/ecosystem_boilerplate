@@ -14,7 +14,7 @@
 
 import 'dart:io';
 
-const String _authBranch = 'myemapta_main';
+const String _authBranch = 'ecosystem_boilerplate';
 const String _authCloneUrl =
     'git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git';
 
