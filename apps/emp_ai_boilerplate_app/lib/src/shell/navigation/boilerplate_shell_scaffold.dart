@@ -243,6 +243,7 @@ class _BoilerplateShellScaffoldState
                                             .titleLarge
                                             ?.copyWith(
                                               fontWeight: FontWeight.w600,
+                                              color: tokens.onSurface,
                                             ),
                                       ),
                                     ),

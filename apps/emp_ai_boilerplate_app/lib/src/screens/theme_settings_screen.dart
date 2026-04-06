@@ -152,8 +152,9 @@ class ThemeSettingsScreen extends ConsumerWidget {
         const SizedBox(height: 36),
         DecoratedBox(
           decoration: BoxDecoration(
-            color: tokens.surfaceContainerHighest,
+            color: tokens.surface,
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: tokens.outlineVariant),
           ),
           child: Padding(
             padding: const EdgeInsets.all(18),
@@ -171,7 +172,7 @@ class ThemeSettingsScreen extends ConsumerWidget {
                     'show stakeholders both looks without touching settings twice.',
                     style: textTheme.bodySmall?.copyWith(
                       height: 1.4,
-                      color: tokens.onSurfaceVariant,
+                      color: tokens.onSurface.withValues(alpha: 0.88),
                     ),
                   ),
                 ),

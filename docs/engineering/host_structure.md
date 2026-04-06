@@ -62,7 +62,7 @@ flowchart TB
 | **`network/`** | **Host HTTP stack:** `Dio` factory, auth header interceptor, token-refresh interceptor. | Cross-cutting HTTP behavior for the host `Dio`. | Feature-specific URLs/DTOs (live in that **mini-app’s `data/`**). |
 | **`providers/`** | **Small, generic Riverpod** that does not deserve its own `platform/` subfolder yet. | e.g. `shared_preferences` singleton. | New “capability” areas—prefer **`platform/<name>/`** so they can grow with `data/domain` later. |
 | **`screens/`** | **Top-level routes** that are **not** owned by one mini-app’s slice. | Login, landing, theme settings—global entry/utility screens. | Product flows that belong to a mini-app (put under **`miniapps/<id>/presentation/`**). |
-| **`theme/`** | **Branding glue** for Northstar: tokens, theme mode, accent seed notifiers. | App-wide visual configuration tied to `MaterialApp`. | Business rules. |
+| **`theme/`** | **Branding glue** for Northstar: tokens, theme mode, accent seed notifiers. | App-wide visual configuration tied to `MaterialApp`. | Business rules. **Clone checklist:** [design_system.md § Boilerplate host theming](../design/design_system.md#boilerplate-host-theming-checklist). |
 
 ---
 

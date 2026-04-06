@@ -105,7 +105,7 @@ Product analytics use **`AnalyticsSink`** from **`emp_ai_foundation`**. The host
 | Firebase Analytics | [integrations/analytics_firebase.md](integrations/analytics_firebase.md) |
 | Both vendors (summary) | [README.md#analytics-mixpanel-and-firebase](#analytics-mixpanel-and-firebase) (this page) |
 | Notifications, `cached_query`, Dio helpers | [platform/HOST_SERVICES.md](platform/HOST_SERVICES.md) |
-| Tokens, theme, Figma | [design/design_system.md](design/design_system.md), [design/design_system_widgets.md](design/design_system_widgets.md) |
+| Tokens, theme, Figma, **clone theming checklist** | [design/design_system.md#boilerplate-host-theming-checklist](design/design_system.md#boilerplate-host-theming-checklist), [design/design_system_widgets.md](design/design_system_widgets.md) |
 | `emp_ai_auth` Git / submodule | [integrations/emp_ai_auth_dependency.md](integrations/emp_ai_auth_dependency.md) |
 | PR rules | [engineering/contributing.md](engineering/contributing.md) |
 | Internal planning | [meta/BOILERPLATE_INVENTORY_AND_ROADMAP.md](meta/BOILERPLATE_INVENTORY_AND_ROADMAP.md) |
@@ -172,7 +172,7 @@ Product analytics use **`AnalyticsSink`** from **`emp_ai_foundation`**. The host
 
 | Topic | Document |
 |--------|----------|
-| Tokens, theme, white-label, Figma | [design/design_system.md](design/design_system.md) |
+| Tokens, theme, white-label, Figma, **host theming checklist** | [design/design_system.md#boilerplate-host-theming-checklist](design/design_system.md#boilerplate-host-theming-checklist) |
 | DS widgets vs token package | [design/design_system_widgets.md](design/design_system_widgets.md) |
 
 ### Meta

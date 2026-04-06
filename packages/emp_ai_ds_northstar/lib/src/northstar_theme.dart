@@ -12,6 +12,35 @@ import 'northstar_typography_style.dart';
 abstract final class NorthstarTheme {
   const NorthstarTheme._();
 
+  /// When [ColorScheme] is **seed-derived**, copy its Material roles into
+  /// [NorthstarColorTokens] so [NorthstarColorTokens.of] stays aligned with
+  /// [Theme.of] / [ColorScheme] (shell rail, overview cards, buttons, etc.).
+  ///
+  /// Semantic-only roles (**success**, **warning**, …) stay on [base].
+  static NorthstarColorTokens _tokensAlignedWithScheme(
+    NorthstarColorTokens base,
+    ColorScheme scheme,
+  ) {
+    return base.copyWith(
+      primary: scheme.primary,
+      onPrimary: scheme.onPrimary,
+      primaryContainer: scheme.primaryContainer,
+      onPrimaryContainer: scheme.onPrimaryContainer,
+      secondary: scheme.secondary,
+      onSecondary: scheme.onSecondary,
+      surface: scheme.surface,
+      onSurface: scheme.onSurface,
+      surfaceContainerLow: scheme.surfaceContainerLow,
+      surfaceContainerHigh: scheme.surfaceContainerHigh,
+      outline: scheme.outline,
+      outlineVariant: scheme.outlineVariant,
+      error: scheme.error,
+      onError: scheme.onError,
+      inverseSurface: scheme.inverseSurface,
+      onInverseSurface: scheme.onInverseSurface,
+    );
+  }
+
   static ThemeData buildThemeData({
     required Brightness brightness,
     NorthstarColorTokens tokens = NorthstarColorTokens.v3,
@@ -52,6 +81,10 @@ abstract final class NorthstarTheme {
               ),
           };
 
+    final NorthstarColorTokens extensionTokens = seedColor != null
+        ? _tokensAlignedWithScheme(tokens, scheme)
+        : tokens;
+
     return seed.copyWith(
       brightness: brightness,
       colorScheme: scheme,
@@ -61,7 +94,7 @@ abstract final class NorthstarTheme {
       scaffoldBackgroundColor: scheme.surface,
       canvasColor: scheme.surface,
       extensions: <ThemeExtension<dynamic>>[
-        tokens,
+        extensionTokens,
       ],
     );
   }

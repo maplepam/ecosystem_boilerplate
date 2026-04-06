@@ -538,7 +538,7 @@ When **`kBoilerplateEnableAppLinks`** is **`true`**, the listener applies the **
 | New feature module (in-repo)                                              | [miniapps.md](../engineering/miniapps.md)                                                                         |
 | External package / submodule / WebView mini-app                           | [miniapp_packages_and_extract.md](../engineering/miniapp_packages_and_extract.md)                                 |
 | Host folder map (shell vs platform)                                       | [host_structure.md](../engineering/host_structure.md)                                                             |
-| Design / white-label                                                      | [design_system.md](../design/design_system.md)                                                                    |
+| Design / white-label / **theme files after clone**                        | [design_system.md](../design/design_system.md#boilerplate-host-theming-checklist)                                 |
 
 ### Optional: Figma ZIP metadata
 

@@ -2,7 +2,7 @@
 
 ## Scope
 
-This package is the **token + theme** layer for Northstar: semantic colors, Material 3 [ThemeData], typography helpers, and optional DTCG JSON assets. It intentionally avoids networking, auth, and feature flags.
+This package is the **token + theme** layer for Northstar: semantic colors, Material 3 [ThemeData], typography helpers, **spacing scale** (`NorthstarSpacing`), and optional DTCG JSON assets. It intentionally avoids networking, auth, and feature flags.
 
 ## Giving Figma / tokens to humans or AI assistants
 
@@ -23,7 +23,7 @@ The [V3 NORTHSTAR file](https://www.figma.com/design/MkNTFYa9Pw4hlp8LgCtMsm/V3-N
 
 | Layer | Examples in package |
 |-------|---------------------|
-| **Token** | `NorthstarTextRole` → maps Figma names to `TextTheme` slots when using `NorthstarTypographyStyle.figmaNorthstarV3` |
+| **Token** | `NorthstarTextRole` → maps Figma names to `TextTheme` slots when using `NorthstarTypographyStyle.figmaNorthstarV3`; **`NorthstarSpacing`** → Figma `space-*` as logical pixels |
 | **Atom** | `NorthstarTextAtom` |
 | **Molecule** | `NorthstarLabeledValueRow` |
 | **Organism** | `NorthstarPageHeader` |
@@ -77,13 +77,93 @@ NorthstarTextRole.hero.style(context)
 
 **Offline / CI:** first `google_fonts` load may need network; the package caches font files on disk afterward. For strict air-gapped builds, bundle Lexend Deca + Inter as assets and swap the implementation later.
 
+## Spacing (V3 NORTHSTAR)
+
+Northstar spacing is **not** on `ThemeData`; it is a **static scale** aligned with the Figma **Spacing** page (`space-2` … `space-96`). Implementation: [`NorthstarSpacing`](../../packages/emp_ai_ds_northstar/lib/src/tokens/northstar_spacing.dart) and [`NorthstarSpacingToken`](../../packages/emp_ai_ds_northstar/lib/src/tokens/northstar_spacing.dart).
+
+### What the tokens mean
+
+| Concept | Detail |
+|--------|--------|
+| **Units** | Values are **logical pixels** (Flutter `dp` / `double`) — same idea as the Figma **px** column at 1×. |
+| **rem** | Figma rem uses a **16px root** (e.g. `space-16` → `1rem` → 16 logical px). The ordered list `NorthstarSpacing.scale` carries `name`, `rem`, and `logicalPixels` for specs and tooling. |
+| **Named steps** | `NorthstarSpacing.space2` … `space96` — prefer these over raw literals so diffs map to design tokens. |
+| **Negative spacing** | V3 allows negative values for breakout/overlap in design; the Dart table is **positive-only**. Use explicit negative `EdgeInsets` / transforms only when design calls for it, and extend the token layer if you need **named** negative steps. |
+
+### Usage in Flutter
+
+Use constants anywhere you would pass a `double` for layout:
+
+| Pattern | Example |
+|---------|---------|
+| Padding / margin | `EdgeInsets.all(NorthstarSpacing.space16)`, `EdgeInsets.symmetric(horizontal: NorthstarSpacing.space24)` |
+| Fixed gaps | `SizedBox(height: NorthstarSpacing.space8)`, `SizedBox(width: NorthstarSpacing.space12)` |
+| `Row` / `Column` **`spacing`** | `Column(spacing: NorthstarSpacing.space8, children: [...])` (Flex spacing between children) |
+| `Wrap` | `spacing:` / `runSpacing:` with the same constants |
+| Dividers / separators | `Divider(height: NorthstarSpacing.space32)` when a token-sized band matches the spec |
+
+**Do not** invent ad-hoc spacing (e.g. `13`, `18`) unless design adds those tokens; stick to the scale so host and mini-apps stay visually consistent.
+
+### Live reference in the app
+
+The package exports [`NorthstarSpacingScaleTable`](../../packages/emp_ai_ds_northstar/lib/src/showcase/northstar_spacing_scale_table.dart) — a visual table of token / rem / px used on the **Design system showcase** (`NorthstarDesignSystemShowcasePage`). Wire that route in your host if you want designers and engineers to compare implementation to Figma side by side.
+
 ## White-label and different palettes (same token names)
+
+For the **sample host** file map and step-by-step (Acme tokens, `BoilerplateApp`, accent seed), see **[Boilerplate host: theming checklist](#boilerplate-host-theming-checklist)** below.
 
 1. **Subclassing / const sets** — Define new `NorthstarColorTokens` const values (see [`NorthstarDtcgPresets`](../../packages/emp_ai_ds_northstar/lib/src/northstar_dtcg_presets.dart)) or `NorthstarColorTokens.v3.copyWith(...)`.
 2. **Host branding object** — Use [`NorthstarBranding`](../../packages/emp_ai_ds_northstar/lib/src/northstar_branding.dart) with your light/dark token instances and pass to `MaterialApp` as `theme:` / `darkTheme:` via `branding.theme(Brightness.light)`.
 3. **Optional seed** — `seedColor` on `NorthstarBranding` / `NorthstarTheme.buildThemeData` runs [flex_seed_scheme](https://pub.dev/packages/flex_seed_scheme) for generated primaries while keeping the semantic extension for custom roles.
 
 Keep **one** `ThemeData` pair per app build variant; swap `NorthstarBranding` per customer in the host, not inside the DS package.
+
+<a id="boilerplate-host-theming-checklist"></a>
+
+## Boilerplate host: theming checklist (`emp_ai_boilerplate_app`)
+
+Use this after you clone or fork when you want **default brand colors**, **user-tunable accent**, or **new semantic colors** to line up everywhere (shell rail, drawer, `ColorScheme`, and `NorthstarColorTokens.of`).
+
+### 1. Default light / dark palettes (no runtime accent)
+
+| Step | File / type | What to do |
+|------|-------------|------------|
+| **A. Host preset** | [`apps/emp_ai_boilerplate_app/lib/src/theme/acme_brand_tokens.dart`](../../apps/emp_ai_boilerplate_app/lib/src/theme/acme_brand_tokens.dart) | Point `light` / `dark` at const sets you own. Easiest: `static const NorthstarColorTokens light = NorthstarBaseTokens.light;` → swap for `NorthstarColorTokens(...)` or `NorthstarBaseTokens.whiteLabeledLight.copyWith(primary: …)` ([`NorthstarBaseTokens`](../../packages/emp_ai_ds_northstar/lib/src/northstar_base_tokens.dart)). Rename the file/class to match your product if you drop the “Acme” sample name. |
+| **B. Optional: shared package preset** | [`packages/emp_ai_ds_northstar/lib/src/northstar_base_tokens.dart`](../../packages/emp_ai_ds_northstar/lib/src/northstar_base_tokens.dart) | Edit only if several apps should share the **same** canonical Dart numbers; otherwise keep product-specific values in the host (A). |
+| **C. Wire `MaterialApp`** | [`apps/emp_ai_boilerplate_app/lib/src/app/boilerplate_app.dart`](../../apps/emp_ai_boilerplate_app/lib/src/app/boilerplate_app.dart) | Build [`NorthstarBranding`](../../packages/emp_ai_ds_northstar/lib/src/northstar_branding.dart) with `lightTokens` / `darkTokens` from (A) and pass `seedColor` from the optional accent provider (below). |
+
+With **`seedColor: null`**, [`NorthstarTheme.buildThemeData`](../../packages/emp_ai_ds_northstar/lib/src/northstar_theme.dart) uses `tokens.toColorScheme` and installs your **`NorthstarColorTokens`** instance unchanged in `ThemeData.extensions`.
+
+### 2. Optional user accent (seed color)
+
+| Piece | File | Role |
+|-------|------|------|
+| Persisted seed | [`user_accent_seed_notifier.dart`](../../apps/emp_ai_boilerplate_app/lib/src/theme/user_accent_seed_notifier.dart) | `Color?` in `shared_preferences`; `null` = brand default. |
+| Root theme | [`boilerplate_app.dart`](../../apps/emp_ai_boilerplate_app/lib/src/app/boilerplate_app.dart) | `ref.watch(userAccentSeedNotifierProvider)` → `NorthstarBranding(..., seedColor: accent)`. |
+| Demo UI | [`theme_settings_screen.dart`](../../apps/emp_ai_boilerplate_app/lib/src/screens/theme_settings_screen.dart) | Swatches + “Brand default”; not required in production. |
+
+When **`seedColor` is non-null**, the theme builder runs [flex_seed_scheme](https://pub.dev/packages/flex_seed_scheme) to produce a full **`ColorScheme`**, then **merges** primary/surface/outline (and related Material roles) back into the **`NorthstarColorTokens`** extension so **`NorthstarColorTokens.of(context)`** stays aligned with **`Theme.of(context).colorScheme`** (shell, overview cards, DS widgets). Semantic-only fields (**success**, **warning**, …) stay from your base token set until you override them in Dart.
+
+### 3. New or renamed color **roles** on `NorthstarColorTokens`
+
+This is a **package** change in `emp_ai_ds_northstar` (all apps that depend on it should agree):
+
+1. Add fields on [`NorthstarColorTokens`](../../packages/emp_ai_ds_northstar/lib/src/northstar_color_tokens.dart) (`const` constructor, `copyWith`, `lerp`, `==` / `hashCode`).
+2. Extend [`toColorScheme`](../../packages/emp_ai_ds_northstar/lib/src/northstar_color_tokens.dart) only if the role maps to a **Material** slot consumers expect in `ColorScheme`.
+3. If the role must track **seed-derived** schemes, extend the merge step in [`NorthstarTheme.buildThemeData`](../../packages/emp_ai_ds_northstar/lib/src/northstar_theme.dart) (`_tokensAlignedWithScheme` or equivalent) so seeded themes do not drop your new field.
+4. Document the role in dartdoc and use **`NorthstarColorTokens.of(context)`** (or `ColorScheme` if you mapped it) in widgets — see **[Using colors](#using-colors)** above.
+
+Prefer **`copyWith`** on an existing preset for one-off brand tweaks before forking the whole class.
+
+### 4. Where to look in the host
+
+| Concern | Location |
+|---------|----------|
+| Theme mode (light / dark / system) | [`northstar_theme_mode_provider.dart`](../../apps/emp_ai_boilerplate_app/lib/src/theme/northstar_theme_mode_provider.dart) + shell AppBar cycle action |
+| Shell colors (rail, app bar strip, drawer uses same tokens via widgets) | [`boilerplate_shell_scaffold.dart`](../../apps/emp_ai_boilerplate_app/lib/src/shell/navigation/boilerplate_shell_scaffold.dart), `shell/navigation/widgets/` |
+| “Look & feel” route | [`theme_settings_screen.dart`](../../apps/emp_ai_boilerplate_app/lib/src/screens/theme_settings_screen.dart) |
+
+Folder map: **[`docs/engineering/host_structure.md`](../engineering/host_structure.md)** (`theme/` = branding glue).
 
 ## DTCG / Figma Variables
 
