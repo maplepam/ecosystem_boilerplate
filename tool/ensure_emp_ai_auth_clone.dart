@@ -36,7 +36,7 @@ Future<void> main() async {
   final File pubspec = File('${authDir.path}/pubspec.yaml');
 
   if (!pubspec.existsSync()) {
-    stderr.writeln(
+    stdout.writeln(
       'emp_ai_boilerplate: cloning emp_ai_auth into packages/emp_ai_auth …',
     );
 
@@ -102,7 +102,7 @@ void _patchAuthPubspecForEmpAiDsGit(File pubspec) {
   }
   final String next = original.replaceFirst(_pathEmpAiDsBlock, _dsGitBlock);
   pubspec.writeAsStringSync(next);
-  stderr.writeln(
+  stdout.writeln(
     'emp_ai_boilerplate: patched emp_ai_auth to use emp_ai_ds from Git.',
   );
 }
