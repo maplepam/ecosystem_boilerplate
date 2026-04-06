@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 /// Pass the same [automationId] from widgets ([NorthstarButton],
 /// [NorthstarChip], [NorthstarDivider], [NorthstarLinearProgress], [NorthstarBadge],
 /// [NorthstarTextLink], [NorthstarAvatar], [NorthstarStackedAvatars], [NorthstarAccordion],
-/// [NorthstarBanner], [NorthstarBreadcrumb],
+/// [NorthstarBanner], [NorthstarBreadcrumb], [NorthstarInputField],
 /// [DashboardLayoutBuilder],
 /// [NorthstarNavigationDrawer], …) and a unique
 /// [elementId] per sub-control. Format: `ds:<automationId>:<elementId>`.
@@ -102,6 +102,12 @@ abstract final class DsAutomationKeys {
 
   /// [NorthstarBanner] dismiss control.
   static const String elementBannerDismiss = 'banner_dismiss';
+
+  /// [NorthstarInputField] clear action (when [NorthstarInputField.clearable]).
+  static const String elementInputClear = 'input_clear';
+
+  /// [NorthstarInputField] label-row info control.
+  static const String elementInputInfo = 'input_info';
 
   /// [NorthstarBreadcrumb] root row.
   static const String elementBreadcrumb = 'breadcrumb';

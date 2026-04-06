@@ -8,6 +8,8 @@ import '../display/northstar_linear_progress.dart';
 import '../display/northstar_accordion.dart';
 import '../display/northstar_banner.dart';
 import '../display/northstar_breadcrumb.dart';
+import '../display/northstar_input_field.dart';
+import '../display/northstar_input_form_field.dart';
 import '../display/northstar_search_field.dart';
 import '../display/northstar_tri_state.dart';
 import '../display/northstar_stacked_avatars.dart';
@@ -769,6 +771,137 @@ NorthstarDrawerCustomEntry(
             ),
           );
         },
+      ),
+      WidgetCatalogEntry(
+        id: 'northstar_input_field',
+        title: 'NorthstarInputField',
+        description:
+            'Figma **Input** pattern: optional label (required `*`, info icon), '
+            'helper, 8px-radius shell, leading category / prefix / icon, suffix '
+            'and trailing slot, clear-on-hover, footer (error left, inline right). '
+            'Sizes [NorthstarInputFieldSize.small] / [medium]; '
+            '[NorthstarInputFieldPresentation.editable], [readOnly], [viewOnly]. '
+            'Derives default / hover / focus / filled / error / disabled from '
+            '[ThemeData.colorScheme] + focus and [errorText]. '
+            'For [FormField] validation see [NorthstarInputFormField].',
+        code: '''
+NorthstarInputField(
+  label: 'Email address',
+  isRequired: true,
+  helperText: 'We use this for receipts only.',
+  placeholder: 'e.g. you@company.com',
+  clearable: true,
+  inlineText: 'Optional',
+  automationId: 'signup_email',
+  onChanged: (_) {},
+)
+
+NorthstarInputField(
+  label: 'Amount',
+  placeholder: '0.00',
+  suffixText: 'USD',
+  size: NorthstarInputFieldSize.small,
+)
+
+NorthstarInputField(
+  label: 'Phone',
+  leadingPrefix: '+63',
+  onLeadingPrefixTap: () {},
+  placeholder: '9XX XXX XXXX',
+  trailing: Icon(Icons.expand_more),
+)
+
+NorthstarInputField(
+  presentation: NorthstarInputFieldPresentation.viewOnly,
+  label: 'Department',
+  initialValue: 'Engineering',
+)
+''',
+        preview: (BuildContext context) => SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(NorthstarSpacing.space16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                NorthstarInputField(
+                  label: 'Work email',
+                  isRequired: true,
+                  showInfoIcon: true,
+                  helperText: 'Helper copy wraps to the field width.',
+                  placeholder: 'name@company.com',
+                  clearable: true,
+                  automationId: 'lib_input_demo',
+                  onChanged: (_) {},
+                ),
+                const SizedBox(height: NorthstarSpacing.space24),
+                NorthstarInputField(
+                  label: 'Salary',
+                  placeholder: '0.00',
+                  suffixText: 'USD',
+                  inlineText: 'Gross',
+                  automationId: 'lib_input_suffix',
+                ),
+                const SizedBox(height: NorthstarSpacing.space24),
+                NorthstarInputField(
+                  initialValue: '',
+                  errorText: 'This field is required.',
+                  label: 'Required field',
+                  placeholder: 'Type something',
+                  automationId: 'lib_input_error',
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      WidgetCatalogEntry(
+        id: 'northstar_input_form_field',
+        title: 'NorthstarInputFormField',
+        description:
+            'Wraps [NorthstarInputField] in a [FormField<String>]. Supply '
+            '[FormField.validator] for required / regex / custom rules; use '
+            '[AutovalidateMode] to control when validation runs. '
+            '[NorthstarInputFormField.nonEmpty] is a small helper for required '
+            'trimmed text. Error chrome follows [FormFieldState.errorText] and '
+            'clears when the validator returns null.',
+        code: '''
+final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+Form(
+  key: formKey,
+  child: NorthstarInputFormField(
+    label: 'Email',
+    isRequired: true,
+    autovalidateMode: AutovalidateMode.onUserInteraction,
+    validator: NorthstarInputFormField.nonEmpty,
+    placeholder: 'you@company.com',
+    onSaved: (v) => model.email = v ?? '',
+  ),
+);
+
+// Submit:
+formKey.currentState?.validate();
+
+// Custom:
+validator: (value) {
+  if (value == null || !value.contains('@')) return 'Invalid email';
+  return null;
+}
+''',
+        preview: (BuildContext context) => Padding(
+          padding: const EdgeInsets.all(NorthstarSpacing.space16),
+          child: Form(
+            child: NorthstarInputFormField(
+              label: 'Required (live validation)',
+              isRequired: true,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: NorthstarInputFormField.nonEmpty,
+              helperText: 'Type to clear the error.',
+              placeholder: 'Fill me',
+              automationId: 'lib_input_form_preview',
+            ),
+          ),
+        ),
       ),
       WidgetCatalogEntry(
         id: 'northstar_search_field',
