@@ -1,5 +1,5 @@
-import '../testing/ds_automation_keys.dart';
-import 'northstar_drawer_entry.dart';
+import 'package:emp_ai_ds_widgets/src/navigation/northstar_drawer_entry.dart';
+import 'package:emp_ai_ds_widgets/src/testing/ds_automation_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

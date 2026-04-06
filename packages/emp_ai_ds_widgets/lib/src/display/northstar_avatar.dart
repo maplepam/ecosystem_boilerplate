@@ -1,7 +1,7 @@
 import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
 import 'package:flutter/material.dart';
 
-import '../testing/ds_automation_keys.dart';
+import 'package:emp_ai_ds_widgets/src/testing/ds_automation_keys.dart';
 
 /// User (circle) vs entity / company (rounded square).
 enum NorthstarAvatarPersona {

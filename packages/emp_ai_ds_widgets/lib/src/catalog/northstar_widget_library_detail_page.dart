@@ -1,9 +1,9 @@
 import 'dart:math' show min;
 
 import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
+import 'package:emp_ai_ds_widgets/src/catalog/widget_catalog_entry.dart';
+import 'package:emp_ai_ds_widgets/src/catalog/widget_library_snippet.dart';
 import 'package:flutter/material.dart';
-import 'widget_catalog_entry.dart';
-import 'widget_library_snippet.dart';
 
 /// Second step: interactive preview + optional “How to use” code (expandable).
 class NorthstarWidgetLibraryDetailPage extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
 import 'package:flutter/material.dart';
 
-import '../testing/ds_automation_keys.dart';
-import 'northstar_text_link.dart';
+import 'package:emp_ai_ds_widgets/src/display/northstar_text_link.dart';
+import 'package:emp_ai_ds_widgets/src/testing/ds_automation_keys.dart';
 
 /// Northstar V3 banner surface: **normal** (inline), **system-wide fixed**, or **floating**.
 enum NorthstarBannerKind {

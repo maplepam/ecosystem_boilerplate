@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../testing/ds_automation_keys.dart';
-import 'northstar_avatar.dart';
+import 'package:emp_ai_ds_widgets/src/display/northstar_avatar.dart';
+import 'package:emp_ai_ds_widgets/src/testing/ds_automation_keys.dart';
 
 /// How [NorthstarStackedAvatars] lays out a list of avatars (Figma stacked group).
 enum NorthstarStackedAvatarsBehavior {

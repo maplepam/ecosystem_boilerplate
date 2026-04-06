@@ -110,8 +110,8 @@ library;
 import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
 import 'package:flutter/material.dart';
 
-import '../testing/ds_automation_keys.dart';
-import 'northstar_badge.dart';
+import 'package:emp_ai_ds_widgets/src/display/northstar_badge.dart';
+import 'package:emp_ai_ds_widgets/src/testing/ds_automation_keys.dart';
 
 /// Opens [showMenu] with its [RelativeRect] aligned under the widget that owns
 /// [anchorKey] (the filter chip’s [GlobalKey]).

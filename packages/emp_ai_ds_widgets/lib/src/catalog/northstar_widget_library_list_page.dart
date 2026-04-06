@@ -1,7 +1,6 @@
 import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
+import 'package:emp_ai_ds_widgets/src/catalog/widget_catalog_entry.dart';
 import 'package:flutter/material.dart';
-
-import 'widget_catalog_entry.dart';
 
 /// First step of the widget catalog: searchable grid/list of components.
 ///
@@ -33,17 +32,19 @@ class _NorthstarWidgetLibraryListPageState
 
   List<WidgetCatalogEntry> get _filtered {
     final String q = _query.trim().toLowerCase();
-    if (q.isEmpty) {
-      return widget.entries;
-    }
-    return widget.entries
-        .where(
-          (WidgetCatalogEntry e) =>
-              e.id.toLowerCase().contains(q) ||
-              e.title.toLowerCase().contains(q) ||
-              e.description.toLowerCase().contains(q),
-        )
-        .toList(growable: false);
+    final List<WidgetCatalogEntry> list = q.isEmpty
+        ? widget.entries.toList(growable: false)
+        : widget.entries
+            .where(
+              (WidgetCatalogEntry e) =>
+                  e.id.toLowerCase().contains(q) ||
+                  e.title.toLowerCase().contains(q) ||
+                  e.description.toLowerCase().contains(q),
+            )
+            .toList(growable: false);
+    final List<WidgetCatalogEntry> sorted = List<WidgetCatalogEntry>.of(list)
+      ..sort(WidgetCatalogEntry.compareByTitle);
+    return sorted;
   }
 
   /// Min height for each grid tile: wide layout uses a narrow pane (e.g. 400px)

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'northstar_input_field.dart';
+import 'package:emp_ai_ds_widgets/src/display/northstar_input_field.dart';
 
 /// [FormField] wrapper around [NorthstarInputField] with [FormField.validator]
 /// support and [AutovalidateMode].

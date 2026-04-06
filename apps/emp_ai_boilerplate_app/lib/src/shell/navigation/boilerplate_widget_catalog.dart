@@ -7,7 +7,7 @@ List<WidgetCatalogEntry> boilerplateWidgetCatalogAllEntries() {
   return <WidgetCatalogEntry>[
     ...NorthstarWidgetLibraryPage.builtInEntries(),
     ...boilerplateHostShellNavigationCatalogEntries(),
-  ];
+  ]..sort(WidgetCatalogEntry.compareByTitle);
 }
 
 WidgetCatalogEntry? findBoilerplateWidgetCatalogEntry(String id) {

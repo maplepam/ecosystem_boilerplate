@@ -125,6 +125,24 @@ abstract final class DsAutomationKeys {
   /// [NorthstarBreadcrumb] overflow (`…`) control.
   static const String elementBreadcrumbOverflow = 'breadcrumb_overflow';
 
+  /// [NorthstarFileUploader] root column.
+  static const String elementFileUploader = 'file_uploader';
+
+  /// [NorthstarFileUploader] drop zone hit target.
+  static const String elementFileUploaderDropZone = 'file_uploader_drop_zone';
+
+  /// Wrapper around the add action; sub-keys use [NorthstarButton] (`button`, …).
+  static const String elementFileUploaderAddButton = 'file_uploader_add';
+
+  /// Global validation message under the control.
+  static const String elementFileUploaderGlobalError = 'file_uploader_global_error';
+
+  /// File row root; composed as `…_${item.id}`.
+  static const String elementFileUploaderRow = 'file_uploader_row';
+
+  /// Remove control; composed as `…_${item.id}`.
+  static const String elementFileUploaderRemove = 'file_uploader_remove';
+
   /// Returns null when [automationId] is null or empty (no keys applied).
   static ValueKey<String>? part(String? automationId, String elementId) {
     if (automationId == null || automationId.isEmpty) {
