@@ -1,0 +1,13 @@
+{
+  "FLAVOR": "development",
+  "VERBOSE_LOGS": "false",
+  "SAMPLES_CACHED_QUERY": "false",
+  "SAMPLES_HTTP_DEMO": "false",
+  "ANNOUNCEMENT_SERVICE_BASE_URL": "",
+  "ENABLE_FIREBASE": "false",
+  "MIXPANEL_TOKEN": "",
+  "ENABLE_LOCAL_NOTIFICATIONS": "false",
+  "ENABLE_FCM": "false",
+  "MINIAPPS_REGISTRY_URL": "",
+  "MINIAPPS_REGISTRY_USE_STUB": "false"
+}

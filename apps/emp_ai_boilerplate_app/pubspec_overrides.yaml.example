@@ -1,0 +1,8 @@
+# Optional: copy to `pubspec_overrides.yaml` (gitignored).
+#
+# Example — point auth at a different local clone:
+# dependency_overrides:
+#   emp_ai_auth:
+#     path: /absolute/path/to/emp_ai_auth
+#   emp_ai_ds:
+#     path: /absolute/path/to/emp_ai_ds

@@ -1,0 +1,8 @@
+{
+  "enabled_miniapp_ids": [
+    "main",
+    "announcements",
+    "resources",
+    "samples"
+  ]
+}

@@ -1,0 +1,25 @@
+name: emp_ai_core
+description: >
+  Host-agnostic core: router assembly (super-app vs mini-app) and HTTP client
+  configuration. Host apps extend via configuration objects, not forking this
+  package.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.0.5 <4.0.0"
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^5.8.0+1
+  emp_ai_foundation:
+    path: ../emp_ai_foundation
+  go_router: ^13.2.5
+  meta: ^1.16.0
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter

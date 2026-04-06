@@ -1,0 +1,42 @@
+name: emp_ai_ecosystem
+repository: null
+
+packages:
+  - packages/**
+  - apps/**
+
+command:
+  bootstrap:
+    runPubGetInParallel: true
+    hooks:
+      pre: dart run tool/ensure_emp_ai_auth_clone.dart
+
+scripts:
+  extract:fig-meta:
+    description: Read meta.json from a .fig ZIP (canvas background hex)
+    run: dart run tool/extract_fig_meta.dart
+
+  generate:miniapps:
+    description: Regenerate miniapp_catalog.g.dart from miniapps_registry.yaml
+    run: dart run tool/generate_miniapps.dart
+
+  create:miniapp:
+    description: >
+      Scaffold domain/data/presentation + append registry.
+      Usage melos run create:miniapp -- my_snake_name
+    run: dart run tool/create_miniapp.dart
+
+  analyze:all:
+    description: Run flutter analyze on every package that has lib/
+    run: dart run melos exec --concurrency 1 --fail-fast -- "flutter analyze ."
+    packageFilters:
+      dirExists: lib
+
+  test:boilerplate:
+    description: Widget tests for emp_ai_boilerplate_app
+    run: dart run melos exec --concurrency 1 -- "flutter test"
+    packageFilters:
+      scope: emp_ai_boilerplate_app
+
+ide:
+  intellij: false

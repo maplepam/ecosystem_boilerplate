@@ -1,0 +1,119 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Boilerplate mobile · development",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/apps/emp_ai_boilerplate_app",
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define=FLAVOR=development",
+        "--dart-define=VERBOSE_LOGS=true"
+      ]
+    },
+    {
+      "name": "Boilerplate mobile · qa",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/apps/emp_ai_boilerplate_app",
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define=FLAVOR=qa"
+      ]
+    },
+    {
+      "name": "Boilerplate mobile · staging",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/apps/emp_ai_boilerplate_app",
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define=FLAVOR=staging"
+      ]
+    },
+    {
+      "name": "Boilerplate mobile · production",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/apps/emp_ai_boilerplate_app",
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define=FLAVOR=production"
+      ]
+    },
+    {
+      "name": "Boilerplate mobile · production (release)",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/apps/emp_ai_boilerplate_app",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "args": [
+        "--dart-define=FLAVOR=production"
+      ]
+    },
+    {
+      "name": "Boilerplate web · development",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/apps/emp_ai_boilerplate_app",
+      "program": "lib/main.dart",
+      "args": [
+        "-d",
+        "chrome",
+        "--web-port",
+        "6736",
+        "--dart-define=FLAVOR=development",
+        "--dart-define=VERBOSE_LOGS=true",
+        "--dart-define=FLUTTER_WEB_USE_SKIA=true",
+        "--web-browser-flag=--disable-web-security"
+      ]
+    },
+    {
+      "name": "Boilerplate web · qa",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/apps/emp_ai_boilerplate_app",
+      "program": "lib/main.dart",
+      "args": [
+        "-d",
+        "chrome",
+        "--web-port",
+        "6736",
+        "--dart-define=FLAVOR=qa",
+        "--web-browser-flag=--disable-web-security"
+      ]
+    },
+    {
+      "name": "Boilerplate web · staging",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/apps/emp_ai_boilerplate_app",
+      "program": "lib/main.dart",
+      "args": [
+        "-d",
+        "chrome",
+        "--web-port",
+        "6736",
+        "--dart-define=FLAVOR=staging",
+        "--web-browser-flag=--disable-web-security"
+      ]
+    },
+    {
+      "name": "Boilerplate web · production",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/apps/emp_ai_boilerplate_app",
+      "program": "lib/main.dart",
+      "args": [
+        "-d",
+        "chrome",
+        "--web-port",
+        "6736",
+        "--dart-define=FLAVOR=production",
+        "--web-browser-flag=--disable-web-security"
+      ]
+    }
+  ]
+}

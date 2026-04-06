@@ -1,0 +1,22 @@
+import 'package:flutter/widgets.dart';
+
+/// One reusable widget documented for the library page.
+class WidgetCatalogEntry {
+  const WidgetCatalogEntry({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.code,
+    required this.preview,
+  });
+
+  final String id;
+  final String title;
+  final String description;
+
+  /// Paste-ready usage (constructor + common parameters).
+  final String code;
+
+  /// Visual sample; keep small (e.g. 280×320). Provide [Material] if needed.
+  final Widget Function(BuildContext context) preview;
+}

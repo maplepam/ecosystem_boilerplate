@@ -1,0 +1,23 @@
+# Cloned by `melos bootstrap` (tool/ensure_emp_ai_auth_clone.dart). Omit if you use a submodule.
+packages/emp_ai_auth/
+
+# Dart / Flutter
+.dart_tool/
+.packages
+build/
+**/doc/api/
+
+# Local pub overrides (see apps/emp_ai_boilerplate_app/pubspec_overrides.yaml.example)
+apps/emp_ai_boilerplate_app/pubspec_overrides.yaml
+
+# Local compile-time defines (copy from config/build_defines.example.json)
+apps/emp_ai_boilerplate_app/config/build_defines.json
+
+# IDE
+.idea/
+*.iml
+.vscode/*
+!.vscode/launch.json
+
+# OS
+.DS_Store

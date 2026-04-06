@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  analyze-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      # Melos pre-hook clones emp_ai_auth; pub get clones emp_ai_ds (override). Private
+      # Bitbucket: configure git credentials (e.g. extraheader, deploy keys, or SSH).
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Workspace + Melos
+        run: |
+          dart pub get
+          dart run melos bootstrap
+
+      - name: Verify generated mini-app catalog
+        run: dart run tool/generate_miniapps.dart
+
+      - name: Analyze packages
+        run: dart run melos exec --concurrency 1 --fail-fast --dir-exists=lib -- "flutter analyze ."
+
+      - name: Test boilerplate app
+        run: |
+          cd apps/emp_ai_boilerplate_app
+          flutter test

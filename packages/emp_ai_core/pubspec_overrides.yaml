@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: emp_ai_foundation
+dependency_overrides:
+  emp_ai_foundation:
+    path: ../emp_ai_foundation

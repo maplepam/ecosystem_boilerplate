@@ -1,0 +1,12 @@
+# Mini-app registry — edit entries, then run: melos run generate:miniapps
+# Workflow and codegen details: docs/engineering/miniapps.md
+output: apps/emp_ai_boilerplate_app/lib/src/miniapps/miniapp_catalog.g.dart
+entries:
+  - import: package:emp_ai_boilerplate_app/src/miniapps/main_shell_miniapp.dart
+    symbol: MainShellMiniApp
+  - import: package:emp_ai_boilerplate_app/src/miniapps/announcements/announcements_miniapp.dart
+    symbol: AnnouncementsMiniApp
+  - import: package:emp_ai_boilerplate_app/src/miniapps/resources/resources_miniapp.dart
+    symbol: ResourcesMiniApp
+  - import: package:emp_ai_boilerplate_app/src/miniapps/samples/samples_miniapp.dart
+    symbol: SamplesMiniApp
