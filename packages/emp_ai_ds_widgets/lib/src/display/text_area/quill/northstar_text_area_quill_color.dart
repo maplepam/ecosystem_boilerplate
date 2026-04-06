@@ -1,14 +1,14 @@
+import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 
 /// Quill stores colors as `#AARRGGBB` (see flutter_quill [colorToHex]).
 String northstarColorToQuillHex(Color color) {
   int channel(double x) => (x * 255.0).round() & 0xff;
-  final String raw =
-      '${channel(color.a).toRadixString(16).padLeft(2, '0')}'
-      '${channel(color.r).toRadixString(16).padLeft(2, '0')}'
-      '${channel(color.g).toRadixString(16).padLeft(2, '0')}'
-      '${channel(color.b).toRadixString(16).padLeft(2, '0')}'
+  final String raw = '${channel(color.a).toRadixString(16).padLeft(2, '0')}'
+          '${channel(color.r).toRadixString(16).padLeft(2, '0')}'
+          '${channel(color.g).toRadixString(16).padLeft(2, '0')}'
+          '${channel(color.b).toRadixString(16).padLeft(2, '0')}'
       .toUpperCase();
   return '#$raw';
 }
@@ -95,16 +95,15 @@ Future<bool> showNorthstarTextAreaTextColorPicker({
   ).then((bool? v) => v ?? false);
 }
 
-const List<Color> _kPresetTextColors = <Color>[
-  Color(0xFF000000),
-  Color(0xFF424242),
-  Color(0xFFB71C1C),
-  Color(0xFFE65100),
-  Color(0xFFF9A825),
-  Color(0xFF2E7D32),
-  Color(0xFF0277BD),
-  Color(0xFF283593),
-  Color(0xFF6A1B9A),
-  Color(0xFFC2185B),
-  Color(0xFFFFFFFF),
+final List<Color> _kPresetTextColors = <Color>[
+  NorthstarBaseTokens.light.onSurface,
+  NorthstarBaseTokens.light.outline,
+  NorthstarBaseTokens.light.error,
+  NorthstarBaseTokens.light.warning,
+  NorthstarBaseTokens.light.success,
+  NorthstarBaseTokens.light.primary,
+  NorthstarBaseTokens.light.secondary,
+  NorthstarBaseTokens.light.onPrimaryContainer,
+  NorthstarBaseTokens.light.inverseSurface,
+  NorthstarBaseTokens.light.onPrimary,
 ];

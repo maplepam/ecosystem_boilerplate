@@ -9,7 +9,8 @@ import 'package:flutter/foundation.dart';
 /// [NorthstarBanner], [NorthstarBreadcrumb], [NorthstarInputField],
 /// [NorthstarTextArea], [NorthstarTextAreaRichToolbar], [NorthstarFilterDropdown], [NorthstarMenuField], [NorthstarAllFiltersButton],
 /// [DashboardLayoutBuilder],
-/// [NorthstarNavigationDrawer], …) and a unique
+/// [NorthstarNavigationDrawer], [NorthstarPaginationBar], [NorthstarDataTable], …)
+/// and a unique
 /// [elementId] per sub-control. Format: `ds:<automationId>:<elementId>`.
 abstract final class DsAutomationKeys {
   const DsAutomationKeys._();
@@ -61,7 +62,8 @@ abstract final class DsAutomationKeys {
   /// One stacked slot; append index, e.g. `'${elementStackedAvatarSlot}_0'`.
   static const String elementStackedAvatarSlot = 'stacked_avatar_slot';
 
-  static const String elementStackedAvatarsOverflow = 'stacked_avatars_overflow';
+  static const String elementStackedAvatarsOverflow =
+      'stacked_avatars_overflow';
 
   /// [NorthstarChip] surface.
   static const String elementChip = 'chip';
@@ -168,13 +170,50 @@ abstract final class DsAutomationKeys {
   static const String elementFileUploaderAddButton = 'file_uploader_add';
 
   /// Global validation message under the control.
-  static const String elementFileUploaderGlobalError = 'file_uploader_global_error';
+  static const String elementFileUploaderGlobalError =
+      'file_uploader_global_error';
 
   /// File row root; composed as `…_${item.id}`.
   static const String elementFileUploaderRow = 'file_uploader_row';
 
   /// Remove control; composed as `…_${item.id}`.
   static const String elementFileUploaderRemove = 'file_uploader_remove';
+
+  /// [NorthstarPaginationBar] root.
+  static const String elementPaginationBar = 'pagination_bar';
+
+  static const String elementPaginationPrev = 'pagination_prev';
+
+  static const String elementPaginationNext = 'pagination_next';
+
+  /// Page number button; composed as `…_${page}`.
+  static const String elementPaginationPage = 'pagination_page';
+
+  /// Ellipsis / skip control; composed as `…_${slotIndex}`.
+  static const String elementPaginationEllipsis = 'pagination_ellipsis';
+
+  static const String elementPaginationSummary = 'pagination_summary';
+
+  static const String elementPaginationPageSize = 'pagination_page_size';
+
+  static const String elementPaginationGoToField = 'pagination_go_to';
+
+  /// [NorthstarDataTable] scroll/surface root.
+  static const String elementDataTable = 'data_table';
+
+  /// Header cell; composed as `…_${columnIndex}`.
+  static const String elementDataTableHeader = 'data_table_header';
+
+  /// Select-all checkbox in header when row selection is enabled.
+  static const String elementDataTableHeaderSelectAll =
+      'data_table_header_select_all';
+
+  /// Long-press drag handle on a column header (when column reorder is enabled).
+  static const String elementDataTableHeaderColumnDrag =
+      'data_table_header_column_drag';
+
+  /// Body row; composed as `…_${rowIndex}`.
+  static const String elementDataTableRow = 'data_table_row';
 
   /// Returns null when [automationId] is null or empty (no keys applied).
   static ValueKey<String>? part(String? automationId, String elementId) {

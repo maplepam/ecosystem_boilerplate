@@ -17,12 +17,14 @@ class NorthstarSpacingScaleTable extends StatelessWidget {
     this.columnGap = NorthstarSpacing.space8,
     this.headerCellWidth = 188,
     this.swatchCellMinHeight = NorthstarSpacing.space24,
+    // Default swatches match [NorthstarBaseTokens.light] (defaults must be
+    // const literals; optional params cannot use `.light.surface` etc.).
     this.frameBackgroundColor = const Color(0xFFF8FAFC),
     this.headerBackgroundColor = const Color(0xFF202939),
-    this.headerForegroundColor = Colors.white,
-    this.bodyForegroundColor = Colors.white,
+    this.headerForegroundColor = const Color(0xFFFFFFFF),
+    this.bodyForegroundColor = const Color(0xFFFFFFFF),
     this.rowBackgroundColor = const Color(0xFF202939),
-    this.swatchColor = const Color(0xFF1EA8AA),
+    this.swatchColor = const Color(0xFF62D2F4),
     this.footerNote =
         "The spacing scale includes negative values which can be useful for breaking out of a container's padding or for overlapping elements.",
   });
@@ -194,7 +196,8 @@ class _HeaderCell extends StatelessWidget {
         child: Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: NorthstarSpacing.space4),
+            padding:
+                const EdgeInsets.symmetric(horizontal: NorthstarSpacing.space4),
             child: Text(
               label,
               style: textStyle.copyWith(color: foregroundColor),
@@ -230,9 +233,10 @@ class _DataRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final String remLabel = _formatRem(token.rem);
-    final String pxLabel = token.logicalPixels == token.logicalPixels.roundToDouble()
-        ? '${token.logicalPixels.round()}'
-        : '${token.logicalPixels}';
+    final String pxLabel =
+        token.logicalPixels == token.logicalPixels.roundToDouble()
+            ? '${token.logicalPixels.round()}'
+            : '${token.logicalPixels}';
 
     final double swatch = token.logicalPixels;
     final double swatchCellSide =
@@ -313,7 +317,8 @@ class _TextCell extends StatelessWidget {
         child: Align(
           alignment: Alignment.centerLeft,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: NorthstarSpacing.space4),
+            padding:
+                const EdgeInsets.symmetric(horizontal: NorthstarSpacing.space4),
             child: Text(
               text,
               style: textStyle.copyWith(color: foregroundColor),

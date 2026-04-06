@@ -19,6 +19,7 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
     required this.onSecondary,
     required this.surface,
     required this.onSurface,
+    required this.onSurfaceVariant,
     required this.surfaceContainerLow,
     required this.surfaceContainerHigh,
     required this.outline,
@@ -43,6 +44,7 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
     onSecondary: Color(0xFFFFFFFF),
     surface: Color(0xFFF7F9FA),
     onSurface: Color(0xFF1A1C1E),
+    onSurfaceVariant: Color(0xFF697586),
     surfaceContainerLow: Color(0xFFEFF1F3),
     surfaceContainerHigh: Color(0xFFE2E6EA),
     outline: Color(0xFF72787E),
@@ -65,6 +67,7 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
   final Color onSecondary;
   final Color surface;
   final Color onSurface;
+  final Color onSurfaceVariant;
   final Color surfaceContainerLow;
   final Color surfaceContainerHigh;
   final Color outline;
@@ -98,6 +101,7 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
     Color? onSecondary,
     Color? surface,
     Color? onSurface,
+    Color? onSurfaceVariant,
     Color? surfaceContainerLow,
     Color? surfaceContainerHigh,
     Color? outline,
@@ -120,6 +124,7 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
       onSecondary: onSecondary ?? this.onSecondary,
       surface: surface ?? this.surface,
       onSurface: onSurface ?? this.onSurface,
+      onSurfaceVariant: onSurfaceVariant ?? this.onSurfaceVariant,
       surfaceContainerLow: surfaceContainerLow ?? this.surfaceContainerLow,
       surfaceContainerHigh: surfaceContainerHigh ?? this.surfaceContainerHigh,
       outline: outline ?? this.outline,
@@ -150,6 +155,8 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
       onSecondary: Color.lerp(onSecondary, other.onSecondary, t)!,
       surface: Color.lerp(surface, other.surface, t)!,
       onSurface: Color.lerp(onSurface, other.onSurface, t)!,
+      onSurfaceVariant:
+          Color.lerp(onSurfaceVariant, other.onSurfaceVariant, t)!,
       surfaceContainerLow:
           Color.lerp(surfaceContainerLow, other.surfaceContainerLow, t)!,
       surfaceContainerHigh:
@@ -179,6 +186,7 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
       onSecondary: onSecondary,
       surface: surface,
       onSurface: onSurface,
+      onSurfaceVariant: onSurfaceVariant,
       error: error,
       onError: onError,
       outline: outline,
@@ -196,6 +204,7 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
         onSecondary,
         surface,
         onSurface,
+        onSurfaceVariant,
         surfaceContainerLow,
         surfaceContainerHigh,
         outline,
@@ -221,6 +230,7 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
         other.onSecondary == onSecondary &&
         other.surface == surface &&
         other.onSurface == onSurface &&
+        other.onSurfaceVariant == onSurfaceVariant &&
         other.surfaceContainerLow == surfaceContainerLow &&
         other.surfaceContainerHigh == surfaceContainerHigh &&
         other.outline == outline &&
@@ -240,9 +250,6 @@ class NorthstarColorTokens extends ThemeExtension<NorthstarColorTokens> {
 /// widgets can read **one** extension for semantic paint (even when
 /// [ColorScheme] is seed-derived via [NorthstarTheme.buildThemeData]).
 extension NorthstarColorTokensMaterialBridge on NorthstarColorTokens {
-  /// Secondary body / meta text (Material [ColorScheme.onSurfaceVariant] role).
-  Color get onSurfaceVariant => outline;
-
   /// Strongest container tier in M3; Northstar ships [surfaceContainerLow] and
   /// [surfaceContainerHigh] only — this maps to **high** for elevated panels.
   Color get surfaceContainerHighest => surfaceContainerHigh;

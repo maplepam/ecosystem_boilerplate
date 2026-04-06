@@ -30,6 +30,7 @@ abstract final class NorthstarTheme {
       onSecondary: scheme.onSecondary,
       surface: scheme.surface,
       onSurface: scheme.onSurface,
+      onSurfaceVariant: scheme.onSurfaceVariant,
       surfaceContainerLow: scheme.surfaceContainerLow,
       surfaceContainerHigh: scheme.surfaceContainerHigh,
       outline: scheme.outline,
