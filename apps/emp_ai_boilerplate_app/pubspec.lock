@@ -403,8 +403,8 @@ packages:
     description:
       path: "."
       ref: myemapta_main
-      resolved-ref: "8e2ad76bba73962a3079b11f8f4a55c405405b7a"
-      url: "https://bitbucket.org/empowerteams/emp-ai-flutter-design-system.git"
+      resolved-ref: a58d7c49f0c552f24591eb5c12881b26d149c37a
+      url: "git@bitbucket.org:empowerteams/emp-ai-flutter-design-system.git"
     source: git
     version: "0.0.1"
   emp_ai_ds_northstar:
@@ -1225,13 +1225,13 @@ packages:
     source: hosted
     version: "3.3.2"
   lucide_icons_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: lucide_icons_flutter
-      sha256: "39472ddc8c5fc586d06a619a3871817ea02dd17defd31e67dcfc9ec77658b2a1"
+      sha256: df29c1cf4f19f9309f5204d40e0ba95338d9946a8ffdb4d75cf9aaccf449ce41
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.11"
+    version: "3.1.12"
   markdown:
     dependency: transitive
     description:

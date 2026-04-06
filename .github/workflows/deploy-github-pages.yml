@@ -61,9 +61,7 @@ jobs:
       - name: Build web
         run: |
           cd apps/emp_ai_boilerplate_app
-          # Icon tree shaking can fail when design-system icon fonts omit glyphs the
-          # shaker expects (e.g. custom icon sets). Disabling avoids subset aborts in CI.
-          flutter build web --release --no-tree-shake-icons --base-href "${{ env.BASE_HREF }}"
+          flutter build web --release --base-href "${{ env.BASE_HREF }}"
 
       - uses: actions/configure-pages@v5
 
