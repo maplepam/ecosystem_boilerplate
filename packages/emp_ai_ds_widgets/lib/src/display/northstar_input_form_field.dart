@@ -14,6 +14,7 @@ import 'package:emp_ai_ds_widgets/src/display/northstar_input_field.dart';
 /// | [AutovalidateMode.always] | On every text change after [didChange] (error clears as soon as [validator] returns null). |
 /// | [AutovalidateMode.onUserInteraction] | On every text change once the value diverges from the initial [TextEditingController] sync (typically each keystroke / paste). |
 /// | [AutovalidateMode.onUnfocus] | When the field loses focus ([FocusNode] listener). |
+/// | [AutovalidateMode.onUserInteractionIfError] | On text change only while the field already has a validation error. |
 ///
 /// ## Error → normal state
 ///
@@ -181,13 +182,20 @@ class _NorthstarInputFormFieldState extends FormFieldState<String> {
     if (!mounted) {
       return;
     }
-    switch (widget.autovalidateMode) {
-      case AutovalidateMode.always:
-      case AutovalidateMode.onUserInteraction:
-        validate();
-      case AutovalidateMode.disabled:
-      case AutovalidateMode.onUnfocus:
-        break;
+    final AutovalidateMode mode = widget.autovalidateMode;
+    if (mode == AutovalidateMode.always ||
+        mode == AutovalidateMode.onUserInteraction) {
+      validate();
+      return;
+    }
+    if (mode == AutovalidateMode.disabled ||
+        mode == AutovalidateMode.onUnfocus) {
+      return;
+    }
+    // Flutter 3.29+ adds [AutovalidateMode.onUserInteractionIfError]. Use [Enum.name]
+    // so packages still analyze on older SDKs; CI stable resolves this branch.
+    if (mode.name == 'onUserInteractionIfError' && hasError) {
+      validate();
     }
   }
 

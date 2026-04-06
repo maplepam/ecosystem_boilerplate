@@ -6,6 +6,11 @@
 // Runs from workspace root via Melos bootstrap pre-hook.
 // Uses **SSH only** (local + CI). Add your SSH public key to Bitbucket for both
 // repos; in GitHub Actions use deploy key secret + ssh-agent (see workflows).
+//
+// **Keep Bitbucket [_authBranch] in sync with this monorepo:** CI has no copy of
+// `packages/emp_ai_auth` in git — it always clones from Bitbucket. Push new
+// files (e.g. `access_token_jwt_rbac.dart`) and API updates (`TokenRefreshInterceptor`,
+// `AuthNotifier`, …) to `emp-ai-flutter-auth` before expecting CI / Pages to pass.
 
 import 'dart:io';
 
