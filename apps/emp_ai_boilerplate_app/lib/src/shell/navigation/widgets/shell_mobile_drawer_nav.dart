@@ -1,5 +1,6 @@
 import 'package:emp_ai_boilerplate_app/src/shell/navigation/boilerplate_shell_nav_config.dart';
 import 'package:emp_ai_boilerplate_app/src/shell/navigation/widgets/shell_drawer_parent_section.dart';
+import 'package:emp_ai_boilerplate_app/src/shell/navigation/widgets/shell_navigation_contrast.dart';
 import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +28,7 @@ class ShellMobileDrawerNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final NorthstarColorTokens tokens = NorthstarColorTokens.of(context);
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final Color inactiveFg = shellNavInactiveForeground(context);
 
     return SafeArea(
       child: ListView(
@@ -51,10 +53,21 @@ class ShellMobileDrawerNav extends StatelessWidget {
               ShellNavTopLeaf(:final ShellNavLeaf leaf) => ListTile(
                   leading: Icon(
                     leaf.icon,
-                    color:
-                        leaf.matchesPath(currentPath) ? tokens.primary : null,
+                    color: leaf.matchesPath(currentPath)
+                        ? tokens.primary
+                        : inactiveFg,
                   ),
-                  title: Text(leaf.label),
+                  title: Text(
+                    leaf.label,
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: leaf.matchesPath(currentPath)
+                          ? FontWeight.w700
+                          : FontWeight.w500,
+                      color: leaf.matchesPath(currentPath)
+                          ? tokens.onSurface
+                          : inactiveFg,
+                    ),
+                  ),
                   selected: leaf.matchesPath(currentPath),
                   onTap: () => onLeaf(leaf, null),
                 ),

@@ -13,7 +13,7 @@ enum NorthstarFileUploaderMode {
   /// Dashed drop zone with “click here” to open the picker.
   dropZone,
 
-  /// Primary “+ Add File” style action.
+  /// Primary “Add file” action ([leadingIcon] supplies the +).
   addButton,
 }
 
@@ -68,7 +68,7 @@ class NorthstarFileUploader extends StatelessWidget {
     this.files = const [],
     this.enabled = true,
     this.uploaderErrorText,
-    this.addButtonLabel = '+ Add File',
+    this.addButtonLabel = 'Add File',
     this.onActivate,
     this.onRemove,
     this.dropZoneMinHeight = 120,
@@ -96,7 +96,8 @@ class NorthstarFileUploader extends StatelessWidget {
   /// Validation or control-level error shown under the drop zone / button row.
   final String? uploaderErrorText;
 
-  /// Label for [NorthstarFileUploaderMode.addButton].
+  /// Label for [NorthstarFileUploaderMode.addButton]. The control adds a
+  /// leading [Icons.add]; keep the label text without a “+” prefix.
   final String addButtonLabel;
 
   /// User tapped the drop zone, “click here”, or the add button.
@@ -170,7 +171,10 @@ class NorthstarFileUploader extends StatelessWidget {
           Text(
             helperText!,
             style: textTheme.bodySmall?.copyWith(
-              color: scheme.onSurfaceVariant,
+              color: Color.alphaBlend(
+                scheme.onSurface.withValues(alpha: 0.76),
+                scheme.surface,
+              ),
             ),
           ),
         if ((label != null && label!.isNotEmpty) ||
@@ -309,6 +313,10 @@ class _NorthstarFileDropZoneState extends State<_NorthstarFileDropZone> {
     final Color error = scheme.error;
 
     final Color baseFill = scheme.surfaceContainerLowest;
+    final Color secondaryOnZone = Color.alphaBlend(
+      scheme.onSurface.withValues(alpha: 0.78),
+      baseFill,
+    );
     Color borderColor = scheme.outlineVariant;
     Color fill = baseFill;
     if (!widget.enabled) {
@@ -348,7 +356,7 @@ class _NorthstarFileDropZoneState extends State<_NorthstarFileDropZone> {
                     Text(
                       '${(widget.progress * 100).clamp(0, 100).round()}%',
                       style: textTheme.labelMedium?.copyWith(
-                        color: scheme.onSurfaceVariant,
+                        color: secondaryOnZone,
                       ),
                     ),
                   ],
@@ -363,8 +371,8 @@ class _NorthstarFileDropZoneState extends State<_NorthstarFileDropZone> {
                 TextSpan(
                   style: textTheme.bodyMedium?.copyWith(
                     color: widget.enabled
-                        ? scheme.onSurfaceVariant
-                        : scheme.onSurfaceVariant.withValues(alpha: 0.5),
+                        ? secondaryOnZone
+                        : secondaryOnZone.withValues(alpha: 0.55),
                   ),
                   children: [
                     const TextSpan(text: 'Drop files here or '),
@@ -504,6 +512,10 @@ class _NorthstarFileUploadRow extends StatelessWidget {
     final ColorScheme scheme = theme.colorScheme;
     final TextTheme textTheme = theme.textTheme;
     final bool isError = item.status == NorthstarFileUploadStatus.error;
+    final Color rowSecondary = Color.alphaBlend(
+      scheme.onSurface.withValues(alpha: 0.78),
+      scheme.surfaceContainerLow,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -527,7 +539,7 @@ class _NorthstarFileUploadRow extends StatelessWidget {
                 Icon(
                   Icons.insert_drive_file_outlined,
                   size: 22,
-                  color: scheme.onSurfaceVariant,
+                  color: rowSecondary,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -535,7 +547,7 @@ class _NorthstarFileUploadRow extends StatelessWidget {
                       ? Text(
                           'Uploading file…',
                           style: textTheme.bodyMedium?.copyWith(
-                            color: scheme.onSurfaceVariant,
+                            color: rowSecondary,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -545,7 +557,7 @@ class _NorthstarFileUploadRow extends StatelessWidget {
                           child: Text(
                             item.name,
                             style: textTheme.bodyMedium?.copyWith(
-                              color: scheme.onSurfaceVariant,
+                              color: rowSecondary,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

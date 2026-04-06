@@ -1,4 +1,5 @@
 import 'package:emp_ai_boilerplate_app/src/shell/navigation/boilerplate_shell_nav_config.dart';
+import 'package:emp_ai_boilerplate_app/src/shell/navigation/widgets/shell_navigation_contrast.dart';
 import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
 import 'package:flutter/material.dart';
 
@@ -24,21 +25,28 @@ class ShellDrawerParentSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final Color inactiveFg = shellNavInactiveForeground(context);
     final bool onLeaf = parent.matchingLeaf(currentPath) != null;
+    final bool parentEmphasis = parent.containsPath(currentPath) && !onLeaf;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         ListTile(
           leading: Icon(
             parent.icon,
-            color: parent.containsPath(currentPath) && !onLeaf
-                ? tokens.primary
-                : null,
+            color: parentEmphasis ? tokens.primary : inactiveFg,
           ),
-          title: Text(parent.label),
+          title: Text(
+            parent.label,
+            style: textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: parentEmphasis ? tokens.onSurface : inactiveFg,
+            ),
+          ),
           trailing: Icon(
             expanded ? Icons.expand_less_rounded : Icons.chevron_right_rounded,
-            color: tokens.onSurfaceVariant,
+            color: inactiveFg,
           ),
           onTap: onParentHeaderTap,
         ),
@@ -49,8 +57,24 @@ class ShellDrawerParentSection extends StatelessWidget {
                 left: NorthstarSpacing.space32,
                 right: NorthstarSpacing.space16,
               ),
-              leading: Icon(leaf.icon, size: 22),
-              title: Text(leaf.label),
+              leading: Icon(
+                leaf.icon,
+                size: 22,
+                color: leaf.matchesPath(currentPath)
+                    ? tokens.primary
+                    : inactiveFg,
+              ),
+              title: Text(
+                leaf.label,
+                style: textTheme.bodyLarge?.copyWith(
+                  fontWeight: leaf.matchesPath(currentPath)
+                      ? FontWeight.w700
+                      : FontWeight.w500,
+                  color: leaf.matchesPath(currentPath)
+                      ? tokens.onSurface
+                      : inactiveFg,
+                ),
+              ),
               selected: leaf.matchesPath(currentPath),
               onTap: () => onChildTap(leaf),
             ),

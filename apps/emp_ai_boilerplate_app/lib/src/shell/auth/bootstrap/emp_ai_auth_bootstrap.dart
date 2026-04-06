@@ -1,6 +1,7 @@
 import 'package:emp_ai_auth/core/shared/utils/general_utils.dart';
 import 'package:emp_ai_auth/emp_ai_auth.dart';
 import 'package:emp_ai_boilerplate_app/src/config/boilerplate_environment_catalog.dart';
+import 'package:emp_ai_boilerplate_app/src/shell/auth/bootstrap/boilerplate_github_pages_logout_url.dart';
 import 'package:emp_ai_core/emp_ai_core.dart';
 
 /// Call from [main] before [runApp] to wire Keycloak / OAuth client ids.
@@ -16,6 +17,10 @@ void bootstrapEmpAiAuthIfEnabled() {
   );
 
   if (envClientId.isNotEmpty) {
+    const String envLogoutUrl = String.fromEnvironment(
+      'AUTH_LOGOUT_URL',
+      defaultValue: '',
+    );
     EmpAuth().initialize(
       clientId: envClientId,
       clientSecret: const String.fromEnvironment(
@@ -39,12 +44,9 @@ void bootstrapEmpAiAuthIfEnabled() {
       ).isEmpty
           ? null
           : const String.fromEnvironment('AUTH_REDIRECT_URL'),
-      logoutUrl: const String.fromEnvironment(
-        'AUTH_LOGOUT_URL',
-        defaultValue: '',
-      ).isEmpty
-          ? null
-          : const String.fromEnvironment('AUTH_LOGOUT_URL'),
+      logoutUrl: envLogoutUrl.isEmpty
+          ? resolveMaplepamGitHubPagesLogoutUrl()
+          : envLogoutUrl,
       onSuccessfulAuthentication: (dynamic e) {
         GeneralUtils.isolateDebug(
           '======AUTHENTICATION====== \n ${e.toString()}',
@@ -72,7 +74,7 @@ void bootstrapEmpAiAuthIfEnabled() {
     kcAuthorizationUrl: catalog.kcAuthorizationUrl,
     kcUserUrl: catalog.kcUserUrl,
     redirectUrl: catalog.resolveRedirectUrl(),
-    logoutUrl: null,
+    logoutUrl: resolveMaplepamGitHubPagesLogoutUrl(),
     onSuccessfulAuthentication: (dynamic e) {
       GeneralUtils.isolateDebug(
         '======AUTHENTICATION====== \n ${e.toString()}',

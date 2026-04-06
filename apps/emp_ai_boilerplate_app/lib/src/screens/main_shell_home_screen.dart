@@ -244,7 +244,10 @@ class _ShellHomeCard extends StatelessWidget {
               Text(
                 subtitle,
                 style: textTheme.bodySmall?.copyWith(
-                  color: tokens.onSurfaceVariant,
+                  color: Color.alphaBlend(
+                    tokens.onSurface.withValues(alpha: 0.76),
+                    tokens.surfaceContainerLow,
+                  ),
                   height: 1.35,
                 ),
               ),

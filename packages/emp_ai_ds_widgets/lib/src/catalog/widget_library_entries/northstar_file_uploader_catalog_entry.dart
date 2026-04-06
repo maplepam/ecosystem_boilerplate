@@ -8,7 +8,8 @@ WidgetCatalogEntry northstarFileUploaderCatalogEntry() {
     id: 'northstar_file_uploader',
     title: 'NorthstarFileUploader',
     description:
-        'Label, helper, dashed drop zone or “+ Add File” button, optional '
+        'Label, helper, dashed drop zone or add-file button (+ icon + label), '
+        'optional '
         'global error, and file rows (uploading with progress in the zone, '
         'transient success check, uploaded with remove, per-file error). '
         'Host owns the file list and pickers; items sort with completed rows '

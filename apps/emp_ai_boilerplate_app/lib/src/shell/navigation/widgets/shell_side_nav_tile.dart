@@ -1,3 +1,4 @@
+import 'package:emp_ai_boilerplate_app/src/shell/navigation/widgets/shell_navigation_contrast.dart';
 import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
 import 'package:flutter/material.dart';
 
@@ -30,6 +31,7 @@ class ShellSideNavTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final NorthstarColorTokens tokens = NorthstarColorTokens.of(context);
+    final Color inactiveFg = shellNavInactiveForeground(context);
     final bool showFill = selected;
 
     return Padding(
@@ -65,9 +67,7 @@ class ShellSideNavTile extends StatelessWidget {
                             Icon(
                               icon,
                               size: 22,
-                              color: selected
-                                  ? tokens.primary
-                                  : tokens.onSurfaceVariant,
+                              color: selected ? tokens.primary : inactiveFg,
                             ),
                             const SizedBox(width: NorthstarSpacing.space8),
                             Expanded(
@@ -86,7 +86,7 @@ class ShellSideNavTile extends StatelessWidget {
                                             : FontWeight.w500,
                                         color: selected
                                             ? tokens.onSurface
-                                            : tokens.onSurfaceVariant,
+                                            : inactiveFg,
                                       ),
                                 ),
                               ),
@@ -97,7 +97,7 @@ class ShellSideNavTile extends StatelessWidget {
                                     ? Icons.expand_more_rounded
                                     : Icons.chevron_right_rounded,
                                 size: 22,
-                                color: tokens.onSurfaceVariant,
+                                color: inactiveFg,
                               ),
                           ],
                         ),
@@ -112,7 +112,7 @@ class ShellSideNavTile extends StatelessWidget {
                         size: 22,
                         color: emphasizeWhenCollapsedRail || selected
                             ? tokens.primary
-                            : tokens.onSurfaceVariant,
+                            : inactiveFg,
                       ),
                     ),
                   ),
