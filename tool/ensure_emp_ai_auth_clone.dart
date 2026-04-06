@@ -84,13 +84,35 @@ Future<void> main() async {
     exit(1);
   }
 
-  _patchAuthPubspecForEmpAiDsGit(File('${authDir.path}/pubspec.yaml'));
+  final File authPubspec = File('${authDir.path}/pubspec.yaml');
+  _patchAuthPubspecForEmpAiDsGit(authPubspec);
+  _rewriteEmpAiDsGitUrlToSshIfNeeded(authPubspec);
 
   // Legacy: remove generated overrides if present (patch replaces their role).
   final File legacyOverrides = File('${authDir.path}/pubspec_overrides.yaml');
   if (legacyOverrides.existsSync()) {
     legacyOverrides.deleteSync();
   }
+}
+
+/// Bitbucket clones may already use the ecosystem_boilerplate git block but with
+/// **HTTPS**; pub always uses HTTPS for `git:` deps unless the URL is SSH.
+const String _dsGitUrlHttps =
+    'https://bitbucket.org/empowerteams/emp-ai-flutter-design-system.git';
+
+void _rewriteEmpAiDsGitUrlToSshIfNeeded(File pubspec) {
+  final String original = pubspec.readAsStringSync();
+  if (!original.contains(_dsGitUrlHttps)) {
+    return;
+  }
+  final String next = original.replaceAll(_dsGitUrlHttps, _dsGitUrl);
+  if (next == original) {
+    return;
+  }
+  pubspec.writeAsStringSync(next);
+  stdout.writeln(
+    'emp_ai_boilerplate: rewrote emp_ai_ds Git URL from HTTPS to SSH (CI).',
+  );
 }
 
 void _patchAuthPubspecForEmpAiDsGit(File pubspec) {
