@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 /// [NorthstarChip], [NorthstarDivider], [NorthstarLinearProgress], [NorthstarBadge],
 /// [NorthstarTextLink], [NorthstarAvatar], [NorthstarStackedAvatars], [NorthstarAccordion],
 /// [NorthstarBanner], [NorthstarBreadcrumb], [NorthstarInputField],
+/// [NorthstarFilterDropdown], [NorthstarAllFiltersButton],
 /// [DashboardLayoutBuilder],
 /// [NorthstarNavigationDrawer], …) and a unique
 /// [elementId] per sub-control. Format: `ds:<automationId>:<elementId>`.
@@ -108,6 +109,12 @@ abstract final class DsAutomationKeys {
 
   /// [NorthstarInputField] label-row info control.
   static const String elementInputInfo = 'input_info';
+
+  /// [NorthstarFilterDropdown] surface / hit target.
+  static const String elementFilterDropdown = 'filter_dropdown';
+
+  /// [NorthstarAllFiltersButton] surface / hit target.
+  static const String elementAllFilters = 'all_filters';
 
   /// [NorthstarBreadcrumb] root row.
   static const String elementBreadcrumb = 'breadcrumb';

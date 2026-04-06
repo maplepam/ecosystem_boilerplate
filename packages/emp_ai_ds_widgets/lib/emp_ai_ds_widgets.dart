@@ -10,6 +10,7 @@ export 'src/display/northstar_badge.dart';
 export 'src/display/northstar_chip.dart';
 export 'src/display/northstar_divider.dart';
 export 'src/display/northstar_filter_chip_strip.dart';
+export 'src/display/northstar_filter_dropdown.dart';
 export 'src/display/northstar_input_field.dart';
 export 'src/display/northstar_input_form_field.dart';
 export 'src/display/northstar_linear_progress.dart';
