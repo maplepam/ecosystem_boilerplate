@@ -4,17 +4,18 @@
 //    and allows Melos to bootstrap that package.
 //
 // Runs from workspace root via Melos bootstrap pre-hook.
-// Private Bitbucket: configure git credentials (or use SSH URLs below).
+// Uses **SSH only** (local + CI). Add your SSH public key to Bitbucket for both
+// repos; in GitHub Actions use deploy key secret + ssh-agent (see workflows).
 
 import 'dart:io';
 
 const String _authBranch = 'myemapta_main';
 const String _authCloneUrl =
-    'https://bitbucket.org/empowerteams/emp-ai-flutter-auth.git';
+    'git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git';
 
 /// Must match your Bitbucket branch for emp-ai-flutter-design-system.
 const String _dsGitUrl =
-    'https://bitbucket.org/empowerteams/emp-ai-flutter-design-system.git';
+    'git@bitbucket.org:empowerteams/emp-ai-flutter-design-system.git';
 const String _dsRef = 'myemapta_main';
 
 final RegExp _pathEmpAiDsBlock = RegExp(
@@ -61,9 +62,10 @@ Future<void> main() async {
     if (r.exitCode != 0) {
       stderr.writeln(r.stderr);
       stderr.writeln(
-        'Clone failed. Use SSH: set _authCloneUrl to '
-        'git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git '
-        'and ensure ssh-agent has access.',
+        'SSH clone failed. Locally: ensure `ssh -T git@bitbucket.org` works and '
+        'your key has read access to empowerteams/emp-ai-flutter-auth. '
+        'In CI: add deploy keys + GitHub secret BITBUCKET_SSH_PRIVATE_KEY and '
+        'ssh-agent steps (see .github/workflows).',
       );
       exit(r.exitCode);
     }

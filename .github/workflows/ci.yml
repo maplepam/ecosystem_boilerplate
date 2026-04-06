@@ -8,9 +8,19 @@ jobs:
   analyze-and-test:
     runs-on: ubuntu-latest
     steps:
-      # Melos pre-hook clones emp_ai_auth; pub get clones emp_ai_ds (override). Private
-      # Bitbucket: configure git credentials (e.g. extraheader, deploy keys, or SSH).
+      # Melos pre-hook clones emp_ai_auth over SSH; pub get fetches emp_ai_ds over SSH.
+      # Bitbucket: deploy key → secret BITBUCKET_SSH_PRIVATE_KEY.
       - uses: actions/checkout@v4
+
+      - name: Add Bitbucket to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -t rsa,ecdsa,ed25519 bitbucket.org >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.BITBUCKET_SSH_PRIVATE_KEY }}
 
       - uses: subosito/flutter-action@v2
         with:
