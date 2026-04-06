@@ -140,6 +140,9 @@ class _BoilerplateShellScaffoldState
       if (!isWidgetDetail) ...<Widget>[
         IconButton(
           tooltip: 'Cycle light · dark · system',
+          style: IconButton.styleFrom(
+            foregroundColor: tokens.onSurface,
+          ),
           onPressed: themeCtrl.cycleThemeMode,
           icon: Icon(
             switch (themeCtrl.themeMode) {
@@ -150,6 +153,9 @@ class _BoilerplateShellScaffoldState
           ),
         ),
         TextButton(
+          style: TextButton.styleFrom(
+            foregroundColor: tokens.onSurface,
+          ),
           onPressed: () async {
             if (auth.isAuthenticated) {
               await showBoilerplateSignOutDialog(context, ref);
