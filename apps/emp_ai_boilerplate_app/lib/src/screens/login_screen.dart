@@ -3,6 +3,7 @@ import 'package:emp_ai_auth/features/auth/domain/entities/state/auth_state.dart'
 import 'package:emp_ai_auth/features/auth/shared/auth_providers.dart';
 import 'package:emp_ai_boilerplate_app/src/shell/auth/ui/boilerplate_auth_ui.dart';
 import 'package:emp_ai_boilerplate_app/src/config/boilerplate_route_access.dart';
+import 'package:emp_ai_boilerplate_app/src/shell/router/boilerplate_post_login_redirect.dart';
 import 'package:emp_ai_ds_northstar/emp_ai_ds_northstar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,7 +50,7 @@ class LoginScreen extends ConsumerWidget {
           GoRouterState.of(context).uri.queryParameters['redirect'];
       final String fallback = ref.read(authDefaultHomePathProvider);
       context.go(
-        redirect != null && redirect.isNotEmpty ? redirect : fallback,
+        sanitizeBoilerplatePostLoginRedirect(redirect, fallback),
       );
     });
 

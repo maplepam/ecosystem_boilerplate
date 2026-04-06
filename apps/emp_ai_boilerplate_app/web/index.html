@@ -16,6 +16,21 @@
   -->
   <base href="$FLUTTER_BASE_HREF">
 
+  <!-- Hash routing: opening /repo/ without "#/…" leaves no in-app path; normalize so GoRouter runs. -->
+  <script>
+    (function () {
+      if (window.location.hash.startsWith('#/')) {
+        return;
+      }
+      var path = window.location.pathname || '/';
+      var search = window.location.search || '';
+      if (!path.endsWith('/')) {
+        path = path + '/';
+      }
+      window.history.replaceState(null, '', path + search + '#/');
+    })();
+  </script>
+
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="A new Flutter project.">

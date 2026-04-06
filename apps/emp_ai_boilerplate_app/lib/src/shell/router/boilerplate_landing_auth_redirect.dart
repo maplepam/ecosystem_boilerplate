@@ -38,9 +38,12 @@ final boilerplateLandingAuthRedirectProvider = Provider<GoRouterRedirect>((ref) 
       return null;
     }
 
-    final String target = state.uri.toString();
+    final StringBuffer target = StringBuffer(state.uri.path);
+    if (state.uri.hasQuery) {
+      target.write('?${state.uri.query}');
+    }
     final String login = ref.read(authLoginPathProvider);
-    final String enc = Uri.encodeComponent(target);
+    final String enc = Uri.encodeComponent(target.toString());
     return '$login?redirect=$enc';
   };
 });

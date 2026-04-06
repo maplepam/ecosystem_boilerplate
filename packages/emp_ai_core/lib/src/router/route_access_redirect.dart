@@ -77,5 +77,11 @@ bool _isPublic(RouteAccessRedirectConfig config, String normalizedPath) {
 
 String _loginWithReturn(String loginPath, Uri from) {
   final String base = loginPath.startsWith('/') ? loginPath : '/$loginPath';
-  return '$base?redirect=${Uri.encodeComponent(from.toString())}';
+  // Path + query only (not scheme/host). Full URI strings break post-login go()
+  // when static hosting injects a repo basename into the browser path.
+  final StringBuffer returnLoc = StringBuffer(from.path);
+  if (from.hasQuery) {
+    returnLoc.write('?${from.query}');
+  }
+  return '$base?redirect=${Uri.encodeComponent(returnLoc.toString())}';
 }
