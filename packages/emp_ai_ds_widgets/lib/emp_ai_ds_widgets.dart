@@ -28,6 +28,8 @@ export 'package:emp_ai_ds_widgets/src/display/northstar_linear_progress.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_menu.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_search_field.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_stacked_avatars.dart';
+export 'package:emp_ai_ds_widgets/src/display/text_area/northstar_text_area.dart';
+export 'package:emp_ai_ds_widgets/src/display/text_area/quill/northstar_text_area_quill_html.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_text_link.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_tri_state.dart';
 export 'package:emp_ai_ds_widgets/src/navigation/northstar_drawer_entry.dart';

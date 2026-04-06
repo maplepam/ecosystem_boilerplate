@@ -23,6 +23,7 @@ import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_s
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_search_field_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_spacing_scale_table_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_stacked_avatars_catalog_entry.dart';
+import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_text_area_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_text_link_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_tri_state_body_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_typography_roles_catalog_entry.dart';
@@ -50,6 +51,7 @@ List<WidgetCatalogEntry> builtInWidgetLibraryEntries() {
       northstarDrawerEntryModelCatalogEntry(),
       northstarInputFieldCatalogEntry(),
       northstarInputFormFieldCatalogEntry(),
+      northstarTextAreaCatalogEntry(),
       northstarSearchFieldCatalogEntry(),
       northstarSpacingScaleTableCatalogEntry(),
       northstarAccordionCatalogEntry(),

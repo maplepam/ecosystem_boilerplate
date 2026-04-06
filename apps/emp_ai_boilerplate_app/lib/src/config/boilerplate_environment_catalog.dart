@@ -84,7 +84,7 @@ abstract final class BoilerplateEnvironmentCatalog {
 
   static const BoilerplateFlavorEndpoints _development =
       BoilerplateFlavorEndpoints(
-    appTitle: '[DEV] MyEmapta HCM',
+    appTitle: '[DEV] Emapta Boilerplate',
     apiBaseUrl: 'https://dev-api.empowerteams.io',
     announcementServiceBaseUrl:
         'https://api-dev.platform.outsourcingit.com/announcement-bl',
@@ -99,7 +99,7 @@ abstract final class BoilerplateEnvironmentCatalog {
 
   /// Mirrors emapta **UAT** (`AppEnvironment.uat`).
   static const BoilerplateFlavorEndpoints _qa = BoilerplateFlavorEndpoints(
-    appTitle: '[UAT] MyEmapta HCM',
+    appTitle: '[UAT] Emapta Boilerplate',
     apiBaseUrl: 'https://dev-api.empowerteams.io',
     announcementServiceBaseUrl:
         'https://api-uat.platform.outsourcingit.com/announcement-bl',
@@ -113,7 +113,7 @@ abstract final class BoilerplateEnvironmentCatalog {
   );
 
   static const BoilerplateFlavorEndpoints _staging = BoilerplateFlavorEndpoints(
-    appTitle: '[STG] MyEmapta HCM',
+    appTitle: '[STG] Emapta Boilerplate',
     apiBaseUrl: 'https://dev-api.empowerteams.io',
     announcementServiceBaseUrl:
         'https://api-staging.platform.emapta.com/announcement-bl',
@@ -128,7 +128,7 @@ abstract final class BoilerplateEnvironmentCatalog {
 
   static const BoilerplateFlavorEndpoints _production =
       BoilerplateFlavorEndpoints(
-    appTitle: 'MyEmapta HCM',
+    appTitle: 'Emapta Boilerplate',
     apiBaseUrl: 'https://api.empowerteams.io',
     announcementServiceBaseUrl:
         'https://api.platform.emapta.com/announcement-bl',

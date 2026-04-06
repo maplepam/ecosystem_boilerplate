@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 /// [NorthstarChip], [NorthstarDivider], [NorthstarLinearProgress], [NorthstarBadge],
 /// [NorthstarTextLink], [NorthstarAvatar], [NorthstarStackedAvatars], [NorthstarAccordion],
 /// [NorthstarBanner], [NorthstarBreadcrumb], [NorthstarInputField],
-/// [NorthstarFilterDropdown], [NorthstarMenuField], [NorthstarAllFiltersButton],
+/// [NorthstarTextArea], [NorthstarTextAreaRichToolbar], [NorthstarFilterDropdown], [NorthstarMenuField], [NorthstarAllFiltersButton],
 /// [DashboardLayoutBuilder],
 /// [NorthstarNavigationDrawer], …) and a unique
 /// [elementId] per sub-control. Format: `ds:<automationId>:<elementId>`.
@@ -109,6 +109,27 @@ abstract final class DsAutomationKeys {
 
   /// [NorthstarInputField] label-row info control.
   static const String elementInputInfo = 'input_info';
+
+  /// [NorthstarTextArea] label row.
+  static const String elementTextAreaLabel = 'text_area_label';
+
+  /// [NorthstarTextArea] helper line.
+  static const String elementTextAreaHelper = 'text_area_helper';
+
+  /// [NorthstarTextArea] main [TextField] (standard / rich body).
+  static const String elementTextAreaField = 'text_area_field';
+
+  /// [NorthstarTextArea] validation line under the shell.
+  static const String elementTextAreaError = 'text_area_error';
+
+  /// [NorthstarTextArea] rich toolbar control prefix (`…_$id`).
+  static const String elementTextAreaToolbar = 'text_area_toolbar';
+
+  /// [NorthstarTextAreaRichToolbar] root strip (below: `…_$id` per control).
+  static const String elementTextAreaRichToolbar = 'text_area_rich_toolbar';
+
+  /// [NorthstarTextArea] chips variant inline add field.
+  static const String elementTextAreaChipsInput = 'text_area_chips_input';
 
   /// [NorthstarFilterDropdown] surface / hit target.
   static const String elementFilterDropdown = 'filter_dropdown';
