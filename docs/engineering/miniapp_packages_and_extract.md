@@ -32,7 +32,7 @@ dependencies:
     git:
       url: git@github.com:maplepam/ecosystem-platform.git
       path: packages/emp_ai_app_shell
-      ref: 13e79151b660f713a64ba971addd34b9cebd7302
+      ref: fa051d9bbb71a8dc196c6984aab189e6d33f7e0e
 ```
 
 **REPLACE** `url` / `ref` with the **same** ecosystem-platform pin as your host (see [`docs/meta/platform_bom.yaml`](../meta/platform_bom.yaml)), or a **path:** override for local development only.

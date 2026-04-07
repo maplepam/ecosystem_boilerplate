@@ -10,7 +10,7 @@
 platform_git:
   url: git@github.com:maplepam/ecosystem-platform.git
   # Same SHA for every path: Pub must unify transitive in-repo path deps (e.g. ds_widgets → northstar).
-  ref: 13e79151b660f713a64ba971addd34b9cebd7302
+  ref: fa051d9bbb71a8dc196c6984aab189e6d33f7e0e
 
 platform_packages:
   - emp_ai_foundation

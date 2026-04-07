@@ -380,11 +380,9 @@ packages:
   emp_ai_app_shell:
     dependency: "direct main"
     description:
-      path: "packages/emp_ai_app_shell"
-      ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      resolved-ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      url: "git@github.com:maplepam/ecosystem-platform.git"
-    source: git
+      path: "../../../ecosystem-platform/packages/emp_ai_app_shell"
+      relative: true
+    source: path
     version: "0.1.0"
   emp_ai_auth:
     dependency: "direct main"
@@ -398,11 +396,9 @@ packages:
   emp_ai_core:
     dependency: "direct main"
     description:
-      path: "packages/emp_ai_core"
-      ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      resolved-ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      url: "git@github.com:maplepam/ecosystem-platform.git"
-    source: git
+      path: "../../../ecosystem-platform/packages/emp_ai_core"
+      relative: true
+    source: path
     version: "0.1.0"
   emp_ai_ds:
     dependency: transitive
@@ -416,29 +412,23 @@ packages:
   emp_ai_ds_northstar:
     dependency: "direct main"
     description:
-      path: "packages/emp_ai_ds_northstar"
-      ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      resolved-ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      url: "git@github.com:maplepam/ecosystem-platform.git"
-    source: git
+      path: "../../../ecosystem-platform/packages/emp_ai_ds_northstar"
+      relative: true
+    source: path
     version: "0.1.0"
   emp_ai_ds_widgets:
     dependency: "direct main"
     description:
-      path: "packages/emp_ai_ds_widgets"
-      ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      resolved-ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      url: "git@github.com:maplepam/ecosystem-platform.git"
-    source: git
+      path: "../../../ecosystem-platform/packages/emp_ai_ds_widgets"
+      relative: true
+    source: path
     version: "0.1.0"
   emp_ai_foundation:
     dependency: "direct main"
     description:
-      path: "packages/emp_ai_foundation"
-      ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      resolved-ref: "13e79151b660f713a64ba971addd34b9cebd7302"
-      url: "git@github.com:maplepam/ecosystem-platform.git"
-    source: git
+      path: "../../../ecosystem-platform/packages/emp_ai_foundation"
+      relative: true
+    source: path
     version: "0.1.0"
   envied:
     dependency: transitive
