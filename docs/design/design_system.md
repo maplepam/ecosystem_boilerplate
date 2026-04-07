@@ -112,7 +112,7 @@ The package exports [`NorthstarSpacingScaleTable`](https://github.com/maplepam/e
 
 For the **sample host** file map and step-by-step (Acme tokens, `BoilerplateApp`, accent seed), see **[Boilerplate host: theming checklist](#boilerplate-host-theming-checklist)** below.
 
-1. **Subclassing / const sets** — Define new `NorthstarColorTokens` const values (see [`NorthstarDtcgPresets`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_ds_northstar/lib/src/northstar_dtcg_presets.dart)) or `NorthstarColorTokens.v3.copyWith(...)`.
+1. **Subclassing / const sets** — Start from [`NorthstarBaseTokens`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_ds_northstar/lib/src/northstar_base_tokens.dart) (`light` / `dark` / `whiteLabeledLight`) and use `copyWith`, or add a new `const NorthstarColorTokens(...)` in the host when you need a fully custom palette.
 2. **Host branding object** — Use [`NorthstarBranding`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_ds_northstar/lib/src/northstar_branding.dart) with your light/dark token instances and pass to `MaterialApp` as `theme:` / `darkTheme:` via `branding.theme(Brightness.light)`.
 3. **Optional seed** — `seedColor` on `NorthstarBranding` / `NorthstarTheme.buildThemeData` runs [flex_seed_scheme](https://pub.dev/packages/flex_seed_scheme) for generated primaries while keeping the semantic extension for custom roles.
 
@@ -167,7 +167,7 @@ Folder map: **[`docs/engineering/host_structure.md`](../engineering/host_structu
 
 ## DTCG / Figma Variables
 
-JSON exports live under **`emp_ai_ds_northstar`** (`design_tokens/dtcg/` in [ecosystem-platform](https://github.com/maplepam/ecosystem-platform/tree/main/packages/emp_ai_ds_northstar/design_tokens/dtcg)). Dart presets mirror them in `NorthstarDtcgPresets`. Re-export from Figma, diff JSON, then update the preset file or regenerate via a small script if you add automation.
+Re-export color variables from Figma as DTCG JSON (e.g. `Light.tokens.json`, `Dark.tokens.json`, `White Labeled.tokens.json`). Copy hex values into [`northstar_base_tokens.dart`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_ds_northstar/lib/src/northstar_base_tokens.dart) (`NorthstarBaseTokens`); the package does not load JSON at runtime. Add a `design_tokens/` folder in the repo if you want committed JSON for diffing.
 
 ## Widgets vs tokens (see also [design_system_widgets.md](design_system_widgets.md))
 
