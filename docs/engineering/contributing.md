@@ -4,6 +4,8 @@
 
 **Fork / upstream:** how to open PRs to the canonical boilerplate and how product forks merge or path-pull updates — [upstream_git_workflow.md](upstream_git_workflow.md).
 
+**Submodules:** **`ecosystem-platform`**, **`emp_ai_auth`**, and **`emp_ai_ds`** live under **`packages/`**. After clone, run **`git submodule update --init --recursive`** (or clone with **`--recurse-submodules`**) before **`dart run melos bootstrap`** so **`path:`** deps resolve — same as CI. PRs that advance pins must include the updated **gitlink** commits on the parent branch. Details: **[emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)**.
+
 ## Must do (strict implementation)
 
 1. **Respect layer boundaries** (see [architecture.md](architecture.md)):
@@ -93,5 +95,5 @@ Layer rules: [architecture.md](architecture.md).
 ## Code review focus
 
 - Correct **flow**: UI → Notifier / **`cached_query`** → **Repository** → Impl → DataSource.
-- **Testability**: can we fake the repository in tests?
+- **Testability**: repository boundaries should be replaceable with fakes or mocks in tests.
 - **Host concerns** (auth, flags) stay out of domain.

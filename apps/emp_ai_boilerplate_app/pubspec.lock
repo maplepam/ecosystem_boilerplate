@@ -387,11 +387,9 @@ packages:
   emp_ai_auth:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "2b521403765a135d5dbf67d36c9e55ddf3b016f1"
-      resolved-ref: "2b521403765a135d5dbf67d36c9e55ddf3b016f1"
-      url: "git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git"
-    source: git
+      path: "../../packages/emp_ai_auth"
+      relative: true
+    source: path
     version: "0.0.2"
   emp_ai_core:
     dependency: "direct main"
@@ -401,13 +399,11 @@ packages:
     source: path
     version: "0.1.0"
   emp_ai_ds:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      path: "."
-      ref: myemapta_main
-      resolved-ref: a58d7c49f0c552f24591eb5c12881b26d149c37a
-      url: "git@bitbucket.org:empowerteams/emp-ai-flutter-design-system.git"
-    source: git
+      path: "../../packages/emp_ai_ds"
+      relative: true
+    source: path
     version: "0.0.1"
   emp_ai_ds_northstar:
     dependency: "direct main"

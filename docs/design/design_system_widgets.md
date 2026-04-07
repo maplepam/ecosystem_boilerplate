@@ -8,11 +8,11 @@
 | **`emp_ai_ds_widgets`** | Shared chrome: navigation drawer, dashboard **layout presets** (`DashboardLayoutBuilder`), **reorderable slot** editor (`ReorderableDashboardSlotList`), catalog page. Atoms that are purely presentational may also live here. |
 | **Feature / mini-app** | Screens composed of DS widgets + local state; **no** duplication of primitive components. |
 
-## Why split?
+## Rationale for two packages
 
 - Apps can **theme** without adopting the full widget library (e.g. legacy screens).
 - DS releases stay **small** and easy to review.
-- You avoid circular dependencies (widgets → tokens, never tokens → widgets).
+- Circular dependencies are avoided (widgets → tokens, never tokens → widgets).
 
 ## Atomic design in code
 

@@ -32,10 +32,10 @@ dependencies:
     git:
       url: git@github.com:maplepam/ecosystem-platform.git
       path: packages/emp_ai_app_shell
-      ref: fa051d9bbb71a8dc196c6984aab189e6d33f7e0e
+      ref: <ecosystem-platform-commit-sha> # illustrative only — not kept in sync with this repo
 ```
 
-**REPLACE** `url` / `ref` with the **same** ecosystem-platform pin as your host (see [`docs/meta/platform_bom.yaml`](../meta/platform_bom.yaml)), or a **path:** override for local development only.
+**`ref`** must be the **same ecosystem-platform commit** your super-app uses (e.g. run **`git -C packages/ecosystem-platform rev-parse HEAD`** on the host monorepo, or use your org’s fork URL + SHA). The placeholder above is **not** auto-updated. Prefer a **`path:`** override for local development when the host already vendors platform as a submodule.
 
 3. **Exactly one registration library** with this **file name**:
 

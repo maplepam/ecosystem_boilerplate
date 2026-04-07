@@ -1,0 +1,10 @@
+# Submodules under packages/ are full repos; they are *not* part of this workspace's Melos
+# bootstrap. Analyzing them from the boilerplate root without per-package `pub get` produces
+# spurious "Target of URI doesn't exist" errors. Analyze the host app (`apps/emp_ai_boilerplate_app`)
+# and, when hacking platform, open `packages/ecosystem-platform` as its own workspace or run
+# `dart run melos bootstrap` there.
+analyzer:
+  exclude:
+    - packages/ecosystem-platform/**
+    - packages/emp_ai_auth/**
+    - packages/emp_ai_ds/**

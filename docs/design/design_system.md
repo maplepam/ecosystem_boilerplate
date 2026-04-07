@@ -167,7 +167,7 @@ Folder map: **[`docs/engineering/host_structure.md`](../engineering/host_structu
 
 ## DTCG / Figma Variables
 
-Re-export color variables from Figma as DTCG JSON (e.g. `Light.tokens.json`, `Dark.tokens.json`, `White Labeled.tokens.json`). The package does not load JSON at runtime — values live in [`northstar_base_tokens.dart`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_ds_northstar/lib/src/northstar_base_tokens.dart) (`NorthstarBaseTokens`). From **ecosystem_boilerplate** you can regenerate those literals with **`melos run sync:northstar-dtcg`** (see **[platform_bump_checklist.md § Automation](../meta/platform_bump_checklist.md#automation-melos)**). Add a `design_tokens/` folder in the repo if you want committed JSON for diffing.
+Re-export color variables from Figma as DTCG JSON (e.g. `Light.tokens.json`, `Dark.tokens.json`, `White Labeled.tokens.json`). The package does not load JSON at runtime — values live in [`northstar_base_tokens.dart`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_ds_northstar/lib/src/northstar_base_tokens.dart) (`NorthstarBaseTokens`). From **ecosystem_boilerplate** you can regenerate those literals with **`melos run sync:northstar-dtcg`** (see **[emp_ai_auth_dependency.md — Northstar tokens](../integrations/emp_ai_auth_dependency.md#northstar-tokens-dtcg)** and **[melos.yaml](../../melos.yaml)**). Add a `design_tokens/` folder in the repo if you want committed JSON for diffing.
 
 ## Widgets vs tokens (see also [design_system_widgets.md](design_system_widgets.md))
 

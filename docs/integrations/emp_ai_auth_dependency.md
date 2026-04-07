@@ -1,62 +1,65 @@
-# Consuming `emp_ai_auth`
+# Consuming `emp_ai_auth` and platform submodules
 
-Tactical reference for **`pubspec.yaml`**, **SSH**, and the **BOM**. For **repository roles**, **package list**, and **governance**, read **[repositories_overview.md](../engineering/repositories_overview.md)** first.
+Tactical reference for **submodules**, **`pubspec.yaml`**, and **SSH**. For **repository roles** and governance, read **[repositories_overview.md](../engineering/repositories_overview.md)** first.
 
-**Bumping platform:** every file to touch in this repo (plus **emp_ai_auth** on Bitbucket) is listed in **[platform_bump_checklist.md](../meta/platform_bump_checklist.md)**.
+The host app depends on **`ecosystem-platform`**, **`emp_ai_auth`**, and **`emp_ai_ds`** as **Git submodules** under **`packages/`**, with **`path:`** dependencies in **`apps/emp_ai_boilerplate_app/pubspec.yaml`**. After **`git clone`**, run **`git submodule update --init --recursive`** (or clone with **`--recurse-submodules`**). CI uses **`actions/checkout`** with **`submodules: recursive`** plus SSH for GitHub and Bitbucket.
 
-The host app depends on **`emp_ai_auth`** as a **Git** dependency (separate remote from **ecosystem-platform**). The branch you pin (e.g. **`ecosystem_boilerplate`**) should declare **`emp_ai_ds`** via **Git** (e.g. **`ref: myemapta_main`**) and **`emp_ai_core`** from **ecosystem-platform** at the **same SHA** as the host — no post-clone `pubspec` patching.
+Submodule **remotes** live in **`.gitmodules`**. **Pins** are the **gitlinks** Git records when you commit — inspect with **`git submodule status`** or **`git -C packages/ecosystem-platform rev-parse HEAD`**.
 
-## Bill of materials
+**`emp_ai_auth`** still declares **`emp_ai_core`** and **`emp_ai_ds`** via **Git** in its own **`pubspec.yaml`**. The host **`dependency_overrides`** force **one** in-tree resolution (see app **`pubspec.yaml`**).
 
-Pin and document **both** refs in one place:
-
-- **Platform** (`emp_ai_foundation`, `emp_ai_core`, `emp_ai_ds_*`, `emp_ai_app_shell`) → [`ecosystem-platform`](https://github.com/maplepam/ecosystem-platform) (SSH: `git@github.com:maplepam/ecosystem-platform.git`).
-- **Auth** → Bitbucket `emp-ai-flutter-auth` (branch e.g. `ecosystem_boilerplate`).
-- **Legacy DS** (transitive via auth’s `emp_ai_ds`) → documented in the same BOM for reproducibility.
-
-Canonical file in this repo: **[`docs/meta/platform_bom.yaml`](../meta/platform_bom.yaml)** (forks edit URLs/refs there; header comments describe drift checks).
-
-## `pubspec.yaml` shape (two Git URLs)
+## `pubspec.yaml` shape (host app)
 
 ```yaml
 dependencies:
   emp_ai_app_shell:
-    git:
-      url: git@github.com:maplepam/ecosystem-platform.git
-      path: packages/emp_ai_app_shell
-      ref: fa051d9bbb71a8dc196c6984aab189e6d33f7e0e
-  # …same url + ref for other platform packages…
+    path: ../../packages/ecosystem-platform/packages/emp_ai_app_shell
+  # …same relative base for other platform packages…
   emp_ai_auth:
-    git:
-      url: git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git
-      ref: 2b521403765a135d5dbf67d36c9e55ddf3b016f1
+    path: ../../packages/emp_ai_auth
+
+dependency_overrides:
+  emp_ai_core:
+    path: ../../packages/ecosystem-platform/packages/emp_ai_core
+  emp_ai_ds:
+    path: ../../packages/emp_ai_ds
 ```
 
-Adjust **`ref`** values to tags or SHAs for release builds.
+## Bumping submodule pins
 
-**Platform monorepo:** Prefer a **full commit SHA** (same value on every `emp_ai_*` Git dependency) instead of only **`ref: main`**. Otherwise Pub can fail to unify transitive **`path:`** dependencies between packages checked out from the same repo (e.g. **`emp_ai_ds_widgets`** depending on **`../emp_ai_ds_northstar`**). After you push new platform commits, bump **all** platform **`ref`s** together and update the BOM.
+Use **Git** only:
+
+1. **`cd packages/ecosystem-platform`** (or auth / DS) → **`git fetch`** → **`git checkout <sha-or-tag>`** → back to repo root → **`git add packages/ecosystem-platform`** (or the submodule you moved).
+2. **`flutter pub get`** in **`apps/emp_ai_boilerplate_app`** (or **`dart run melos bootstrap`** from root).
+3. Commit the **parent** repo (updated gitlinks + **`pubspec.lock`** if it changed).
+
+**Auth** still pinning **`emp_ai_core`** via Git: edit **`emp_ai_core` → `ref`** in the **auth** repo’s **`pubspec.yaml`** to the **same** platform commit your **`packages/ecosystem-platform`** submodule uses, commit/push Bitbucket, then **`git fetch` / `git checkout`** in **`packages/emp_ai_auth`** to that auth commit and **`git add packages/emp_ai_auth`**.
+
+**`emp_ai_ds`:** same pattern inside **`packages/emp_ai_ds`**.
+
+**Before pushing:** **`git submodule status`**, **`dart run melos bootstrap`**, **`flutter analyze`** / **`flutter test`** under **`apps/emp_ai_boilerplate_app`**.
+
+<a id="northstar-tokens-dtcg"></a>
+
+## Northstar tokens (DTCG → Dart)
+
+From the boilerplate root: **`melos run sync:northstar-dtcg -- --light=... --dark=... --white-labeled=...`** — see **[`melos.yaml`](../../melos.yaml)** and **[`tool/sync_northstar_base_tokens_from_dtcg.dart`](../../tool/sync_northstar_base_tokens_from_dtcg.dart)**. Then format/analyze in **ecosystem-platform**.
 
 ## Local setup
 
-1. **`dart pub get`** at the repo root (Melos).
-2. **`dart run melos bootstrap`** — runs **`flutter pub get`** under **`apps/**`** so Git dependencies resolve.
-3. **SSH:** your machine needs access to **GitHub** (platform) and **Bitbucket** (auth + transitive **`emp_ai_ds`**). HTTPS + app password is an alternative if you switch URLs to HTTPS.
+1. **Submodules:** **`git clone --recurse-submodules <url>`** or **`git submodule update --init --recursive`**.
+2. **`dart pub get`** at repo root.
+3. **`dart run melos bootstrap`** — **`flutter pub get`** for **`apps/**`**.
+4. **SSH** for **GitHub** + **Bitbucket** (submodule URLs).
 
-### When the auth **branch** moves forward
+### Optional: auth `pubspec` with path deps
 
-`pubspec.lock` records a **`resolved-ref`** for **`emp_ai_auth`**. After the Bitbucket branch gains new commits (e.g. **`emp_ai_core`** pin updated), refresh with:
-
-```bash
-cd apps/emp_ai_boilerplate_app
-flutter pub upgrade emp_ai_auth
-```
-
-Then re-run **`dart run melos bootstrap`** from the repo root and commit the updated **`pubspec.lock`**.
+If **`emp_ai_auth`** uses **`path: ../ecosystem-platform/packages/emp_ai_core`** and **`path: ../emp_ai_ds`**, you can drop host **`dependency_overrides`** for those once that revision is the submodule pointer (requires a Bitbucket commit).
 
 ## Alternative: auth inside the platform monorepo
 
-If your org moves **`emp_ai_auth`** into **`ecosystem-platform`**, drop the second URL and depend on **`path: packages/emp_ai_auth`** from the same **`ref`** as the other platform packages — still record **one** platform ref in the BOM.
+Drop the **auth** submodule; depend on **`path: ../../packages/ecosystem-platform/packages/emp_ai_auth`**.
 
 ## Local overrides
 
-Use **`apps/emp_ai_boilerplate_app/pubspec_overrides.yaml`** (gitignored) for machine-specific **`path:`** overrides — see **`pubspec_overrides.yaml.example`**.
+**`apps/emp_ai_boilerplate_app/pubspec_overrides.yaml`** (gitignored) — see **`pubspec_overrides.yaml.example`**.

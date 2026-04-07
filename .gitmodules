@@ -1,0 +1,12 @@
+[submodule "packages/ecosystem-platform"]
+	path = packages/ecosystem-platform
+	url = git@github.com:maplepam/ecosystem-platform.git
+	branch = main
+[submodule "packages/emp_ai_auth"]
+	path = packages/emp_ai_auth
+	url = git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git
+	branch = ecosystem_boilerplate
+[submodule "packages/emp_ai_ds"]
+	path = packages/emp_ai_ds
+	url = git@bitbucket.org:empowerteams/emp-ai-flutter-design-system.git
+	branch = myemapta_main

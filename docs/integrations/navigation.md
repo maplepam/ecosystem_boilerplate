@@ -8,11 +8,11 @@ Practical guide for **adding routes**, **calling navigation**, **redirects**, an
 
 ## Simple guide (read this first)
 
-**What is navigation here?** The app uses one **router** (GoRouter). It decides **which screen** opens for each URL and **who must be logged in** to see it.
+The app uses one **router** (GoRouter). It decides **which screen** opens for each URL and **who must be logged in** to see it.
 
-### 1. After you fork — can you edit files?
+### 1. Editing the host after a fork
 
-**Yes.** The **host app** (`apps/emp_ai_boilerplate_app`) is where your team changes routes and rules.
+The **host app** (`apps/emp_ai_boilerplate_app`) is where product teams change routes and rules.
 
 Think in **three bands**:
 
@@ -303,13 +303,13 @@ Keep **out** of shared packages: your `**/orders`**, `**/main/hub/...**` strings
 
 **Auth:** bootstrap and **flavor catalog** stay host-specific; generic `**EmpAuth.initialize`** contracts or **token refresh** hooks belong in `**emp_ai_auth`** with a changelog and version bump.
 
-### Should more navigation move into `emp_ai_core`?
+### Shared navigation in `emp_ai_core` vs the host
 
-**Already there:** host-mode-aware `**GoRouter`** construction and **policy-driven** auth redirects.
+**Already in `emp_ai_core`:** host-mode-aware `**GoRouter`** construction and **policy-driven** auth redirects.
 
-**Usually stay in the host:** concrete `**GoRoute` trees**, **shell scaffolds**, **BoilerplateShellPaths**-style helpers (rename per product), and **landing** UX — they churn per brand and would bloat core with demo-only routes.
+**Usually stays in the host:** concrete `**GoRoute` trees**, **shell scaffolds**, **BoilerplateShellPaths**-style helpers (rename per product), and **landing** UX — they churn per brand and would bloat core with demo-only routes.
 
-**Consider a new small package** (e.g. `**emp_ai_navigation`** or a private `**acme_host_shell**`) only if **several internal apps** share the **same** shell + path helpers; avoid putting that in `**emp_ai_core`** unless it is truly **org-wide** and stable.
+**New small package** (e.g. `**emp_ai_navigation`** or a private `**acme_host_shell**`): only when **several internal apps** share the **same** shell + path helpers; avoid putting that in `**emp_ai_core`** unless it is truly **org-wide** and stable.
 
 ---
 

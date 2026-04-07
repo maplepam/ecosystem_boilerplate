@@ -2,10 +2,18 @@
 
 Common issues when cloning, bootstrapping, or running **`emp_ai_boilerplate_app`**. **“Which doc should I read?”** → [faq.md](../onboarding/faq.md). Full onboarding: [getting_started.md](../onboarding/getting_started.md).
 
-## `melos bootstrap` / `flutter pub get` fails (Git dependencies)
+## `melos bootstrap` / `flutter pub get` fails (submodules / path deps)
 
-- The host app pulls **ecosystem-platform** from **GitHub** and **emp_ai_auth** (and transitive **`emp_ai_ds`**) from **Bitbucket** over **SSH** by default. Configure **`ssh-agent`** (or use **HTTPS** URLs + credentials) so both hosts work. See [integrations/emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md) and [ci_cd.md](ci_cd.md#github-actions-in-this-repo).
-- After fixing Git access, run **`dart run melos bootstrap`** again from the repo root.
+- **Initialize submodules first:** **`git submodule update --init --recursive`** (or clone with **`--recurse-submodules`**). Empty **`packages/ecosystem-platform`** (or auth/DS) breaks **`path:`** resolution in the host app.
+- Submodules use **SSH** URLs by default (**GitHub** + **Bitbucket**). Configure **`ssh-agent`** (or switch **`.gitmodules`** to HTTPS + credentials). See [integrations/emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md) and [ci_cd.md](ci_cd.md#github-actions-in-this-repo).
+- After fixing access, run **`dart run melos bootstrap`** again from the repo root.
+
+## Analyzer: red squiggles under `packages/ecosystem-platform` (or auth / DS)
+
+The boilerplate root **`analysis_options.yaml`** **excludes** **`packages/ecosystem-platform/**`**, **`packages/emp_ai_auth/**`**, and **`packages/emp_ai_ds/**`**. Those trees are separate repos; they are not **`pub get`**’d as part of this workspace’s Melos scope, so analyzing them from the parent project produces false **“Target of URI doesn’t exist”** errors.
+
+- To work on **platform** code: **`cd packages/ecosystem-platform && dart run melos bootstrap`**, then analyze there or open that folder as its own IDE window.
+- To verify the **host app** only: **`cd apps/emp_ai_boilerplate_app && flutter analyze`** (or **`dart run melos run analyze:all`** from the repo root).
 
 ## `generate:miniapps` / missing routes / hub empty
 

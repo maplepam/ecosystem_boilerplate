@@ -6,55 +6,58 @@ Short answers first; follow the links for full detail. **Errors and tooling quir
 
 ## Repositories and ownership
 
-**What is the difference between the boilerplate repo and ecosystem-platform?**  
-The **boilerplate** holds the **host app**, **mini-apps**, **docs**, and **tooling**. **ecosystem-platform** holds shared **`emp_ai_*`** Dart packages (foundation, core, Northstar DS, app shell). The host pulls them as **Git dependencies**. → [repositories_overview.md](../engineering/repositories_overview.md)
+**Boilerplate vs ecosystem-platform**  
+The **boilerplate** holds the **host app**, **mini-apps**, **docs**, and **tooling**. **ecosystem-platform** holds shared **`emp_ai_*`** Dart packages (foundation, core, Northstar DS, app shell). The boilerplate tracks them as a **submodule** under **`packages/ecosystem-platform`**. → [repositories_overview.md](../engineering/repositories_overview.md)
 
-**Where does `emp_ai_auth` live?**  
-In a **separate Git remote** (e.g. Bitbucket), not under `packages/` in the boilerplate. The host lists it as a second **`git:`** dependency. → [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)
+**Where `emp_ai_auth` lives**  
+In a **separate Git remote** (e.g. Bitbucket), vendored here as **`packages/emp_ai_auth`** (submodule). The host uses **`path:`** into that folder. → [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)
 
-**We only work on product features — what should we clone?**  
-Usually **only the boilerplate** (your fork). Run **`melos bootstrap`**; `pub get` fetches platform + auth. → [getting_started.md](getting_started.md), [first_day.md](first_day.md)
+**Cloning for product features only**  
+Clone the boilerplate, then **`git submodule update --init --recursive`** (or **`git clone --recurse-submodules`**). Then **`dart pub get`** and **`melos bootstrap`**. → [getting_started.md §2](getting_started.md#gs-2)
 
-**We need to change router / `MiniApp` / design-system widgets — where do we PR?**  
-Against **ecosystem-platform**, then bump the **platform `ref`** (same SHA for every package path) in the host **`pubspec.yaml`** and **[platform_bom.yaml](../meta/platform_bom.yaml)**. → [repositories_overview.md §7](../engineering/repositories_overview.md#7-contributions)
+**Contributing router / `MiniApp` / design-system changes**  
+Open PRs against **ecosystem-platform**, then **`git checkout`** the desired commit in **`packages/ecosystem-platform`**, **`git add packages/ecosystem-platform`**, and commit on the boilerplate branch. → [repositories_overview §7](../engineering/repositories_overview.md#7-contributions), [emp_ai_auth_dependency — bumping pins](../integrations/emp_ai_auth_dependency.md#bumping-submodule-pins)
 
-**`packages/` is empty — how do I edit platform code locally?**  
-Clone **ecosystem-platform** somewhere on disk (e.g. next to this repo). Copy **`apps/emp_ai_boilerplate_app/pubspec_overrides.yaml.example`** → **`pubspec_overrides.yaml`** and add **`dependency_overrides`** with **`path:`** to **`../ecosystem-platform/packages/<name>`** for each **`emp_ai_*`** you need (overriding **all five** platform packages avoids Pub mixing Git + path). Run **`flutter pub get`** in the app. **Do not commit** overrides. When done, delete overrides and bump the Git **`ref`** / BOM after your platform PR merges. → [dependencies.md § Local platform development](../engineering/dependencies.md#local-platform-development), **`pubspec_overrides.yaml.example`**
+**IDE shows thousands of errors under `packages/ecosystem-platform`**  
+That tree is excluded in the boilerplate root **`analysis_options.yaml`** because nested packages are not bootstrapped from here. Analyze **`apps/emp_ai_boilerplate_app`**, or open **`packages/ecosystem-platform`** and run **`dart run melos bootstrap`** there. → [troubleshooting.md](../platform/troubleshooting.md)
+
+**Local platform edits (alternate clone)**  
+Clone **ecosystem-platform** somewhere on disk (e.g. next to this repo). Copy **`apps/emp_ai_boilerplate_app/pubspec_overrides.yaml.example`** → **`pubspec_overrides.yaml`** and add **`dependency_overrides`** with **`path:`** for each **`emp_ai_*`** you need (overriding **all five** platform packages keeps resolution consistent). Run **`flutter pub get`** in the app. **Do not commit** overrides. When done, delete overrides and move the **`packages/ecosystem-platform`** submodule to the merged commit, then **`git add`** and commit. → [dependencies.md § Local platform development](../engineering/dependencies.md#local-platform-development), **`pubspec_overrides.yaml.example`**
 
 ---
 
 ## Setup and daily commands
 
-**What do I run after a fresh clone?**  
-`dart pub get` → `dart run melos bootstrap` → `dart run melos run generate:miniapps` → `cd apps/emp_ai_boilerplate_app && flutter run`. → [first_day.md](first_day.md), [getting_started.md §2](getting_started.md#gs-2)
+**After a fresh clone**  
+`dart pub get` → `dart run melos bootstrap` → `dart run melos run generate:miniapps` → `cd apps/emp_ai_boilerplate_app && flutter run`. → [getting_started.md §2](getting_started.md#gs-2)
 
-**`melos bootstrap` / `flutter pub get` fails on Git dependencies.**  
-You need **SSH** (or HTTPS + credentials) for **GitHub** (platform) and **Bitbucket** (auth + legacy DS). → [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md), [troubleshooting.md](../platform/troubleshooting.md)
+**`melos bootstrap` / `flutter pub get` fails (missing packages / path deps)**  
+Run **`git submodule update --init --recursive`** first. **SSH** (or HTTPS + credentials) is required to **fetch** submodules from **GitHub** and **Bitbucket**. → [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md), [troubleshooting.md](../platform/troubleshooting.md)
 
-**Why do we pin a commit SHA for every `ecosystem-platform` package?**  
-Pub must see **one** revision for **in-repo `path:`** links between packages (e.g. widgets → northstar). Using only `ref: main` without a unified resolution can break the solver. → [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md), [platform_bom.yaml](../meta/platform_bom.yaml)
+**Why every `ecosystem-platform` package uses the same commit SHA**  
+Pub must see **one** revision for **in-repo `path:`** links between packages (e.g. widgets → northstar). Using only `ref: main` without a unified resolution can break the solver. → [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)
 
-**The auth branch moved; `pub get` still resolves an old commit.**  
-Run **`flutter pub upgrade emp_ai_auth`** in the host app and commit **`pubspec.lock`**. → [emp_ai_auth_dependency.md § When the auth branch moves forward](../integrations/emp_ai_auth_dependency.md)
+**Auth moved on Bitbucket; host still on an old auth tree**  
+**`git fetch`** in **`packages/emp_ai_auth`**, **`git checkout <sha>`**, **`git add packages/emp_ai_auth`**. Then **`flutter pub get`** in the app and commit **`pubspec.lock`** if it changes. → [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md#bumping-submodule-pins)
 
 ---
 
 ## Configuration
 
-**Where do API URLs and OAuth client ids go?**  
+**API URLs and OAuth client ids**  
 Default: **`BoilerplateEnvironmentCatalog`** per flavor. Optional overrides: **`API_BASE_URL`**, **`AUTH_*`** defines or **`build_defines.json`**. → [environment.md](../integrations/environment.md), [dart_defines.md](../platform/dart_defines.md)
 
-**How do we wire CI secrets / flavors?**  
+**CI secrets and flavors**  
 Generate **`build_defines.json`** (or equivalent) in the pipeline from the vault; pass **`--dart-define-from-file`**. → [ci_cd.md](../platform/ci_cd.md)
 
 ---
 
 ## App structure and features
 
-**Where does host code live (`shell` vs `platform` vs mini-apps)?**  
+**Host layout (`shell` vs `platform` vs mini-apps)**  
 → [host_structure.md](../engineering/host_structure.md)
 
-**New screen: new mini-app or feature inside an existing mini-app?**  
+**New screen: mini-app vs feature inside an existing mini-app**  
 → [mini_app_vs_feature.md](../engineering/mini_app_vs_feature.md)
 
 **Add a mini-app; registry and codegen**  
@@ -73,8 +76,8 @@ Generate **`build_defines.json`** (or equivalent) in the pipeline from the vault
 
 ## Governance and docs map
 
-**Bill of materials — what file is canonical?**  
-**[`docs/meta/platform_bom.yaml`](../meta/platform_bom.yaml)** lists the **`url` + `ref`** you should keep in sync with **`apps/emp_ai_boilerplate_app/pubspec.yaml`**. Forks edit the same file for **their** remotes.
+**Where pins live**  
+Submodule **URLs** are in **`.gitmodules`**. **Commits** are whatever Git records when you **`git add packages/…`** on the parent branch — check with **`git submodule status`**. The host **`pubspec.yaml`** uses **`path:`** only.
 
 **PR rules and layer boundaries**  
 → [contributing.md](../engineering/contributing.md)

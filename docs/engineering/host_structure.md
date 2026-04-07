@@ -1,6 +1,6 @@
 # Host `lib/src/` layout (`emp_ai_boilerplate_app`)
 
-**Single map** for “where does X go?” in the sample super-app host. Product language may say “feature” for everything; **this doc uses fixed folder roles** so the tree stays navigable as the app grows.
+**Single map** of **where code belongs** in the sample super-app host. Product language may say “feature” for everything; **this doc uses fixed folder roles** so the tree stays navigable as the app grows.
 
 ---
 
@@ -56,7 +56,7 @@ flowchart TB
 | **`app/`** | **Composition root:** `MaterialApp.router`, startup (`loadBoilerplateStartupOverrides`: CachedQuery, Firebase, auth bootstrap, app-link seed). | Entry wiring that must run once before UI. | Product business logic, API clients, or mini-app screens. |
 | **`config/`** | **Environment & policy as data:** flavor catalog, `ApplicationHostProfile`, RBAC route table, host mode, auth client config, experimental compile-time flags. | Values and tables that change per flavor/CI but are not “services.” | Riverpod for analytics/flags (use **`platform/`**), routes (use **`shell/router/`**). |
 | **`shell/`** | **Frame:** `GoRouter`, redirects, shell scaffold, hub, drawer, **auth wiring** (token refresh, session reader), deep links. | Anything that defines *how users move* between areas and how auth attaches to navigation. | Leave/T&A/announcements **product** implementation (use **`miniapps/`**). |
-| **`platform/`** | **Host capabilities:** feature flags, analytics sinks, notification **ports**, Firebase init, **`MiniAppGate`**, future maintenance/version policy. | Code that answers “how does the **host** behave?” for all mini-apps. | A single product’s screens or repositories. |
+| **`platform/`** | **Host capabilities:** feature flags, analytics sinks, notification **ports**, Firebase init, **`MiniAppGate`**, future maintenance/version policy. | Code that defines **how the host behaves** for all mini-apps. | A single product’s screens or repositories. |
 | **`miniapps/`** | **Product modules:** each slice with `data/` · `domain/` · `presentation/` (+ optional `MiniApp` registration). | User-facing areas (announcements, samples, future leave/T&A, …). | Global router assembly ( **`shell/`** ) or global analytics wiring ( **`platform/`** ). |
 | **`integrations/`** | **Shared adapters** to specific backends/SDKs used by **more than one** mini-app (or clearly shared). | Employee-assignment HTTP, auth stubs, thin BFF clients reused across products. | Host-only analytics/FCM ( **`platform/`** ). |
 | **`network/`** | **Host HTTP stack:** `Dio` factory, auth header interceptor, token-refresh interceptor. | Cross-cutting HTTP behavior for the host `Dio`. | Feature-specific URLs/DTOs (live in that **mini-app’s `data/`**). |
@@ -66,7 +66,7 @@ flowchart TB
 
 ---
 
-## Quick “where does X go?”
+## Quick reference: where code belongs
 
 | X | Folder |
 |---|--------|
@@ -95,7 +95,7 @@ flowchart TB
 
 | Location | Purpose |
 |----------|---------|
-| **`docs/engineering/host_structure.md`** (this file) | **Canonical** diagram + tables + “where does X go?” — link it from PRs and onboarding. |
+| **`docs/engineering/host_structure.md`** (this file) | **Canonical** diagram + tables + code-location guide — link it from PRs and onboarding. |
 | **`apps/.../lib/src/README.md`** | **One screen** in the IDE: “start here” + link to this doc. |
 | **`lib/src/shell/README.md`**, **`lib/src/platform/README.md`** | **Optional stubs**: one short paragraph + link **back here** so we do not maintain three copies of the same tables. |
 | **`lib/src/platform/<capability>/README.md`** | Use for **placeholders** (maintenance, app_version) where the folder is empty except intent. |

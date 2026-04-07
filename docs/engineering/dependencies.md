@@ -23,19 +23,19 @@
    dart run melos run test:boilerplate
    ```
 
-## Melos, Git deps, and local packages
+## Melos, submodules, and local packages
 
-- **`apps/emp_ai_boilerplate_app`** pulls **ecosystem-platform** and **auth** via **`git:`**; pin **`ref`** together — **[`docs/meta/platform_bom.yaml`](../meta/platform_bom.yaml)**.
-- **`melos bootstrap`** runs **`pub get`** / **`flutter pub get`** for every package matched by **`melos.yaml`** (here: **`apps/**`** only).
-- Optional **product-only** packages under **`packages/`**: add the folder, extend **`melos.yaml`** `packages:` to include them, use **`path:`** from the app, then **`dart run melos bootstrap`**.
+- **`apps/emp_ai_boilerplate_app`** uses **`path:`** dependencies into **`packages/ecosystem-platform`**, **`packages/emp_ai_auth`**, and **`packages/emp_ai_ds`** (Git **submodules**). Bump submodule commits with Git — **[emp_ai_auth_dependency.md § Bumping submodule pins](../integrations/emp_ai_auth_dependency.md#bumping-submodule-pins)**.
+- **`melos bootstrap`** runs **`pub get`** / **`flutter pub get`** for every package matched by **`melos.yaml`** (here: **`apps/**`** only). It does **not** run **`git submodule update`** — initialize submodules after clone first.
+- Optional **product-only** packages under **`packages/`** (not submodules): add the folder, extend **`melos.yaml`** `packages:` to include them, use **`path:`** from the app, then **`dart run melos bootstrap`**.
 
 <a id="local-platform-development"></a>
 
 ### Local platform development
 
-The boilerplate **`packages/`** folder is intentionally **empty** — platform sources live in **ecosystem-platform**.
+Default layout: **`packages/ecosystem-platform`** is already a **submodule**. For a **separate** clone (e.g. two checkouts while a platform PR is in flight):
 
-1. **Clone** `ecosystem-platform` (e.g. `../ecosystem-platform` relative to this repo root).
+1. **Clone** `ecosystem-platform` elsewhere (e.g. `../ecosystem-platform` next to this repo).
 2. In **ecosystem-platform**, use **`dart run melos bootstrap`** when you change internal **`path:`** links between packages.
 3. In **this repo**, create **`apps/emp_ai_boilerplate_app/pubspec_overrides.yaml`** (gitignored) and override **every** consumed platform package you use, typically all five:
 
@@ -53,18 +53,20 @@ The boilerplate **`packages/`** folder is intentionally **empty** — platform s
        path: ../../../ecosystem-platform/packages/emp_ai_app_shell
    ```
 
+   Or point at the in-repo submodule with **`../../packages/ecosystem-platform/packages/...`** from the app directory if you only need a branch tip without changing the submodule pointer yet.
+
    Adjust **`path`** if your clone lives elsewhere (absolute paths are fine).
 
 4. From **`apps/emp_ai_boilerplate_app`**: **`flutter pub get`**, then **`flutter analyze`** / run the app.
 
-5. **Before commit:** remove **`pubspec_overrides.yaml`** (or empty overrides); merge platform changes in **ecosystem-platform**, then bump **`pubspec.yaml`** Git **`ref`s** and **[`platform_bom.yaml`](../meta/platform_bom.yaml)** on the boilerplate branch.
+5. **Before commit:** remove **`pubspec_overrides.yaml`** (or empty overrides); merge platform changes in **ecosystem-platform**, then **`git checkout`** the new commit in **`packages/ecosystem-platform`** and **`git add packages/ecosystem-platform`** on the boilerplate branch.
 
 Template: [`pubspec_overrides.yaml.example`](../../apps/emp_ai_boilerplate_app/pubspec_overrides.yaml.example).
 
 ## Flutter / Dart SDK
 
 - Pin **`environment.sdk`** ranges in each `pubspec.yaml` to what CI and developers use.
-- When bumping Flutter, run **full analyze** and fix deprecations across **`apps/*`** and any local **`packages/*`**, and re-resolve **Git** platform deps.
+- When bumping Flutter, run **full analyze** and fix deprecations across **`apps/*`** and any local **`packages/*`**, and re-resolve dependencies.
 
 ## Transitive conflicts (e.g. auth + legacy DS)
 

@@ -8,8 +8,10 @@ jobs:
   analyze-and-test:
     runs-on: ubuntu-latest
     steps:
-      # Host app resolves platform (GitHub) + auth (Bitbucket) + transitive emp_ai_ds (Bitbucket) over SSH.
+      # Submodules: platform (GitHub), auth + emp_ai_ds (Bitbucket). SSH keys below.
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Add Git hosts to known_hosts
         run: |

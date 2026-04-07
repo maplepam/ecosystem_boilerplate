@@ -6,7 +6,7 @@ Typography and colors should follow **`emp_ai_ds_northstar`**: `NorthstarTextRol
 
 ---
 
-## Start here (juniors): you do not need every buzzword
+## Start here: core layering first
 
 The **same layering idea** as [`architecture.md`](architecture.md) (request flow diagram): _presentation_ depends on _domain_; _data_ implements _domain_. This mini-app adds **`cached_query`** for shared list/detail reads and calls **`AnnouncementsRepository`** directly from **`presentation/di/`** query factories and from **notifiers** (no extra domain classes between UI and the repository).
 
@@ -22,14 +22,14 @@ Everything else below is **detail** you look up when you need it, not vocabulary
 
 ---
 
-## Cheat sheet: where does my code go?
+## Cheat sheet: placing new code
 
-Ask **one** question at a time (in order):
+Use this order:
 
-1. **Am I calling the network or reading/writing disk?** → **`data/`** (DTO, datasource, repository implementation, `*_request_body.dart` helpers).
-2. **Am I defining what the app _means_ (types, rules, named data operations like “load page / mark read”)?** → **`domain/`** (entities and **`AnnouncementsRepository`** _interface_).
-3. **Am I drawing UI or reacting to taps/typing?** → **`presentation/`** — then pick a subfolder using the next table.
-4. **Am I only wiring Riverpod** (how to build repository, Dio, or a `Query` / `InfiniteQuery`)? → **`presentation/di/`** — not “business logic,” just **composition** so screens stay thin.
+1. **Network or disk I/O** → **`data/`** (DTO, datasource, repository implementation, `*_request_body.dart` helpers).
+2. **Types, rules, named data operations** (e.g. load page / mark read) → **`domain/`** (entities and **`AnnouncementsRepository`** _interface_).
+3. **UI or tap/typing behavior** → **`presentation/`** — then pick a subfolder using the next table.
+4. **Riverpod wiring only** (building repository, Dio, or a `Query` / `InfiniteQuery`) → **`presentation/di/`** — **composition** only, so screens stay thin.
 
 | You are writing…                                                                              | Put it in…                | Plain English                                                                                                                                                                                                                                                                                                  |
 | --------------------------------------------------------------------------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
