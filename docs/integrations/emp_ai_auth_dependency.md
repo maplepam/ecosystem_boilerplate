@@ -29,7 +29,7 @@ dependencies:
   emp_ai_auth:
     git:
       url: git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git
-      ref: fa115fca2abbed2ee4999cafc135e33a63b2e1de
+      ref: 2b521403765a135d5dbf67d36c9e55ddf3b016f1
 ```
 
 Adjust **`ref`** values to tags or SHAs for release builds.

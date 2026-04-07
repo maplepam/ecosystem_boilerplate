@@ -21,7 +21,7 @@ platform_packages:
 
 auth_git:
   url: git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git
-  ref: fa115fca2abbed2ee4999cafc135e33a63b2e1de
+  ref: 2b521403765a135d5dbf67d36c9e55ddf3b016f1
 
 # Transitive: emp_ai_auth pubspec should declare emp_ai_ds via git (not path).
 # Mirror the auth repo’s url/ref here so upgrades stay intentional.
