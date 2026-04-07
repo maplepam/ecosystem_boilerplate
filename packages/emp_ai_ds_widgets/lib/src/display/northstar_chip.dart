@@ -80,6 +80,7 @@ class NorthstarChip extends StatefulWidget {
     this.padding,
     this.iconSize = 18,
     this.leadingImageSize = 20,
+    this.tooltipMessage,
   }) : assert(label.isNotEmpty),
         assert(
           useCase != NorthstarChipUseCase.status || statusSemantic != null,
@@ -140,6 +141,9 @@ class NorthstarChip extends StatefulWidget {
 
   final double iconSize;
   final double leadingImageSize;
+
+  /// Short description shown in a **tooltip** on long-press / hover (Figma selection chips).
+  final String? tooltipMessage;
 
   static int labelMaxLength(NorthstarChipUseCase useCase) {
     return switch (useCase) {
@@ -386,6 +390,26 @@ class _NorthstarChipState extends State<NorthstarChip> {
       content = MouseRegion(
         onEnter: (_) => setState(() => _hovered = true),
         onExit: (_) => setState(() => _hovered = false),
+        child: content,
+      );
+    }
+
+    final String? tip = widget.tooltipMessage;
+    if (tip != null && tip.isNotEmpty) {
+      content = Tooltip(
+        message: tip,
+        preferBelow: false,
+        verticalOffset: 10,
+        waitDuration: const Duration(milliseconds: 400),
+        decoration: BoxDecoration(
+          color: ns.inverseSurface,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        textStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+              color: ns.onInverseSurface,
+              fontSize: 12,
+              height: 1.35,
+            ),
         child: content,
       );
     }

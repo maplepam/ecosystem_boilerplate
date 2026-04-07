@@ -9,7 +9,9 @@ import 'package:flutter/foundation.dart';
 /// [NorthstarBanner], [NorthstarBreadcrumb], [NorthstarInputField],
 /// [NorthstarTextArea], [NorthstarTextAreaRichToolbar], [NorthstarFilterDropdown], [NorthstarMenuField], [NorthstarAllFiltersButton],
 /// [DashboardLayoutBuilder],
-/// [NorthstarNavigationDrawer], [NorthstarPaginationBar], [NorthstarDataTable], …)
+/// [NorthstarNavigationDrawer], [NorthstarPaginationBar], [NorthstarDataTable],
+/// [NorthstarSnackbar], [NorthstarSelectionRow], [NorthstarCheckboxRow],
+/// [NorthstarSelectionGroup], [NorthstarBatchActionBar], …)
 /// and a unique
 /// [elementId] per sub-control. Format: `ds:<automationId>:<elementId>`.
 abstract final class DsAutomationKeys {
@@ -207,6 +209,51 @@ abstract final class DsAutomationKeys {
   /// Select-all checkbox in header when row selection is enabled.
   static const String elementDataTableHeaderSelectAll =
       'data_table_header_select_all';
+
+  /// [NorthstarSnackbar] outer surface (inside [SnackBar] content).
+  static const String elementSnackbar = 'snackbar';
+
+  /// Main message text in [NorthstarSnackbar].
+  static const String elementSnackbarMessage = 'snackbar_message';
+
+  /// Text action in [NorthstarSnackbar]; composed as `…_${index}`.
+  static const String elementSnackbarAction = 'snackbar_action';
+
+  /// Close control in [NorthstarSnackbar].
+  static const String elementSnackbarClose = 'snackbar_close';
+
+  /// [NorthstarSelectionRow] / [NorthstarCheckboxRow] hit target row.
+  static const String elementSelectionRow = 'selection_row';
+
+  /// Leading control (checkbox / radio / switch) in a selection row.
+  static const String elementSelectionControl = 'selection_control';
+
+  /// Primary label in a selection row.
+  static const String elementSelectionLabel = 'selection_label';
+
+  /// Optional description in a selection row.
+  static const String elementSelectionDescription = 'selection_description';
+
+  /// [NorthstarSelectionGroup] root.
+  static const String elementSelectionGroup = 'selection_group';
+
+  /// Group title / legend.
+  static const String elementSelectionGroupLabel = 'selection_group_label';
+
+  /// Helper under the group label.
+  static const String elementSelectionGroupHelper = 'selection_group_helper';
+
+  /// Validation line under the group.
+  static const String elementSelectionGroupError = 'selection_group_error';
+
+  /// Optional `n/m` counter on the group label row.
+  static const String elementSelectionGroupCounter = 'selection_group_counter';
+
+  /// [NorthstarBooleanViewOnly] / [NorthstarSelectionSummaryField] root.
+  static const String elementSelectionViewOnly = 'selection_view_only';
+
+  /// [NorthstarBatchActionBar] floating batch bar.
+  static const String elementBatchActionBar = 'batch_action_bar';
 
   /// Long-press drag handle on a column header (when column reorder is enabled).
   static const String elementDataTableHeaderColumnDrag =

@@ -29,6 +29,8 @@ export 'package:emp_ai_ds_widgets/src/display/northstar_linear_progress.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_menu.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_pagination.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_search_field.dart';
+export 'package:emp_ai_ds_widgets/src/display/northstar_selection.dart';
+export 'package:emp_ai_ds_widgets/src/display/northstar_snackbar.dart';
 export 'package:emp_ai_ds_widgets/src/display/northstar_stacked_avatars.dart';
 export 'package:emp_ai_ds_widgets/src/display/text_area/northstar_text_area.dart';
 export 'package:emp_ai_ds_widgets/src/display/text_area/quill/northstar_text_area_quill_html.dart';

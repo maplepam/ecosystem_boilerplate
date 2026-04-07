@@ -23,6 +23,8 @@ import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_p
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_navigation_drawer_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_scaffold_with_drawer_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_search_field_catalog_entry.dart';
+import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_selection_catalog_entry.dart';
+import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_snackbar_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_spacing_scale_table_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_stacked_avatars_catalog_entry.dart';
 import 'package:emp_ai_ds_widgets/src/catalog/widget_library_entries/northstar_text_area_catalog_entry.dart';
@@ -44,6 +46,8 @@ List<WidgetCatalogEntry> builtInWidgetLibraryEntries() {
       northstarBreadcrumbCatalogEntry(),
       northstarLinearProgressCatalogEntry(),
       northstarPaginationCatalogEntry(),
+      northstarSelectionCatalogEntry(),
+      northstarSnackbarCatalogEntry(),
       northstarDataTableCatalogEntry(),
       northstarMenuCatalogEntry(),
       northstarIconLibraryCatalogEntry(),
