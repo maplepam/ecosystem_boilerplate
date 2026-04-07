@@ -12,7 +12,7 @@ The **[integrations hub](../README.md#integrations-hub)** on the main docs index
 |-----|--------|
 | [auth.md](auth.md) | `empAiAuth`, token refresh, permissions in UI |
 | [environment.md](environment.md) | Flavor catalog, `API_BASE_URL`, `AUTH_*`, CI defines |
-| [emp_ai_auth_dependency.md](emp_ai_auth_dependency.md) | Submodules, `path:` + overrides, bumps, SSH |
+| [emp_ai_auth_dependency.md](emp_ai_auth_dependency.md) | Submodules, `path:` deps (host + auth), bumps, SSH |
 | [feature_flags.md](feature_flags.md) | `BoilerplateFeatureFlags`, `MiniAppGate` |
 | [network.md](network.md) | Dio, interceptors |
 | [analytics_mixpanel.md](analytics_mixpanel.md) | Mixpanel |

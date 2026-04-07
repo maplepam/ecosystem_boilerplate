@@ -399,7 +399,7 @@ packages:
     source: path
     version: "0.1.0"
   emp_ai_ds:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       path: "../../packages/emp_ai_ds"
       relative: true

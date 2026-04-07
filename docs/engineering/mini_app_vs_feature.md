@@ -53,7 +53,7 @@ Treat as a **feature** if:
 ## Login and `emp_ai_auth`
 
 - Configure the **[flavor catalog](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_environment_catalog.dart)** or optional **`AUTH_*`** defines (see [`emp_ai_auth_bootstrap`](../../apps/emp_ai_boilerplate_app/lib/src/shell/auth/bootstrap/emp_ai_auth_bootstrap.dart), [`boilerplate_auth_config.dart`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_auth_config.dart)). The sample login body uses **`EmpAuth().login`** ([`login_screen.dart`](../../apps/emp_ai_boilerplate_app/lib/src/screens/login_screen.dart)).
-- Match **`emp_ai_auth` Git ref**, IdP **client ids**, and **redirect URIs** to whatever your **auth** branch expects; custom chrome around **`EmpAuth().login`** lives in the **host** (theme, wrappers) or in **`emp_ai_auth`** if shared across products.
+- Match **`emp_ai_auth` submodule commit**, IdP **client ids**, and **redirect URIs** to whatever your **auth** branch expects; custom chrome around **`EmpAuth().login`** lives in the **host** (theme, wrappers) or in **`emp_ai_auth`** if shared across products.
 
 **Further reading:** [integrations/auth.md](../integrations/auth.md), [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md), [environment.md](../integrations/environment.md).
 

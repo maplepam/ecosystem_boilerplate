@@ -56,7 +56,7 @@ The **samples** and **announcements** mini-apps under `apps/emp_ai_boilerplate_a
 | `MiniApp` contract, hub, shell scaffold, route factory             | `emp_ai_app_shell`                                                                                                                                                       |
 | Feature-flag reader contract                                       | `emp_ai_foundation`                                                                                                                                                      |
 | Northstar theme + tokens                                           | `emp_ai_ds_northstar`                                                                                                                                                    |
-| Optional real auth                                                 | **`emp_ai_auth`** Git dep (Bitbucket); **`emp_ai_ds`** via Git **`ref: myemapta_main`** on the **`ecosystem_boilerplate`** branch ([emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)) |
+| Optional real auth                                                 | **`emp_ai_auth`** + **`emp_ai_ds`** **submodules** under **`packages/`**, **`path:`** from the host; auth’s **`pubspec.yaml`** uses sibling **`path:`** into platform **`emp_ai_core`** and **`emp_ai_ds`** ([emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)) |
 
 ## Comparison to the wider `lib/` + `packages/` monorepo
 
@@ -87,7 +87,7 @@ The production host is **`emp_ai_flutter_boilerplate`** (repo root `pubspec.yaml
 | **Layered mini-app slice** | Mini-apps: UI → Notifier / **`cached_query`** → **Repository** → DataSource                                                                                                                                                         |
 | **Super-app shell**        | `MiniApp` registry, codegen, hub / stateful shell, host modes                                                                                                                                                                       |
 | **Thin contracts**         | `emp_ai_foundation` (flags), `emp_ai_core` (router/Dio shape), Northstar DS package                                                                                                                                                 |
-| **Auth**                   | Demo vs `empAiAuth` backends; **host `TokenRefreshAdapter`** + `CoreTokenRefreshService` + Dio interceptors (see [README.md](../README.md#integrations-hub)); `emp_ai_auth` on disk + legacy `emp_ai_ds` from Git (patched pubspec) |
+| **Auth**                   | Demo vs `empAiAuth` backends; **host `TokenRefreshAdapter`** + `CoreTokenRefreshService` + Dio interceptors (see [README.md](../README.md#integrations-hub)); **`emp_ai_auth`** and **`emp_ai_ds`** submodules, **`path:`** resolution |
 
 ### Suggested enhancements (priority-ordered)
 

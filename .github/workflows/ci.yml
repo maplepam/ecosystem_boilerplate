@@ -8,10 +8,11 @@ jobs:
   analyze-and-test:
     runs-on: ubuntu-latest
     steps:
-      # Submodules: platform (GitHub), auth + emp_ai_ds (Bitbucket). SSH keys below.
+      # Submodules: platform (GitHub), auth + emp_ai_ds (Bitbucket). Host keys + SSH
+      # agent must run before submodule fetch (checkout with submodules alone runs too early).
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: false
 
       - name: Add Git hosts to known_hosts
         run: |
@@ -26,6 +27,9 @@ jobs:
       - uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: ${{ secrets.GITHUB_SSH_PRIVATE_KEY }}
+
+      - name: Fetch submodules (SSH)
+        run: git submodule update --init --recursive
 
       - uses: subosito/flutter-action@v2
         with:

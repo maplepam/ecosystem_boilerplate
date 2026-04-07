@@ -10,7 +10,7 @@ This page is the **canonical map** of how the **boilerplate**, **platform**, and
 |------------|------------------|---------|
 | **Boilerplate** | `ecosystem_boilerplate` (your product or template fork) | **Host app** (`apps/emp_ai_boilerplate_app`), **mini-apps**, `miniapps_registry.yaml`, root **tooling** (`tool/`), **documentation** (`docs/`), and **Melos** scripts aimed at app developers. |
 | **Platform** | [`ecosystem-platform`](https://github.com/maplepam/ecosystem-platform) | **Shared Dart packages**: foundation contracts, router/Dio config, Northstar design system, app shell / `MiniApp` contract. Built and analyzed as its own Melos workspace. |
-| **Auth** | `emp-ai-flutter-auth` (e.g. Bitbucket) | **`emp_ai_auth`** package: OAuth/session flows, secure storage, auth UI. Depends on **platform** (`emp_ai_core`) and **legacy design system** (`emp_ai_ds`) via Git. |
+| **Auth** | `emp-ai-flutter-auth` (e.g. Bitbucket) | **`emp_ai_auth`** package: OAuth/session flows, secure storage, auth UI. In the boilerplate layout it depends on **platform** (`emp_ai_core`) and **legacy design system** (`emp_ai_ds`) via sibling **`path:`** under **`packages/`**. |
 
 **Consumers** (product teams) usually clone **only the boilerplate** with **submodules** (**`git clone --recurse-submodules`** or **`git submodule update --init --recursive`**). The host app uses **`path:`** into **`packages/ecosystem-platform`**, **`packages/emp_ai_auth`**, and **`packages/emp_ai_ds`**. Pin commits using **git submodule gitlinks** (see **`git submodule status`**).
 
@@ -47,8 +47,8 @@ All live under `packages/` in the platform repo. Together they are **UI-agnostic
 ## 4. **Auth** package (`emp_ai_auth`)
 
 - **Source of truth:** auth Git repository (branch e.g. `ecosystem_boilerplate`), not the boilerplate tree.
-- **Dependencies:** `emp_ai_core` from **platform** (same **commit SHA** as the host’s other platform deps), `emp_ai_ds` from your **legacy design-system** repo (e.g. `ref: myemapta_main`).
-- **Host usage:** `emp_ai_auth` is a **submodule** at **`packages/emp_ai_auth`**, consumed via **`path:`** from the host app (with **`dependency_overrides`** for **`emp_ai_core`** / **`emp_ai_ds`** until auth’s `pubspec` uses paths). See **[emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)**.
+- **Dependencies:** `emp_ai_core` and `emp_ai_ds` via **`path:`** to **`../ecosystem-platform/...`** and **`../emp_ai_ds`** when vendored next to those submodules (boilerplate **`packages/`** layout).
+- **Host usage:** `emp_ai_auth` is a **submodule** at **`packages/emp_ai_auth`**, consumed via **`path:`** from the host app. See **[emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)**.
 
 ---
 
@@ -58,7 +58,7 @@ All live under `packages/` in the platform repo. Together they are **UI-agnostic
 |----------|------|
 | **Platform** | **`packages/ecosystem-platform`** submodule is **one** checkout — every `emp_ai_*` package under it shares that commit. Pub still needs that single tree for in-repo **`path:`** links (e.g. `emp_ai_ds_widgets` → `emp_ai_ds_northstar`). |
 | **Submodule pins** | **`.gitmodules`** (URLs) + **gitlinks** on the parent branch (commits). Update with **`git fetch` / `git checkout`** inside each **`packages/…`** submodule, then **`git add`** from the boilerplate root. |
-| **Auth** | **`packages/emp_ai_auth`** submodule commit; keep auth’s **`emp_ai_core`** Git **`ref`** aligned with the platform SHA when auth still uses Git deps, or switch auth to path deps. See [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md). |
+| **Auth** | **`packages/emp_ai_auth`** submodule commit; **`path:`** in auth’s **`pubspec.yaml`** tracks whatever **platform** and **DS** commits those sibling submodules are on. See [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md). |
 | **Semantic versions** | Each platform package has a **`version:`** in its `pubspec.yaml` for **changelog and API discipline**; the boilerplate pins **commits** via submodules, not pub.dev. |
 | **Host lockfile** | Commit **`apps/emp_ai_boilerplate_app/pubspec.lock`** for reproducible CI and installs. |
 
@@ -94,7 +94,7 @@ All live under `packages/` in the platform repo. Together they are **UI-agnostic
 ### Auth (`emp-ai-flutter-auth`)
 
 - **Scope:** authentication UX and session lifecycle; keep **dependency versions** aligned with platform (`go_router`, Riverpod majors).
-- **Process:** merge to the branch products track; the boilerplate vendors auth as a **submodule** and may use **`dependency_overrides`** until auth’s `pubspec` switches to **`path:`** siblings for **`emp_ai_core`** / **`emp_ai_ds`**.
+- **Process:** merge to the branch products track; the boilerplate vendors auth as a **submodule** with **`path:`** siblings for **`emp_ai_core`** / **`emp_ai_ds`** in auth’s **`pubspec.yaml`**.
 
 ---
 

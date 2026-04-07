@@ -32,7 +32,7 @@
 
 **Design tokens from Figma:** export variables / DTCG-style JSON and map into Dart (see [design_system.md](docs/design/design_system.md)). Optional: [tool/extract_fig_meta.dart](tool/extract_fig_meta.dart) reads **ZIP metadata** from a downloaded `.fig` archive only — not full canvas decode; details in **getting_started** §8 and **melos** script `extract:fig-meta`.
 
-**Auth + legacy DS:** `emp_ai_auth` and `emp_ai_ds` are **submodules**; the host **`pubspec.yaml`** uses **`dependency_overrides`** so Pub matches auth’s Git-declared deps to the same in-tree checkouts — [emp_ai_auth_dependency.md](docs/integrations/emp_ai_auth_dependency.md). Prefer **Northstar** (`emp_ai_ds_northstar` / `emp_ai_ds_widgets` from **ecosystem-platform**) for new UI.
+**Auth + legacy DS:** `emp_ai_auth` and `emp_ai_ds` are **submodules**; **`emp_ai_auth`** uses **`path:`** into **`ecosystem-platform`** (`emp_ai_core`) and **`emp_ai_ds`** so pins stay aligned with submodule gitlinks — [emp_ai_auth_dependency.md](docs/integrations/emp_ai_auth_dependency.md). Prefer **Northstar** (`emp_ai_ds_northstar` / `emp_ai_ds_widgets` from **ecosystem-platform**) for new UI.
 
 **Where “extra” utilities go:** flags, platform detection, analytics interfaces → `emp_ai_foundation` and small focused packages — not the design-system layer ([design_system_widgets.md](docs/design/design_system_widgets.md)).
 

@@ -6,7 +6,7 @@ The host app depends on **`ecosystem-platform`**, **`emp_ai_auth`**, and **`emp_
 
 Submodule **remotes** live in **`.gitmodules`**. **Pins** are the **gitlinks** Git records when you commit — inspect with **`git submodule status`** or **`git -C packages/ecosystem-platform rev-parse HEAD`**.
 
-**`emp_ai_auth`** still declares **`emp_ai_core`** and **`emp_ai_ds`** via **Git** in its own **`pubspec.yaml`**. The host **`dependency_overrides`** force **one** in-tree resolution (see app **`pubspec.yaml`**).
+**`emp_ai_auth`** declares **`emp_ai_core`** and **`emp_ai_ds`** with **`path:`** to **`../ecosystem-platform/packages/emp_ai_core`** and **`../emp_ai_ds`** — the same sibling layout as the boilerplate. No host **`dependency_overrides`** are required for those packages.
 
 ## `pubspec.yaml` shape (host app)
 
@@ -17,12 +17,6 @@ dependencies:
   # …same relative base for other platform packages…
   emp_ai_auth:
     path: ../../packages/emp_ai_auth
-
-dependency_overrides:
-  emp_ai_core:
-    path: ../../packages/ecosystem-platform/packages/emp_ai_core
-  emp_ai_ds:
-    path: ../../packages/emp_ai_ds
 ```
 
 ## Bumping submodule pins
@@ -33,9 +27,9 @@ Use **Git** only:
 2. **`flutter pub get`** in **`apps/emp_ai_boilerplate_app`** (or **`dart run melos bootstrap`** from root).
 3. Commit the **parent** repo (updated gitlinks + **`pubspec.lock`** if it changed).
 
-**Auth** still pinning **`emp_ai_core`** via Git: edit **`emp_ai_core` → `ref`** in the **auth** repo’s **`pubspec.yaml`** to the **same** platform commit your **`packages/ecosystem-platform`** submodule uses, commit/push Bitbucket, then **`git fetch` / `git checkout`** in **`packages/emp_ai_auth`** to that auth commit and **`git add packages/emp_ai_auth`**.
+Because **`emp_ai_auth`** uses **`path:`** into platform and DS, you do **not** maintain a separate **`ref`** for **`emp_ai_core`** in auth’s **`pubspec.yaml`** when working in this layout.
 
-**`emp_ai_ds`:** same pattern inside **`packages/emp_ai_ds`**.
+**`emp_ai_ds`:** bump the **`packages/emp_ai_ds`** submodule the same way.
 
 **Before pushing:** **`git submodule status`**, **`dart run melos bootstrap`**, **`flutter analyze`** / **`flutter test`** under **`apps/emp_ai_boilerplate_app`**.
 
@@ -52,9 +46,9 @@ From the boilerplate root: **`melos run sync:northstar-dtcg -- --light=... --dar
 3. **`dart run melos bootstrap`** — **`flutter pub get`** for **`apps/**`**.
 4. **SSH** for **GitHub** + **Bitbucket** (submodule URLs).
 
-### Optional: auth `pubspec` with path deps
+### Standalone clone of `emp_ai_auth` only
 
-If **`emp_ai_auth`** uses **`path: ../ecosystem-platform/packages/emp_ai_core`** and **`path: ../emp_ai_ds`**, you can drop host **`dependency_overrides`** for those once that revision is the submodule pointer (requires a Bitbucket commit).
+**`path:`** deps expect **`ecosystem-platform`** and **`emp_ai_ds`** as **siblings** of the auth checkout (mirror **`packages/`** under a host repo). For Git-only consumption without that layout, use **`git:`** dependencies in a fork or follow **[CONTRIBUTING.md — Consuming without the boilerplate](https://github.com/maplepam/ecosystem-platform/blob/main/CONTRIBUTING.md)** patterns for platform.
 
 ## Alternative: auth inside the platform monorepo
 
