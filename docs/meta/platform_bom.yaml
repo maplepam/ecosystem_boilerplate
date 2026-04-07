@@ -4,7 +4,8 @@
 # bump platform_git.ref (same SHA for every emp_ai_* path in pubspec.yaml) when you
 # advance ecosystem-platform. CI can grep this file for drift against pubspec.yaml.
 #
-# See docs/engineering/repositories_overview.md for repository roles and upgrade flow.
+# Full file list for upgrades: docs/meta/platform_bump_checklist.md
+# Repository roles: docs/engineering/repositories_overview.md
 
 platform_git:
   url: git@github.com:maplepam/ecosystem-platform.git

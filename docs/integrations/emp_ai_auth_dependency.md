@@ -2,6 +2,8 @@
 
 Tactical reference for **`pubspec.yaml`**, **SSH**, and the **BOM**. For **repository roles**, **package list**, and **governance**, read **[repositories_overview.md](../engineering/repositories_overview.md)** first.
 
+**Bumping platform:** every file to touch in this repo (plus **emp_ai_auth** on Bitbucket) is listed in **[platform_bump_checklist.md](../meta/platform_bump_checklist.md)**.
+
 The host app depends on **`emp_ai_auth`** as a **Git** dependency (separate remote from **ecosystem-platform**). The branch you pin (e.g. **`ecosystem_boilerplate`**) should declare **`emp_ai_ds`** via **Git** (e.g. **`ref: myemapta_main`**) and **`emp_ai_core`** from **ecosystem-platform** at the **same SHA** as the host — no post-clone `pubspec` patching.
 
 ## Bill of materials

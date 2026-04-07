@@ -11,7 +11,7 @@ Deep guides live here; the repo root [README.md](../README.md) stays a short ove
 | **[integrations/](integrations/)** | Host wiring deep dives — auth, env catalog, flags, network, analytics vendors, shell |
 | **[engineering/](engineering/)** | Architecture, host `lib/src` layout, packages, contributing — **start:** [engineering/README.md](engineering/README.md) |
 | **[design/](design/)** | Design system tokens and widgets |
-| **[meta/](meta/)** | BOM (`platform_bom.yaml`), optional roadmap ideas |
+| **[meta/](meta/)** | BOM (`platform_bom.yaml`), **[platform bump checklist](meta/platform_bump_checklist.md)**, optional roadmap ideas |
 
 Add new topics under the folder that matches the audience (onboarding vs platform vs integrations, …).
 
@@ -103,7 +103,7 @@ Product analytics use **`AnalyticsSink`** from **`emp_ai_foundation`**. The host
 | Design tokens / widgets / theming checklist | [design_system.md](design/design_system.md), [design_system_widgets.md](design/design_system_widgets.md) |
 | `emp_ai_auth` Git / SSH / BOM | [emp_ai_auth_dependency.md](integrations/emp_ai_auth_dependency.md) |
 | Architecture, mini-apps, shell layout, packages, deps, upstream, maintainer | [engineering/README.md](engineering/README.md) → [architecture](engineering/architecture.md), [miniapps](engineering/miniapps.md), [host_structure](engineering/host_structure.md), [navigation — super-app shell](integrations/navigation.md#super-app-and-main-shell), [mini_app_vs_feature](engineering/mini_app_vs_feature.md), [miniapp_packages_and_extract](engineering/miniapp_packages_and_extract.md), [announcements_miniapp_layout](engineering/announcements_miniapp_layout.md), [packages](engineering/packages.md), [dependencies](engineering/dependencies.md), [upstream_git_workflow](engineering/upstream_git_workflow.md), [maintainer_policy](engineering/maintainer_policy.md), [contributing](engineering/contributing.md) |
-| BOM file | [platform_bom.yaml](meta/platform_bom.yaml) |
+| BOM file, platform bump checklist | [platform_bom.yaml](meta/platform_bom.yaml), [platform_bump_checklist.md](meta/platform_bump_checklist.md) |
 | Optional roadmap ideas | [BOILERPLATE_INVENTORY_AND_ROADMAP.md](meta/BOILERPLATE_INVENTORY_AND_ROADMAP.md) |
 
 **Integrations folder:** [integrations/README.md](integrations/README.md). **Build defines template:** [`build_defines.example.json`](../apps/emp_ai_boilerplate_app/config/build_defines.example.json).
