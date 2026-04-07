@@ -1,11 +1,13 @@
 name: emp_ai_boilerplate_app
-description: Sample host app wiring emp_ai_core, emp_ai_ds_northstar, emp_ai_foundation, and optional emp_ai_auth.
+description: Sample host app wiring platform packages from ecosystem-platform + emp_ai_auth from Git.
 publish_to: none
 version: 0.1.0
 
 environment:
   sdk: ">=3.0.5 <4.0.0"
 
+# Pin every `ref` below together when upgrading — see docs/meta/platform_bom.yaml
+# Use the same commit SHA for all paths under ecosystem-platform (Pub unifies transitive path deps).
 dependencies:
   flutter:
     sdk: flutter
@@ -21,19 +23,37 @@ dependencies:
   shared_preferences: ^2.5.3
 
   emp_ai_app_shell:
-    path: ../../packages/emp_ai_app_shell
+    git:
+      url: git@github.com:maplepam/ecosystem-platform.git
+      path: packages/emp_ai_app_shell
+      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
   emp_ai_core:
-    path: ../../packages/emp_ai_core
+    git:
+      url: git@github.com:maplepam/ecosystem-platform.git
+      path: packages/emp_ai_core
+      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
   emp_ai_ds_northstar:
-    path: ../../packages/emp_ai_ds_northstar
+    git:
+      url: git@github.com:maplepam/ecosystem-platform.git
+      path: packages/emp_ai_ds_northstar
+      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
   emp_ai_ds_widgets:
-    path: ../../packages/emp_ai_ds_widgets
+    git:
+      url: git@github.com:maplepam/ecosystem-platform.git
+      path: packages/emp_ai_ds_widgets
+      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
   emp_ai_foundation:
-    path: ../../packages/emp_ai_foundation
+    git:
+      url: git@github.com:maplepam/ecosystem-platform.git
+      path: packages/emp_ai_foundation
+      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
 
-  # Path to packages/emp_ai_auth — populated by `melos bootstrap` (clone hook) or submodule.
+  # Separate auth repo; branch must declare emp_ai_ds via Git (ref: myemapta_main) — no local patch.
   emp_ai_auth:
-    path: ../../packages/emp_ai_auth
+    git:
+      url: git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git
+      ref: ecosystem_boilerplate
+
   cached_query: ^3.5.1
   cached_query_flutter: ^3.3.6
   mixpanel_flutter: ^2.5.0
@@ -45,7 +65,7 @@ dependencies:
   url_launcher: ^6.3.1
   webview_flutter: ^4.13.0
 
-  # Pinned for emp_ai_ds (transitive Lucide). 3.1.11 variable fonts omit glyphs present
+  # Pinned for emp_ai_ds (transitive via emp_ai_auth). 3.1.11 variable fonts omit glyphs present
   # in lucide.ttf only → release web icon subsetting fails (e.g. CP 58205 / flipHorizontal*).
   lucide_icons_flutter: ^3.1.12
 

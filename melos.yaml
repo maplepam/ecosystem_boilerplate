@@ -1,15 +1,9 @@
 name: emp_ai_ecosystem
 repository: null
 
+# Platform packages live in ecosystem-platform; this repo is the host app only.
 packages:
-  - packages/**
   - apps/**
-
-command:
-  bootstrap:
-    runPubGetInParallel: true
-    hooks:
-      pre: dart run tool/ensure_emp_ai_auth_clone.dart
 
 scripts:
   extract:fig-meta:

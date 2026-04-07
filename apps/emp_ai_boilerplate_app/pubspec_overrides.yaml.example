@@ -1,8 +1,23 @@
-# Optional: copy to `pubspec_overrides.yaml` (gitignored).
+# Copy to `pubspec_overrides.yaml` (gitignored) for local development only — never commit.
 #
-# Example — point auth at a different local clone:
+# --- Option A: local ecosystem-platform clone (empty packages/ in boilerplate is normal) ---
+# Adjust paths to your clone. Override all five platform packages so Pub does not mix Git + path.
+#
+# dependency_overrides:
+#   emp_ai_foundation:
+#     path: ../../../ecosystem-platform/packages/emp_ai_foundation
+#   emp_ai_core:
+#     path: ../../../ecosystem-platform/packages/emp_ai_core
+#   emp_ai_ds_northstar:
+#     path: ../../../ecosystem-platform/packages/emp_ai_ds_northstar
+#   emp_ai_ds_widgets:
+#     path: ../../../ecosystem-platform/packages/emp_ai_ds_widgets
+#   emp_ai_app_shell:
+#     path: ../../../ecosystem-platform/packages/emp_ai_app_shell
+#
+# --- Option B: local auth clone (optional) ---
 # dependency_overrides:
 #   emp_ai_auth:
-#     path: /absolute/path/to/emp_ai_auth
+#     path: /absolute/path/to/emp-ai-flutter-auth
 #   emp_ai_ds:
 #     path: /absolute/path/to/emp_ai_ds

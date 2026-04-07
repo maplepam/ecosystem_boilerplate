@@ -2,6 +2,8 @@
 
 For **contributor** Git workflow (forks, path pull), see [upstream_git_workflow.md](upstream_git_workflow.md). This page is for **canonical boilerplate maintainers**: how to version packages, what to enforce in review, and **concrete Git / GitHub** steps for merging PRs.
 
+**Multiple repositories:** platform code lives in **ecosystem-platform**; **emp_ai_auth** in its own remote. Versioning and ownership across those repos are summarized in **[repositories_overview.md](repositories_overview.md)**. This policy focuses on the **boilerplate** repo and how it **consumes** pinned Git refs.
+
 ---
 
 ## Versioning: do’s and don’ts
@@ -9,16 +11,16 @@ For **contributor** Git workflow (forks, path pull), see [upstream_git_workflow.
 ### Do
 
 - **Bump `version:` in `pubspec.yaml`** for any package whose **public API** or **behavior contract** other packages rely on, when you want forks to reason about “what changed.” Pre-1.0 is normal (`0.1.0`, `0.2.0`, …).
-- **Prefer additive changes** in shared packages (`emp_ai_foundation`, `emp_ai_app_shell`, `emp_ai_core`): new optional parameters, new types, new exports — over renaming/removing without a story.
-- **Document breaking changes** in the PR description and, when you maintain one, a **CHANGELOG.md** per package or a single repo **CHANGELOG** section for releases.
-- **Tag the monorepo** when you cut a “known good” snapshot for other teams (e.g. `boilerplate-2026.03.1` or semver if you adopt repo-wide versioning). Tags are optional but help forks **`git merge v2026.03.1`** or compare diffs.
+- **Prefer additive changes** in shared **platform** packages (see **ecosystem-platform**): new optional parameters, new types, new exports — over renaming/removing without a story. Land those changes in the **platform** repo, then bump the host **`pubspec`** + **[BOM](../meta/platform_bom.yaml)**.
+- **Document breaking changes** in the PR description and, when you maintain one, a **CHANGELOG** in the repo where the code lives (platform vs boilerplate).
+- **Tag the boilerplate repo** when you cut a “known good” snapshot for forks (e.g. `boilerplate-2026.03.1`). **Tag ecosystem-platform** separately for consumer-visible platform drops (e.g. `platform-2026.04.1`).
 - **Run the same checks as CI** before merging: `dart run melos bootstrap`, `dart run melos run generate:miniapps` if the registry or generator changed, `dart run melos run analyze:all`, `dart run melos run test:boilerplate`.
 
 ### Don’t
 
 - **Don’t silently break** `MiniApp` shape, `GoRoute` paths used in docs, or **generated** `miniapp_catalog.g.dart` without updating **`miniapps_registry.yaml`** and regenerating.
 - **Don’t mix unrelated refactors** with a version bump in one PR (hard to revert and hard to explain in release notes).
-- **Don’t treat `pubspec.lock`** in **packages** as the cross-team contract — **path** dependencies and **`version:` in pubspec** are; apps own their lockfiles.
+- **Don’t treat `pubspec.lock`** inside **platform library packages** as the consumer contract — **library packages should not commit lockfiles**; the **host app** commits **`apps/.../pubspec.lock`**. **`version:` in pubspec** still documents API evolution.
 - **Don’t publish** to pub.dev from this boilerplate without org approval; internal **private pub** is a separate release process (see [packages.md](packages.md)).
 
 ### Suggested semver habits (packages still on `0.x`)

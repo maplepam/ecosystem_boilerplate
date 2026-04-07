@@ -2,7 +2,7 @@
 
 Compile-time and host-level feature toggles without calling vendors from **`domain/`**.
 
-**Contract:** [`FeatureFlagSource`](../../packages/emp_ai_foundation/lib/src/feature_flags/feature_flag_source.dart) in **`emp_ai_foundation`** — async **`isEnabled(String key)`** and optional **`treatment(String key)`**.
+**Contract:** [`FeatureFlagSource`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_foundation/lib/src/feature_flags/feature_flag_source.dart) in **`emp_ai_foundation`** — async **`isEnabled(String key)`** and optional **`treatment(String key)`**.
 
 **Host registration:** [`feature_flag_provider.dart`](../../apps/emp_ai_boilerplate_app/lib/src/platform/feature_flags/feature_flag_provider.dart) exposes **`featureFlagSourceProvider`**. The default implementation is **[`BoilerplateFeatureFlags`](../../apps/emp_ai_boilerplate_app/lib/src/platform/feature_flags/boilerplate_feature_flags.dart)** (compile-time defaults for demos).
 
@@ -41,7 +41,7 @@ Compile-time and host-level feature toggles without calling vendors from **`doma
    final String? variant = await source.treatment(BoilerplateFeatureFlagKeys.samplesDashboardLayout);
    ```
 
-6. **Mini-app gating:** set **`MiniApp.requiredFeatureFlagKey`** to the same string; **[`MiniAppGate`](../../apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart)** calls **[`filterMiniAppsByFeatureFlags`](../../packages/emp_ai_app_shell/lib/src/mini_app_feature_filter.dart)** so hub tabs respect flags. Use **`MiniAppAlwaysOn`** only for demos ([miniapps.md](../engineering/miniapps.md)).
+6. **Mini-app gating:** set **`MiniApp.requiredFeatureFlagKey`** to the same string; **[`MiniAppGate`](../../apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart)** calls **[`filterMiniAppsByFeatureFlags`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app_feature_filter.dart)** so hub tabs respect flags. Use **`MiniAppAlwaysOn`** only for demos ([miniapps.md](../engineering/miniapps.md)).
 
 **Defaults:** today they are **constructor defaults** on **`BoilerplateFeatureFlags`** (and **`boilerplateFeatureFlagsProvider`**). To “change defaults,” edit those fields or override **`boilerplateFeatureFlagsProvider`** / **`featureFlagSourceProvider`** in tests / **`ProviderScope`**.
 

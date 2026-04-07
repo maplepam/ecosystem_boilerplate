@@ -365,7 +365,7 @@ See previous sections: **paths** vs **request body** keep the HTTP class small.
 
 ---
 
-## Network (emapta announcement-bl V2)
+## Network (published announcements list V2)
 
 - **Base URL:** `announcementServiceBaseUrl` / `ANNOUNCEMENT_SERVICE_BASE_URL`.
 - **Client:** **`boilerplateDioProvider`** in [`boilerplate_api_client.dart`](../../apps/emp_ai_boilerplate_app/lib/src/network/boilerplate_api_client.dart) (bearer + 401 refresh + retry).

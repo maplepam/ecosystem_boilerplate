@@ -1,60 +1,31 @@
-# Boilerplate inventory & enhancement ideas (internal)
+# Enhancement ideas (optional roadmap)
 
-This note is for **product / engineering planning**: what the ecosystem boilerplate already contains, and common enhancements seen in mature Flutter apps (mobile + web).
+**What the template already includes** (repositories, packages, and ownership) is described in **[repositories_overview.md](../engineering/repositories_overview.md)**. Use this file only for **backlog / planning**: patterns you might add on top of the host and platform stack.
 
-**Onboarding a new team or repo fork:** use [getting_started.md](../onboarding/getting_started.md) first (prerequisites, required vs optional host configuration).
+**New team onboarding:** [getting_started.md](../onboarding/getting_started.md).
 
-## Current inventory (ecosystem_boilerplate)
+---
 
-| Area                          | What exists                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Monorepo**                  | `melos`, packages: `emp_ai_core`, `emp_ai_foundation`, `emp_ai_app_shell`, `emp_ai_ds_northstar`, `emp_ai_ds_widgets`, app `emp_ai_boilerplate_app`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| **Routing**                   | `go_router` via `CoreGoRouterFactory`: super-app hub, `StatefulShell` option, standalone, embedded prefix (`/demo/...`). RBAC redirect from `emp_ai_core` + `AuthSessionReader`.                                                                                                                                                                                                                                                                                                                                                                                                                                      |
-| **Auth**                      | **`emp_ai_auth`** only: `EmpAiAuthSessionReader` + `authSessionReaderProvider`, `EmpAiAuthTokenRefreshAdapter`, `coreTokenRefreshServiceProvider` + `empAiAuthTokenRefreshInterceptorProvider` on `boilerplateDioProvider`; `kBoilerplateEnableAppLinks` in `boilerplate_auth_config.dart`. Tests: `StaticAuthSessionReader` via `boilerplateAuthenticatedTestOverrides()`.                                                                                                                                                                                                                                           |
-| **Design tokens**             | `NorthstarColorTokens`, `NorthstarBaseTokens` (Dart source), `NorthstarBranding`, typography via M3 `TextTheme`, showcase page `/dev/ds`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| **Atomic structure**          | `NorthstarTextRole`, `NorthstarTextAtom`, `NorthstarLabeledValueRow`, `NorthstarPageHeader` in `emp_ai_ds_northstar` (starter set, not a full Figma parity).                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
-| **Widgets**                   | Navigation drawer + entries, scaffold-with-drawer, widget catalog `/dev/widgets`, dashboard layout builder + reorderable slot editor (UI shell; persistence in host).                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| **Environment**               | **`BoilerplateEnvironmentCatalog`** (template defaults — replace after fork); `applicationHostProfileProvider` + `FLAVOR` / optional `API_BASE_URL` / `VERBOSE_LOGS`; `AppBuildFlavorParser` in `emp_ai_core`. See [getting_started.md](../onboarding/getting_started.md) §3–§4.                                                                                                                                                                                                                                                                                                                                      |
-| **HTTP**                      | `NetworkStackConfig`, `HostNetwork.createDio`; `boilerplateDioProvider` adds **auth header** + **401 token refresh** interceptors ([README.md](../README.md#integrations-hub)).                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Server state cache**        | [cached_query](https://pub.dev/packages/cached_query) global config in startup; use `Query` + `QueryBuilder` in features as needed (Samples uses Riverpod + repository for stable tests).                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| **Analytics**                 | Contracts in `emp_ai_foundation` (`AnalyticsSink`, `CompositeAnalyticsSink`, no-op / debug sinks). Sample host wires **`MixpanelAnalyticsSink`** + **`FirebaseAnalyticsSink`** via [`boilerplate_analytics_backends_provider.dart`](../../apps/emp_ai_boilerplate_app/lib/src/platform/analytics/boilerplate_analytics_backends_provider.dart) and [`observability_providers.dart`](../../apps/emp_ai_boilerplate_app/lib/src/platform/analytics/observability_providers.dart) (`MIXPANEL_TOKEN`, `ENABLE_FIREBASE` + FlutterFire). Products can swap or extend remote sinks while keeping domain on `AnalyticsSink`. |
-| **Crash / logs**              | `CrashReportingSink` + no-op; verbose console analytics when `VERBOSE_LOGS=true`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| **Notifications (contracts)** | `LocalNotificationPort`, `PushNotificationPort` + no-ops; override providers in host to opt in.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| **Feature flags**             | `FeatureFlagSource` + mini-app gate.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| **Deep links**                | `app_links`, `DeepLinkListener`, `mapAppLinkToLocation`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| **User theme**                | Light/dark/system (`NorthstarThemeModeController`); optional **accent seed** persisted (`userAccentSeedNotifierProvider` → `NorthstarBranding.seedColor`).                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| **Tests**                     | Widget tests + hub → Samples flow; deep-link mapping unit test.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+## Product and UX (common next steps)
 
-## Figma / `.fig` files
+- Offline-first persistence for queries; conflict handling for writes.
+- Biometric re-auth for sensitive flows (mobile).
+- In-app update prompts; remote-config-driven messaging.
+- Deeper A/B wiring between feature flags and analytics.
+- PWA-oriented web improvements (install, share targets).
 
-We **cannot** read private Figma URLs or reliably parse binary `.fig` in-repo. To align atoms/molecules with [V3 NORTHSTAR DESIGNSYSTEM](https://www.figma.com/design/MkNTFYa9Pw4hlp8LgCtMsm/V3-NORTHSTAR_-DESIGNSYSTEM), export **variables/tokens** (JSON) or share specs; the Dart layer is then updated manually (same approach as `NorthstarBaseTokens`).
+## Engineering
 
-## Enhancement ideas (popular Flutter app patterns)
+- CI matrix per flavor; golden tests for design-system widgets.
+- More codegen (`go_router_builder`, `freezed` for DTOs, OpenAPI clients).
+- Expanded observability (structured logging, RUM, performance traces).
+- Push notifications end-to-end (FCM, background handlers, platform capabilities).
+- Accessibility audits against design tokens; RTL and large-text tests.
+- Internationalization (`flutter gen-l10n`, locale from profile).
 
-### Product & UX
+## Security
 
-- **Offline-first** — persist `cached_query` with `cached_storage` / Drift; conflict resolution for writes.
-- **Biometric re-auth** — sensitive screens behind `local_auth` (mobile).
-- **App update nudges** — `upgrader` / custom dialog from remote config.
-- **In-app messaging** — banners from remote config or CMS (Split, Firebase Remote Config, custom).
-- **A/B experiments** — tie feature flags to analytics exposure events.
-- **PWA / web** — service worker, install prompt, share target, clipboard deep links.
+- Certificate pinning patterns for mobile, if required by policy.
+- Secrets only via CI vault and compile-time defines — never in Git.
 
-### Engineering
-
-- **CI matrix** — one build per `FLAVOR` + signing; golden tests for DS widgets.
-- **Codegen** — `go_router_builder`, `freezed` for DTOs, OpenAPI → Dio clients.
-- **Observability** — OpenTelemetry, structured logging, RUM (Firebase Performance, Datadog).
-- **Analytics implementations** — the boilerplate host already registers Mixpanel + Firebase adapters; add more vendors the same way (`AnalyticsSink` + `CompositeAnalyticsSink`).
-- **Push** — FCM + `firebase_messaging`, background handlers; iOS capabilities; web: Web Push (limited).
-- **Local notifications** — `flutter_local_notifications` + timezone; action buttons.
-- **Dashboard UX** — persist slot order/visibility per user (API); responsive breakpoints per product; lazy-loaded tiles.
-- **Accessibility** — semantic labels, contrast audit against tokens, large text scaling tests.
-- **i18n / l10n** — `flutter gen-l10n`, locale from profile; RTL snapshots.
-
-### Security & compliance
-
-- **Certificate pinning** (mobile) — Dio `certificatePinningInterceptor` pattern.
-- **Secrets** — never in repo; `--dart-define` / CI secrets; consider `flutter_secure_storage` for tokens (already in `emp_ai_auth` stack).
-
-Use this list to prioritize; the boilerplate intentionally keeps **interfaces** in `emp_ai_foundation` / `emp_ai_core` and **SDK-heavy code** in the host or small adapter libraries.
+Prioritize against your product needs; the template keeps **vendor-heavy** code in the **host** or thin adapters while **contracts** stay in **`emp_ai_foundation`** / **`emp_ai_core`** on **ecosystem-platform**.

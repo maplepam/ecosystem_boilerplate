@@ -189,18 +189,18 @@ packages:
     dependency: transitive
     description:
       name: connectivity_plus
-      sha256: "33bae12a398f841c6cda09d1064212957265869104c478e5ad51e2fb26c3973c"
+      sha256: b8fe52979ff12432ecf8f0abf6ff70410b1bb734be1c9e4f2f86807ad7166c79
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.0"
+    version: "7.1.0"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
       name: connectivity_plus_platform_interface
-      sha256: "42657c1715d48b167930d5f34d00222ac100475f73d10162ddf43e714932f204"
+      sha256: "3c09627c536d22fd24691a905cdd8b14520de69da52c7a97499c8be5284a32ed"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "2.1.0"
   convert:
     dependency: transitive
     description:
@@ -380,23 +380,29 @@ packages:
   emp_ai_app_shell:
     dependency: "direct main"
     description:
-      path: "../../packages/emp_ai_app_shell"
-      relative: true
-    source: path
+      path: "packages/emp_ai_app_shell"
+      ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      resolved-ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      url: "git@github.com:maplepam/ecosystem-platform.git"
+    source: git
     version: "0.1.0"
   emp_ai_auth:
     dependency: "direct main"
     description:
-      path: "../../packages/emp_ai_auth"
-      relative: true
-    source: path
+      path: "."
+      ref: ecosystem_boilerplate
+      resolved-ref: dc251bdf35283a7dc4283e9844776af6d975e112
+      url: "git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git"
+    source: git
     version: "0.0.2"
   emp_ai_core:
     dependency: "direct main"
     description:
-      path: "../../packages/emp_ai_core"
-      relative: true
-    source: path
+      path: "packages/emp_ai_core"
+      ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      resolved-ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      url: "git@github.com:maplepam/ecosystem-platform.git"
+    source: git
     version: "0.1.0"
   emp_ai_ds:
     dependency: transitive
@@ -410,23 +416,29 @@ packages:
   emp_ai_ds_northstar:
     dependency: "direct main"
     description:
-      path: "../../packages/emp_ai_ds_northstar"
-      relative: true
-    source: path
+      path: "packages/emp_ai_ds_northstar"
+      ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      resolved-ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      url: "git@github.com:maplepam/ecosystem-platform.git"
+    source: git
     version: "0.1.0"
   emp_ai_ds_widgets:
     dependency: "direct main"
     description:
-      path: "../../packages/emp_ai_ds_widgets"
-      relative: true
-    source: path
+      path: "packages/emp_ai_ds_widgets"
+      ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      resolved-ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      url: "git@github.com:maplepam/ecosystem-platform.git"
+    source: git
     version: "0.1.0"
   emp_ai_foundation:
     dependency: "direct main"
     description:
-      path: "../../packages/emp_ai_foundation"
-      relative: true
-    source: path
+      path: "packages/emp_ai_foundation"
+      ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      resolved-ref: "34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68"
+      url: "git@github.com:maplepam/ecosystem-platform.git"
+    source: git
     version: "0.1.0"
   envied:
     dependency: transitive
@@ -1144,6 +1156,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.4.4"
+  jni:
+    dependency: transitive
+    description:
+      name: jni
+      sha256: c2230682d5bc2362c1c9e8d3c7f406d9cbba23ab3f2e203a025dd47e0fb2e68f
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
+  jni_flutter:
+    dependency: transitive
+    description:
+      name: jni_flutter
+      sha256: "8b59e590786050b1cd866677dddaf76b1ade5e7bc751abe04b86e84d379d3ba6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   js:
     dependency: transitive
     description:
@@ -1376,6 +1404,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.1"
+  package_config:
+    dependency: transitive
+    description:
+      name: package_config
+      sha256: f096c55ebb7deb7e384101542bfba8c52696c1b56fca2eb62827989ef2353bbc
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   package_info_plus:
     dependency: transitive
     description:
@@ -1420,10 +1456,10 @@ packages:
     dependency: transitive
     description:
       name: path_provider_android
-      sha256: "149441ca6e4f38193b2e004c0ca6376a3d11f51fa5a77552d8bd4d2b0c0912ba"
+      sha256: "914a07484c4380e572998d30486e77e0d9cd2faec72fee268086d07bf7f302c9"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.23"
+    version: "2.3.0"
   path_provider_foundation:
     dependency: transitive
     description:
@@ -2121,10 +2157,10 @@ packages:
     dependency: transitive
     description:
       name: two_dimensional_scrollables
-      sha256: "45f77f28f3f084ac3c79f74b075c4d719937a3972e71191efc533d6f9487c045"
+      sha256: "0e49def226623668f79ac5c7b34f2eb52b752cc6da43de0776c344e6a17611cd"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.1"
+    version: "0.4.2"
   typed_data:
     dependency: transitive
     description:
@@ -2249,10 +2285,10 @@ packages:
     dependency: transitive
     description:
       name: vector_graphics
-      sha256: "7076216a10d5c390315fbe536a30f1254c341e7543e6c4c8a815e591307772b1"
+      sha256: "81da85e9ca8885ade47f9685b953cb098970d11be4821ac765580a6607ea4373"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.20"
+    version: "1.1.21"
   vector_graphics_codec:
     dependency: transitive
     description:

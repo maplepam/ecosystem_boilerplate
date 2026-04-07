@@ -1,4 +1,4 @@
-# Cloned by `melos bootstrap` (tool/ensure_emp_ai_auth_clone.dart). Omit if you use a submodule.
+# Optional local clone of emp-ai-flutter-auth (host resolves emp_ai_auth from Git; do not commit)
 packages/emp_ai_auth/
 
 # Dart / Flutter

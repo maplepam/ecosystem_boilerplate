@@ -32,7 +32,7 @@ Details: [HOST_SERVICES.md](../platform/HOST_SERVICES.md).
 
 ## Route access (roles / permissions per path)
 
-- Types in **`emp_ai_core`**: [`RouteAccessPolicy`](../../packages/emp_ai_core/lib/src/router/route_access_policy.dart), [`RouteAccessRule` / `RouteAccessRequirement`](../../packages/emp_ai_core/lib/src/router/route_access_requirement.dart), [`createRouteAccessRedirect`](../../packages/emp_ai_core/lib/src/router/route_access_redirect.dart).
+- Types in **`emp_ai_core`**: [`RouteAccessPolicy`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_core/lib/src/router/route_access_policy.dart), [`RouteAccessRule` / `RouteAccessRequirement`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_core/lib/src/router/route_access_requirement.dart), [`createRouteAccessRedirect`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_core/lib/src/router/route_access_redirect.dart).
 - **Longest matching `pathPrefix` wins.** Configure in **`routeAccessPolicyProvider`** ([`boilerplate_route_access.dart`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_route_access.dart)).
 - **`RouteAccessUnmatched`**: `public`, `requireAuthentication`, or `deny` → `/unauthorized`.
 
@@ -56,7 +56,7 @@ Details: [HOST_SERVICES.md](../platform/HOST_SERVICES.md).
 
 ## Super-app vs demo shell (navigation & customization)
 
-- **Outer Apps rail**, **Hub**, **`BoilerplateShellPaths`**, **`boilerplateShellNavConfigProvider`** (main-shell menu tree), and flags such as **`kSuperAppShowMiniAppRail`:** [super_app_and_demo_shell.md](../engineering/super_app_and_demo_shell.md) and [navigation.md](navigation.md) (file map + **Main shell side navigation**).
+- **Outer Apps rail**, **Hub**, **`BoilerplateShellPaths`**, **`boilerplateShellNavConfigProvider`**, **`kSuperAppShowMiniAppRail`:** [navigation.md — Super-app vs main shell](navigation.md#super-app-and-main-shell) (file map + **Main shell side navigation** below that).
 
 ## Checklist for a new integration (e.g. another vendor)
 
@@ -65,7 +65,7 @@ Details: [HOST_SERVICES.md](../platform/HOST_SERVICES.md).
 3. Register in **Riverpod** near other host-level providers.
 4. Inject via **constructor / provider**, not service locators.
 
-**Adding SDKs:** [extending_tooling.md](extending_tooling.md).
+**Adding SDKs:** [contributing.md — Adding SDKs](../engineering/contributing.md#adding-sdks-and-integrations).
 
 ---
 

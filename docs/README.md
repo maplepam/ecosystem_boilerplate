@@ -6,12 +6,12 @@ Deep guides live here; the repo root [README.md](../README.md) stays a short ove
 
 | Folder | What |
 |--------|------|
-| **[onboarding/](onboarding/)** | **Default start:** [getting_started.md](onboarding/getting_started.md) (clone → run → what to change); then [first_day.md](onboarding/first_day.md) for commands only |
+| **[onboarding/](onboarding/)** | **Default start:** [getting_started.md](onboarding/getting_started.md); [first_day.md](onboarding/first_day.md) (link to §2); [faq.md](onboarding/faq.md) |
 | **[platform/](platform/)** | `FLAVOR`, defines, CI/CD, host services (Dio, analytics stack, notifications) |
 | **[integrations/](integrations/)** | Host wiring deep dives — auth, env catalog, flags, network, analytics vendors, shell |
 | **[engineering/](engineering/)** | Architecture, host `lib/src` layout, packages, contributing — **start:** [engineering/README.md](engineering/README.md) |
 | **[design/](design/)** | Design system tokens and widgets |
-| **[meta/](meta/)** | Internal inventory / roadmap |
+| **[meta/](meta/)** | BOM (`platform_bom.yaml`), optional roadmap ideas |
 
 Add new topics under the folder that matches the audience (onboarding vs platform vs integrations, …).
 
@@ -44,13 +44,14 @@ How the host connects **auth**, **environment / flavors**, **feature flags**, **
 | Topic | Document |
 |--------|----------|
 | **CI/CD** (Bitbucket, Bitrise, `build_defines.json`) | [platform/ci_cd.md](platform/ci_cd.md) |
-| **Fork / clone: remove demo, real auth, HTTP vs emapta** | [onboarding/adopting_the_boilerplate.md](onboarding/adopting_the_boilerplate.md) |
-| **New SDKs, folder layout** | [integrations/extending_tooling.md](integrations/extending_tooling.md) |
+| **Productize fork** (auth, samples, RBAC, real HTTP) | [onboarding/adopting_the_boilerplate.md](onboarding/adopting_the_boilerplate.md) |
+| **New SDKs, folder layout** | [contributing.md — Adding SDKs](engineering/contributing.md#adding-sdks-and-integrations) |
 | **`emp_ai_auth` resolution** | [integrations/emp_ai_auth_dependency.md](integrations/emp_ai_auth_dependency.md) |
 | **Notifications, `cached_query`, Dio summary** | [platform/HOST_SERVICES.md](platform/HOST_SERVICES.md) |
 | **First-time clone, catalog §3, platforms** | [onboarding/getting_started.md](onboarding/getting_started.md) |
-| **Command-only first day** | [onboarding/first_day.md](onboarding/first_day.md) |
-| **Melos / auth clone / defines / deep links** | [platform/troubleshooting.md](platform/troubleshooting.md) |
+| **Commands** (pointer → getting_started §2) | [onboarding/first_day.md](onboarding/first_day.md) |
+| **FAQ: which repo, which doc, BOM, upgrades** | [onboarding/faq.md](onboarding/faq.md) |
+| **Melos / Git deps / defines / deep links** | [platform/troubleshooting.md](platform/troubleshooting.md) |
 
 **Compile-time toggles** (`FLAVOR`, `VERBOSE_LOGS`, Samples, `MIXPANEL_TOKEN`, `ENABLE_FIREBASE`, …): [platform/dart_defines.md](platform/dart_defines.md). Add new integration guides under **`docs/integrations/`** and link them here.
 
@@ -81,102 +82,28 @@ Product analytics use **`AnalyticsSink`** from **`emp_ai_foundation`**. The host
 
 ---
 
-## How to read this (by role)
+## Documentation index
 
-| I want to… | Start here |
-|------------|------------|
-| Clone, fork, rename, first `flutter run`, prerequisites, demo routes, Figma ZIP, catalog §3, platforms §4 | [onboarding/getting_started.md](onboarding/getting_started.md) |
-| Minimal commands after clone | [onboarding/first_day.md](onboarding/first_day.md) |
-| Common failures (bootstrap, `generate:miniapps`, Firebase, web CORS, deep links) | [platform/troubleshooting.md](platform/troubleshooting.md) |
-| Flavor catalog, `API_BASE_URL` / `AUTH_*` | [integrations/environment.md](integrations/environment.md) |
-| Auth, Dio, RBAC, permissions in UI, navigation | [integrations/auth.md](integrations/auth.md), [integrations/network.md](integrations/network.md), [integrations/navigation.md](integrations/navigation.md), [integrations/shell_and_patterns.md](integrations/shell_and_patterns.md) |
-| Feature flags | [integrations/feature_flags.md](integrations/feature_flags.md) |
-| `FLAVOR`, `VERBOSE_LOGS`, Mixpanel, Samples, `build_defines.example.json` | [platform/dart_defines.md](platform/dart_defines.md) |
-| Bitbucket / Bitrise, `build_defines.json` in CI | [platform/ci_cd.md](platform/ci_cd.md) |
-| Remove demo, ship real HTTP, emapta parity notes | [onboarding/adopting_the_boilerplate.md](onboarding/adopting_the_boilerplate.md) |
-| Layers, mini-app layout, vs main monorepo | [engineering/architecture.md](engineering/architecture.md) |
-| New mini-app, registry, codegen | [engineering/miniapps.md](engineering/miniapps.md) |
-| Super-app shell, Hub, `BoilerplateShellPaths`, hide Apps rail | [engineering/super_app_and_demo_shell.md](engineering/super_app_and_demo_shell.md) |
-| Announcements mini-app layers, notifiers per API call, DS widgets | [engineering/announcements_miniapp_layout.md](engineering/announcements_miniapp_layout.md) |
-| Contribute a package/mini-app to shared boilerplate, or pull only some paths from upstream | [engineering/upstream_git_workflow.md](engineering/upstream_git_workflow.md) |
-| Version bumps, maintainer merge policy, review checklist | [engineering/maintainer_policy.md](engineering/maintainer_policy.md) |
-| When to add a mini-app vs a feature; emapta parity (login, announcements) | [engineering/mini_app_vs_feature.md](engineering/mini_app_vs_feature.md) |
-| Mixpanel analytics | [integrations/analytics_mixpanel.md](integrations/analytics_mixpanel.md) |
-| Firebase Analytics | [integrations/analytics_firebase.md](integrations/analytics_firebase.md) |
-| Both vendors (summary) | [README.md#analytics-mixpanel-and-firebase](#analytics-mixpanel-and-firebase) (this page) |
-| Notifications, `cached_query`, Dio helpers | [platform/HOST_SERVICES.md](platform/HOST_SERVICES.md) |
-| Tokens, theme, Figma, **clone theming checklist** | [design/design_system.md#boilerplate-host-theming-checklist](design/design_system.md#boilerplate-host-theming-checklist), [design/design_system_widgets.md](design/design_system_widgets.md) |
-| `emp_ai_auth` Git / submodule | [integrations/emp_ai_auth_dependency.md](integrations/emp_ai_auth_dependency.md) |
-| PR rules | [engineering/contributing.md](engineering/contributing.md) |
-| Internal planning | [meta/BOILERPLATE_INVENTORY_AND_ROADMAP.md](meta/BOILERPLATE_INVENTORY_AND_ROADMAP.md) |
+**Host app coding:** start at [engineering/README.md](engineering/README.md). **Changing shared packages (`emp_ai_*`):** [ecosystem-platform CONTRIBUTING](https://github.com/maplepam/ecosystem-platform/blob/main/CONTRIBUTING.md).
 
----
+| I want to… | Doc |
+|------------|-----|
+| Full onboarding (clone, catalog, run Web/iOS/Android) | [getting_started.md](onboarding/getting_started.md) |
+| Bootstrap / run commands | [getting_started §2](onboarding/getting_started.md#gs-2) (shortcut: [first_day.md](onboarding/first_day.md)) |
+| FAQ, repos, BOM | [faq.md](onboarding/faq.md) |
+| Productize fork (auth, samples, RBAC, HTTP) | [adopting_the_boilerplate.md](onboarding/adopting_the_boilerplate.md) |
+| Bootstrap / codegen / Firebase / deep links failures | [troubleshooting.md](platform/troubleshooting.md) |
+| Boilerplate vs platform vs auth | [repositories_overview.md](engineering/repositories_overview.md) |
+| Flavor catalog, `API_BASE_URL`, `AUTH_*` | [environment.md](integrations/environment.md) |
+| Auth, Dio, navigation, shell patterns | [auth.md](integrations/auth.md), [network.md](integrations/network.md), [navigation.md](integrations/navigation.md), [shell_and_patterns.md](integrations/shell_and_patterns.md) |
+| Feature flags | [feature_flags.md](integrations/feature_flags.md) |
+| `FLAVOR`, toggles, `build_defines` | [dart_defines.md](platform/dart_defines.md), [ci_cd.md](platform/ci_cd.md) |
+| Analytics (Mixpanel / Firebase + summary) | [analytics_mixpanel.md](integrations/analytics_mixpanel.md), [analytics_firebase.md](integrations/analytics_firebase.md), [§ above](#analytics-mixpanel-and-firebase) |
+| Host services (Dio stack, notifications, `cached_query`) | [HOST_SERVICES.md](platform/HOST_SERVICES.md) |
+| Design tokens / widgets / theming checklist | [design_system.md](design/design_system.md), [design_system_widgets.md](design/design_system_widgets.md) |
+| `emp_ai_auth` Git / SSH / BOM | [emp_ai_auth_dependency.md](integrations/emp_ai_auth_dependency.md) |
+| Architecture, mini-apps, shell layout, packages, deps, upstream, maintainer | [engineering/README.md](engineering/README.md) → [architecture](engineering/architecture.md), [miniapps](engineering/miniapps.md), [host_structure](engineering/host_structure.md), [navigation — super-app shell](integrations/navigation.md#super-app-and-main-shell), [mini_app_vs_feature](engineering/mini_app_vs_feature.md), [miniapp_packages_and_extract](engineering/miniapp_packages_and_extract.md), [announcements_miniapp_layout](engineering/announcements_miniapp_layout.md), [packages](engineering/packages.md), [dependencies](engineering/dependencies.md), [upstream_git_workflow](engineering/upstream_git_workflow.md), [maintainer_policy](engineering/maintainer_policy.md), [contributing](engineering/contributing.md) |
+| BOM file | [platform_bom.yaml](meta/platform_bom.yaml) |
+| Optional roadmap ideas | [BOILERPLATE_INVENTORY_AND_ROADMAP.md](meta/BOILERPLATE_INVENTORY_AND_ROADMAP.md) |
 
-## Index (all topics)
-
-### Onboarding
-
-| Topic | Document |
-|--------|----------|
-| Fresh clone, fork, rename, §2 prerequisites / demo routes / Figma, §3 catalog, §4 Web/Android/iOS, checklists | [onboarding/getting_started.md](onboarding/getting_started.md) |
-| Command-only bootstrap + run + CI parity | [onboarding/first_day.md](onboarding/first_day.md) |
-| Remove demo, real auth, HTTP sample vs emapta | [onboarding/adopting_the_boilerplate.md](onboarding/adopting_the_boilerplate.md) |
-
-### Platform (build & runtime)
-
-| Topic | Document |
-|--------|----------|
-| `FLAVOR` + toggles, `build_defines.example.json` | [platform/dart_defines.md](platform/dart_defines.md), [`build_defines.example.json`](../apps/emp_ai_boilerplate_app/config/build_defines.example.json) |
-| Bitbucket / Bitrise, generated JSON, emapta-style | [platform/ci_cd.md](platform/ci_cd.md) |
-| GitHub Actions reference job in this repo | [platform/ci_cd.md#github-actions-in-this-repo](platform/ci_cd.md#github-actions-in-this-repo) |
-| Host services summary (analytics stack, notifications, cache) | [platform/HOST_SERVICES.md](platform/HOST_SERVICES.md) |
-| Bootstrap, codegen, defines, analytics, deep links | [platform/troubleshooting.md](platform/troubleshooting.md) |
-
-### Integrations (deep dives)
-
-| Topic | Document |
-|--------|----------|
-| **Hub** (this page) | [README.md#integrations-hub](#integrations-hub) |
-| Flavor catalog, defines, CI env | [integrations/environment.md](integrations/environment.md) |
-| Auth, network, shell / router | [integrations/auth.md](integrations/auth.md), [integrations/network.md](integrations/network.md), [integrations/navigation.md](integrations/navigation.md), [integrations/shell_and_patterns.md](integrations/shell_and_patterns.md) |
-| Feature flags | [integrations/feature_flags.md](integrations/feature_flags.md) |
-| New SDKs / third-party tooling | [integrations/extending_tooling.md](integrations/extending_tooling.md) |
-| Auth folder layout (`bootstrap/`, `session/`, …) | [apps/emp_ai_boilerplate_app/lib/src/shell/auth/README.md](../apps/emp_ai_boilerplate_app/lib/src/shell/auth/README.md) |
-| `emp_ai_auth` resolution (Git / submodule) | [integrations/emp_ai_auth_dependency.md](integrations/emp_ai_auth_dependency.md) |
-
-### Analytics (vendors)
-
-| Topic | Document |
-|--------|----------|
-| Mixpanel / Firebase setup, `analyticsSinkProvider` | [integrations/analytics_mixpanel.md](integrations/analytics_mixpanel.md), [integrations/analytics_firebase.md](integrations/analytics_firebase.md) |
-
-### Engineering
-
-| Topic | Document |
-|--------|----------|
-| **Start here (four links)** | [engineering/README.md](engineering/README.md) |
-| Layers, data flow, mini-app vs monorepo | [engineering/architecture.md](engineering/architecture.md) |
-| **`lib/src` map:** `shell/`, `platform/`, `miniapps/`, `integrations/` | [engineering/host_structure.md](engineering/host_structure.md) |
-| New package, versioning | [engineering/packages.md](engineering/packages.md) |
-| New mini-app, registry, codegen | [engineering/miniapps.md](engineering/miniapps.md) |
-| Super-app shell, Hub, `BoilerplateShellPaths`, hide Apps rail | [engineering/super_app_and_demo_shell.md](engineering/super_app_and_demo_shell.md) |
-| Announcements mini-app layers, notifiers per API call, DS widgets | [engineering/announcements_miniapp_layout.md](engineering/announcements_miniapp_layout.md) |
-| Fork vs upstream, PR shared work, pull one package/mini-app | [engineering/upstream_git_workflow.md](engineering/upstream_git_workflow.md) |
-| Maintainer: versioning, PR review, squash/merge/rebase commands | [engineering/maintainer_policy.md](engineering/maintainer_policy.md) |
-| Mini-app vs feature (emapta-style), announcements / auth parity notes | [engineering/mini_app_vs_feature.md](engineering/mini_app_vs_feature.md) |
-| Mini-apps in **other repos** (`packages/`), **extract** when too big | [engineering/miniapp_packages_and_extract.md](engineering/miniapp_packages_and_extract.md) |
-| Lockfiles, upgrading deps | [engineering/dependencies.md](engineering/dependencies.md) |
-| PR rules, checklist | [engineering/contributing.md](engineering/contributing.md) |
-
-### Design system
-
-| Topic | Document |
-|--------|----------|
-| Tokens, theme, white-label, Figma, **host theming checklist** | [design/design_system.md#boilerplate-host-theming-checklist](design/design_system.md#boilerplate-host-theming-checklist) |
-| DS widgets vs token package | [design/design_system_widgets.md](design/design_system_widgets.md) |
-
-### Meta
-
-| Topic | Document |
-|--------|----------|
-| Inventory + roadmap ideas | [meta/BOILERPLATE_INVENTORY_AND_ROADMAP.md](meta/BOILERPLATE_INVENTORY_AND_ROADMAP.md) |
+**Integrations folder:** [integrations/README.md](integrations/README.md). **Build defines template:** [`build_defines.example.json`](../apps/emp_ai_boilerplate_app/config/build_defines.example.json).

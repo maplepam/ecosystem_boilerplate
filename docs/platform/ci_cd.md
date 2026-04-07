@@ -1,6 +1,6 @@
 # CI/CD: Bitbucket Pipelines, Bitrise, web + mobile
 
-This boilerplate does **not** ship a full `bitbucket-pipelines.yml` for your product repo — your org’s secrets and signing differ. This page describes the **same patterns** used in the **emapta** main app so you can mirror them here.
+This boilerplate does **not** ship a full `bitbucket-pipelines.yml` for your product repo — your org’s secrets and signing differ. This page describes **typical multi-flavor** patterns (Bitbucket, Bitrise, vault-injected defines) you can mirror in your pipeline.
 
 **Getting started (human steps):** [getting_started.md](../onboarding/getting_started.md) — **§2** (local `build_defines.json`) and **§4.5** (CI pointer). **Toggles / `FLAVOR`:** [dart_defines.md](dart_defines.md). **Catalog & optional `API_BASE_URL` / `AUTH_*`:** [integrations/environment.md](../integrations/environment.md). **Template:** [build_defines.example.json](../../apps/emp_ai_boilerplate_app/config/build_defines.example.json).
 
@@ -113,10 +113,10 @@ pipelines:
 
 ---
 
-## Principles (aligned with emapta)
+## Principles
 
 1. **Compile-time configuration** — `FLAVOR`, toggles (`VERBOSE_LOGS`, Samples, Mixpanel, …), and optionally **`API_BASE_URL`** / **`AUTH_*`** are passed as **`--dart-define=...`** or **`--dart-define-from-file=...`**. See [dart_defines.md](dart_defines.md) vs [integrations/environment.md](../integrations/environment.md) for what belongs in the catalog vs overrides.
-2. **Secrets in the CI vault** — same idea as emapta **`setenv.sh`**: pipeline injects values → file or exports → Flutter command.
+2. **Secrets in the CI vault** — pipeline injects values → JSON file or env exports → Flutter build command (same idea as a **`setenv.sh`**-style script).
 3. **Web vs mobile** — same JSON for all targets where possible; **iOS** adds signing / export options outside Flutter.
 
 ---
@@ -127,7 +127,7 @@ pipelines:
 
 This workspace ships [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) as a **reference** pipeline (Ubuntu, Flutter stable):
 
-1. **`dart pub get`** then **`dart run melos bootstrap`** — same as local; the Melos pre-hook may clone **`emp_ai_auth`** (private Git must be configured for Actions: deploy keys, `GIT_CONFIG_*`, or a token).
+1. **`dart pub get`** then **`dart run melos bootstrap`** — same as local. Configure **SSH** (or HTTPS) so Actions can reach **GitHub** (`ecosystem-platform`) and **Bitbucket** (`emp_ai_auth` + transitive **`emp_ai_ds`**). This repo expects **`BITBUCKET_SSH_PRIVATE_KEY`** and **`GITHUB_SSH_PRIVATE_KEY`** (see [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)).
 2. **`dart run tool/generate_miniapps.dart`** — verifies the generated mini-app catalog matches the registry (catches forgotten **`generate:miniapps`** after editing **`miniapps_registry.yaml`**).
 3. **`dart run melos exec … flutter analyze .`** — every package with a **`lib/`** directory.
 4. **`flutter test`** in **`apps/emp_ai_boilerplate_app`**.
@@ -146,9 +146,9 @@ The Pages build does **not** pass **`--dart-define-from-file`**; it relies on th
 
 ---
 
-## emapta repo pointers
+## Reference pipelines
 
-- Look for **`bitbucket-pipelines.yml`**, **`setenv.sh`**, and **`build_ipa.sh`** (or similar) in the **emapta** monorepo — copy the **structure** (secret injection → Flutter build), not file paths.
+- In mature internal apps, look for **`bitbucket-pipelines.yml`**, **`setenv.sh`**, and **`build_ipa.sh`** (or equivalents) — copy the **structure** (secret injection → Flutter build), not file paths.
 
 ## See also
 

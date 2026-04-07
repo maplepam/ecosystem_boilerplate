@@ -16,7 +16,7 @@ flutter run --dart-define=FLAVOR=staging --dart-define=VERBOSE_LOGS=true
 
 | Key | Type | Default | Role |
 |-----|------|---------|------|
-| **`FLAVOR`** | string | `development` | Maps to [`AppBuildFlavor`](../../packages/emp_ai_core/lib/src/environment/app_build_flavor.dart) and thus **[`BoilerplateEnvironmentCatalog`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_environment_catalog.dart)** (`dev`, `qa`, `staging`, `prod`, …). |
+| **`FLAVOR`** | string | `development` | Maps to [`AppBuildFlavor`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_core/lib/src/environment/app_build_flavor.dart) and thus **[`BoilerplateEnvironmentCatalog`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_environment_catalog.dart)** (`dev`, `qa`, `staging`, `prod`, …). |
 
 ---
 

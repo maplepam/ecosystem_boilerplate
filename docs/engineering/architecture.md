@@ -56,7 +56,7 @@ The **samples** and **announcements** mini-apps under `apps/emp_ai_boilerplate_a
 | `MiniApp` contract, hub, shell scaffold, route factory             | `emp_ai_app_shell`                                                                                                                                                       |
 | Feature-flag reader contract                                       | `emp_ai_foundation`                                                                                                                                                      |
 | Northstar theme + tokens                                           | `emp_ai_ds_northstar`                                                                                                                                                    |
-| Optional real auth                                                 | `emp_ai_auth` under `packages/` (clone hook); **`emp_ai_ds`** via Git in patched auth `pubspec` ([emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)) |
+| Optional real auth                                                 | **`emp_ai_auth`** Git dep (Bitbucket); **`emp_ai_ds`** via Git **`ref: myemapta_main`** on the **`ecosystem_boilerplate`** branch ([emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)) |
 
 ## Comparison to the wider `lib/` + `packages/` monorepo
 

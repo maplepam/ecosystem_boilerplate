@@ -1,10 +1,10 @@
 # Troubleshooting
 
-Common issues when cloning, bootstrapping, or running **`emp_ai_boilerplate_app`**. Onboarding narrative: [getting_started.md](../onboarding/getting_started.md).
+Common issues when cloning, bootstrapping, or running **`emp_ai_boilerplate_app`**. **“Which doc should I read?”** → [faq.md](../onboarding/faq.md). Full onboarding: [getting_started.md](../onboarding/getting_started.md).
 
-## `melos bootstrap` / `emp_ai_auth` clone fails
+## `melos bootstrap` / `flutter pub get` fails (Git dependencies)
 
-- **`emp_ai_auth`** is filled by a **pre-hook** that clones from Git. Private Bitbucket (or similar) needs **credentials** on the machine running bootstrap (SSH agent, HTTPS + app password, or CI secret). See [integrations/emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md).
+- The host app pulls **ecosystem-platform** from **GitHub** and **emp_ai_auth** (and transitive **`emp_ai_ds`**) from **Bitbucket** over **SSH** by default. Configure **`ssh-agent`** (or use **HTTPS** URLs + credentials) so both hosts work. See [integrations/emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md) and [ci_cd.md](ci_cd.md#github-actions-in-this-repo).
 - After fixing Git access, run **`dart run melos bootstrap`** again from the repo root.
 
 ## `generate:miniapps` / missing routes / hub empty

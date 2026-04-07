@@ -1,5 +1,7 @@
 # Packages: adding, versioning, and distributing updates
 
+If you consume **shared libraries** from **ecosystem-platform** (Git dependencies + pinned refs), read **[repositories_overview.md](repositories_overview.md)** first.
+
 ## Adding a new workspace package
 
 1. **Create** `packages/<package_name>/` (under this repository root) with:
@@ -7,7 +9,7 @@
    - `lib/<package_name>.dart` as the public API barrel (export only what consumers need).
    - `analysis_options.yaml` if you need stricter rules than the root.
 
-2. **Register in Melos**: the glob `packages/**` in `melos.yaml` already picks it up. Run:
+2. **Register in Melos**: add **`packages/<package_name>`** to the **`packages:`** list in root **`melos.yaml`** (this template only includes **`apps/**`** until you add local packages). Run:
 
    ```bash
    dart run melos bootstrap

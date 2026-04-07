@@ -1,6 +1,8 @@
 # Contributing
 
-**Fork / upstream**: how to open PRs to the canonical boilerplate and how product forks can merge or path-pull updates — [upstream_git_workflow.md](upstream_git_workflow.md).
+**Where code lives:** shared **`emp_ai_*`** packages are developed in **ecosystem-platform**; **`emp_ai_auth`** in the auth repository; this repo holds the **host**, **mini-apps**, **docs**, and **tooling**. See **[repositories_overview.md](repositories_overview.md)** before opening a PR so changes land in the right Git remote.
+
+**Fork / upstream:** how to open PRs to the canonical boilerplate and how product forks merge or path-pull updates — [upstream_git_workflow.md](upstream_git_workflow.md).
 
 ## Must do (strict implementation)
 
@@ -45,6 +47,42 @@
 5. **Do not bypass** `miniapps_registry.yaml` for catalog registration (keeps codegen and CI honest).
 
 6. **No drive-by refactors** unrelated to the task in the same PR (keep diffs reviewable).
+
+<a id="adding-sdks-and-integrations"></a>
+
+## Adding SDKs and third-party integrations
+
+Use this when you add a vendor SDK (analytics, crash reporting, remote flags, maps, payments, …).
+
+### Principles
+
+1. **Contracts** in **`emp_ai_foundation`** (or a small package) when the abstraction is shared across apps.
+2. **Implementations** in the host under **`lib/src/platform/<capability>/`** (host-wide services) or **`lib/src/integrations/<system>/`** (adapters used by several mini-apps). One-off Riverpod glue may live under **`lib/src/providers/`**.
+3. **Domain / mini-apps** depend on **interfaces** or **providers** — not on `Firebase.initialize`, `Mixpanel.init`, or vendor types directly.
+
+### Steps
+
+1. Add the package to **`apps/emp_ai_boilerplate_app/pubspec.yaml`** (or a shared package if multiple apps ship it).
+2. **Create or reuse** a foundation interface (`AnalyticsSink`, `CrashReportingSink`, `FeatureFlagSource`, …) when one exists.
+3. **Implement** the adapter under **`platform/`** or **`integrations/`**.
+4. **Register** a `Provider` beside the adapter or from **`boilerplate_startup_overrides.dart`** so **one place** turns the SDK on (often `--dart-define` or flavor).
+5. **Document** a short bullet in [docs/README.md — integrations hub](../README.md#integrations-hub); for long write-ups add **`docs/integrations/<topic>.md`** and link it from the hub.
+
+### Where to look today
+
+| Concern | Doc / code |
+|---------|------------|
+| Analytics | [analytics_mixpanel.md](../integrations/analytics_mixpanel.md), [analytics_firebase.md](../integrations/analytics_firebase.md), [HOST_SERVICES.md](../platform/HOST_SERVICES.md) |
+| Crash / logs | [`observability_providers.dart`](../../apps/emp_ai_boilerplate_app/lib/src/platform/analytics/observability_providers.dart), [HOST_SERVICES.md](../platform/HOST_SERVICES.md) |
+| Feature flags | [`boilerplate_feature_flags.dart`](../../apps/emp_ai_boilerplate_app/lib/src/platform/feature_flags/boilerplate_feature_flags.dart), [feature_flags.md](../integrations/feature_flags.md) |
+| Notifications | [HOST_SERVICES.md](../platform/HOST_SERVICES.md) |
+
+### Anti-patterns
+
+- Vendor SDK imports from **`domain/`** or mini-app **`domain/`**.
+- **`Firebase.initializeApp`** scattered in `main()` without a guarded host module (hard to test and disable).
+
+Layer rules: [architecture.md](architecture.md).
 
 ## PR description
 

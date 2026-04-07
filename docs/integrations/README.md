@@ -12,11 +12,11 @@ The **[integrations hub](../README.md#integrations-hub)** on the main docs index
 |-----|--------|
 | [auth.md](auth.md) | `empAiAuth`, token refresh, permissions in UI |
 | [environment.md](environment.md) | Flavor catalog, `API_BASE_URL`, `AUTH_*`, CI defines |
-| [emp_ai_auth_dependency.md](emp_ai_auth_dependency.md) | Git clone / `emp_ai_ds` patch |
+| [emp_ai_auth_dependency.md](emp_ai_auth_dependency.md) | Platform + auth Git deps, BOM, SSH |
 | [feature_flags.md](feature_flags.md) | `BoilerplateFeatureFlags`, `MiniAppGate` |
 | [network.md](network.md) | Dio, interceptors |
 | [analytics_mixpanel.md](analytics_mixpanel.md) | Mixpanel |
 | [analytics_firebase.md](analytics_firebase.md) | Firebase Analytics |
 | [navigation.md](navigation.md) | GoRouter: add routes, **configurable main-shell menu** (`boilerplate_shell_nav_config`), navigate, redirects, file map |
 | [shell_and_patterns.md](shell_and_patterns.md) | Router + RBAC overview, `AppResult`, Riverpod |
-| [extending_tooling.md](extending_tooling.md) | New SDKs |
+| [contributing.md — Adding SDKs](../engineering/contributing.md#adding-sdks-and-integrations) | New SDKs |

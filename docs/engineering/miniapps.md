@@ -54,7 +54,7 @@ dart run melos run generate:miniapps
 
 1. Implement the **home screen** and wire **`routes`** in the generated `*_miniapp.dart` (or equivalent) to match your `GoRoute` tree.
 2. If the mini-app should **hide behind a flag**, set **`requiredFeatureFlagKey`** to a stable string and implement that key in **[`BoilerplateFeatureFlags`](../../apps/emp_ai_boilerplate_app/lib/src/platform/feature_flags/boilerplate_feature_flags.dart)** (or your own **`FeatureFlagSource`**); see [feature_flags.md](../integrations/feature_flags.md#feature-flags). Use **`MiniAppAlwaysOn`** only for demos (see `emp_ai_app_shell`).
-3. For **super-app tabs**, ensure the shell branch index matches the order of `MiniApp` entries you want in the hub (when the outer Apps rail is enabled — see [super_app_and_demo_shell.md](super_app_and_demo_shell.md)).
+3. For **super-app tabs**, ensure the shell branch index matches the order of `MiniApp` entries you want in the hub when the outer Apps rail is enabled — [navigation.md — Super-app vs main shell](../integrations/navigation.md#super-app-and-main-shell).
 
 ## Clean architecture inside the mini-app
 

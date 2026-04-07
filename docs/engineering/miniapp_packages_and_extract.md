@@ -2,7 +2,7 @@
 
 This is the **only** supported pattern. Teams **must** follow the syntax below; the super-app **must** integrate only through **`kHostMiniAppsCatalog`**.
 
-**Contract:** every onboarded module is a [`MiniApp`](../../packages/emp_ai_app_shell/lib/src/mini_app.dart) from **`emp_ai_app_shell`**, mounted under **`/${MiniApp.id}/`** ([`MiniAppRouteFactory`](../../packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart)).
+**Contract:** every onboarded module is a [`MiniApp`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app.dart) from **`emp_ai_app_shell`**, mounted under **`/${MiniApp.id}/`** ([`MiniAppRouteFactory`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart)).
 
 **Host merge file (do not bypass):** [`miniapp_host_catalog.dart`](../../apps/emp_ai_boilerplate_app/lib/src/miniapps/miniapp_host_catalog.dart) exports **`kHostMiniAppsCatalog`**. [`MiniAppGate`](../../apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart) and the router use that list. **`miniapp_catalog.g.dart`** stays codegen-only; you **append** external apps here.
 
@@ -29,10 +29,13 @@ dependencies:
     sdk: flutter
   go_router: ^13.2.5
   emp_ai_app_shell:
-    path: ../../../ecosystem_boilerplate/packages/emp_ai_app_shell
+    git:
+      url: git@github.com:maplepam/ecosystem-platform.git
+      path: packages/emp_ai_app_shell
+      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
 ```
 
-**REPLACE** the `emp_ai_app_shell` `path` (or use the same **git ref** / private pub version your org pins for all mini-apps).
+**REPLACE** `url` / `ref` with the **same** ecosystem-platform pin as your host (see [`docs/meta/platform_bom.yaml`](../meta/platform_bom.yaml)), or a **path:** override for local development only.
 
 3. **Exactly one registration library** with this **file name**:
 
@@ -216,14 +219,14 @@ Use a **single** [`GoRouter`](https://pub.dev/documentation/go_router/latest/go_
 |------|-----------------|-------------------|
 | **`standaloneMiniApp`** | [`boilerplateShellRoutes()`](../../apps/emp_ai_boilerplate_app/lib/src/shell/router/boilerplate_shell_routes.dart) at the **root** | Hub under `main/hub/...`, catalog under `widgets`, etc. |
 | **`embeddedMiniApp`** | Same shell routes, mounted under a **path prefix** (`kEmbeddedPathPrefix`) | Same screens, URLs prefixed (e.g. for embedding). |
-| **`superApp`** | [`MiniAppRouteFactory.buildTree`](../../packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart) **or** `buildTreeWithStatefulShell` **plus** `/hub` | Hub page lists apps; each [`MiniApp`](../../packages/emp_ai_app_shell/lib/src/mini_app.dart) is a **top-level branch** `/${MiniApp.id}/...`. |
+| **`superApp`** | [`MiniAppRouteFactory.buildTree`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart) **or** `buildTreeWithStatefulShell` **plus** `/hub` | Hub page lists apps; each [`MiniApp`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app.dart) is a **top-level branch** `/${MiniApp.id}/...`. |
 
 Source of truth: [`boilerplateGoRouterProvider`](../../apps/emp_ai_boilerplate_app/lib/src/shell/router/boilerplate_router.dart).
 
 ### Mini-app internal routes (all Dart packages: A and C)
 
-- Each [`MiniApp`](../../packages/emp_ai_app_shell/lib/src/mini_app.dart) exposes **`routes`** as **child** [`RouteBase`](https://pub.dev/documentation/go_router/latest/go_router/RouteBase-class.html) list segments only (no leading `/`).
-- The host mounts them under **`/${id}/`** with [`MiniAppMountStrategy.nestedUnderId`](../../packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart) (default).
+- Each [`MiniApp`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app.dart) exposes **`routes`** as **child** [`RouteBase`](https://pub.dev/documentation/go_router/latest/go_router/RouteBase-class.html) list segments only (no leading `/`).
+- The host mounts them under **`/${id}/`** with [`MiniAppMountStrategy.nestedUnderId`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart) (default).
 - **`entryLocation`** must be the **full** path to the default screen, e.g. `/acme_leave/home`.
 - **Inside the mini-app**, prefer:
   - **Relative** child routes in `GoRoute(path: 'detail', ...)` under a parent, and `context.push('detail', extra: …)` / `go` to logical children; or
@@ -252,7 +255,7 @@ Source of truth: [`boilerplateGoRouterProvider`](../../apps/emp_ai_boilerplate_a
 
 ### Mixing super-app rail + standalone-style hub (mental model)
 
-- **SuperApp**: “Product switcher” lives in [`SuperAppStatefulShellScaffold`](../../packages/emp_ai_app_shell/lib/src/super_app_stateful_shell_scaffold.dart) / hub; each product is **`/$id/*`**.
+- **SuperApp**: “Product switcher” lives in [`SuperAppStatefulShellScaffold`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/super_app_stateful_shell_scaffold.dart) / hub; each product is **`/$id/*`**.
 - **Standalone / embedded**: “Hub” tabs (Samples / Resources / Announcements) are **shell** routes in [`boilerplateShellRoutes`](../../apps/emp_ai_boilerplate_app/lib/src/shell/router/boilerplate_shell_routes.dart), not separate `MiniApp` branches unless you also register them in `kHostMiniAppsCatalog`.
 
 When adding a **new** onboarded mini-app, decide explicitly:

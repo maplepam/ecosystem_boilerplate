@@ -23,15 +23,48 @@
    dart run melos run test:boilerplate
    ```
 
-## Melos and path packages
+## Melos, Git deps, and local packages
 
-- Internal **`path:`** dependencies resolve to local folders; `melos bootstrap` runs `pub get` across the graph.
-- After adding or renaming a package, always **`dart run melos bootstrap`**.
+- **`apps/emp_ai_boilerplate_app`** pulls **ecosystem-platform** and **auth** via **`git:`**; pin **`ref`** together — **[`docs/meta/platform_bom.yaml`](../meta/platform_bom.yaml)**.
+- **`melos bootstrap`** runs **`pub get`** / **`flutter pub get`** for every package matched by **`melos.yaml`** (here: **`apps/**`** only).
+- Optional **product-only** packages under **`packages/`**: add the folder, extend **`melos.yaml`** `packages:` to include them, use **`path:`** from the app, then **`dart run melos bootstrap`**.
+
+<a id="local-platform-development"></a>
+
+### Local platform development
+
+The boilerplate **`packages/`** folder is intentionally **empty** — platform sources live in **ecosystem-platform**.
+
+1. **Clone** `ecosystem-platform` (e.g. `../ecosystem-platform` relative to this repo root).
+2. In **ecosystem-platform**, use **`dart run melos bootstrap`** when you change internal **`path:`** links between packages.
+3. In **this repo**, create **`apps/emp_ai_boilerplate_app/pubspec_overrides.yaml`** (gitignored) and override **every** consumed platform package you use, typically all five:
+
+   ```yaml
+   dependency_overrides:
+     emp_ai_foundation:
+       path: ../../../ecosystem-platform/packages/emp_ai_foundation
+     emp_ai_core:
+       path: ../../../ecosystem-platform/packages/emp_ai_core
+     emp_ai_ds_northstar:
+       path: ../../../ecosystem-platform/packages/emp_ai_ds_northstar
+     emp_ai_ds_widgets:
+       path: ../../../ecosystem-platform/packages/emp_ai_ds_widgets
+     emp_ai_app_shell:
+       path: ../../../ecosystem-platform/packages/emp_ai_app_shell
+   ```
+
+   Adjust **`path`** if your clone lives elsewhere (absolute paths are fine).
+
+4. From **`apps/emp_ai_boilerplate_app`**: **`flutter pub get`**, then **`flutter analyze`** / run the app.
+
+5. **Before commit:** remove **`pubspec_overrides.yaml`** (or empty overrides); merge platform changes in **ecosystem-platform**, then bump **`pubspec.yaml`** Git **`ref`s** and **[`platform_bom.yaml`](../meta/platform_bom.yaml)** on the boilerplate branch.
+
+Template: [`pubspec_overrides.yaml.example`](../../apps/emp_ai_boilerplate_app/pubspec_overrides.yaml.example).
 
 ## Flutter / Dart SDK
 
 - Pin **`environment.sdk`** ranges in each `pubspec.yaml` to what CI and developers use.
-- When bumping Flutter, run **full analyze** and fix deprecations across `packages/*` and `apps/*`.
+- When bumping Flutter, run **full analyze** and fix deprecations across **`apps/*`** and any local **`packages/*`**, and re-resolve **Git** platform deps.
 
 ## Transitive conflicts (e.g. auth + legacy DS)
 

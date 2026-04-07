@@ -1,6 +1,8 @@
 # Upstream Git workflow: contribute to the boilerplate, pull updates into a fork
 
-This repository is a **Melos monorepo**: packages under `packages/`, the host app under `apps/`, mini-apps as slices + **`miniapps_registry.yaml`**. There is **no separate Git repo per package** inside the workspace — history and PRs live **here**.
+This repository is a **Melos workspace** for the **host app** under **`apps/`**, mini-apps as slices + **`miniapps_registry.yaml`**, and root tooling. **Platform** Dart packages (`emp_ai_core`, `emp_ai_app_shell`, design system, …) are **not** vendored here — they resolve from **[ecosystem-platform](https://github.com/maplepam/ecosystem-platform)** via **Git** dependencies; **`emp_ai_auth`** resolves from **Bitbucket**. See **[repositories_overview.md](repositories_overview.md)** and **[emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md)**.
+
+This file still applies to **forks and PRs** against **ecosystem_boilerplate** (and separately to **ecosystem-platform** if you contribute there).
 
 ## Roles
 
@@ -23,11 +25,12 @@ git fetch upstream
 git checkout -b feature/my-contribution upstream/main    # or rebase your main on upstream/main first
 ```
 
-### 2. New **package** (`packages/some_package`)
+### 2. New **package** (product-only, under `packages/`)
 
-1. Add `packages/some_package/` with `pubspec.yaml`, `lib/`, tests as needed — see [packages.md](packages.md).
-2. Wire **path dependencies** from consumers (`apps/...` or other packages).
-3. Run **`dart run melos bootstrap`**, **`dart run melos run analyze:all`**, and tests that touch the new surface.
+If the package is **not** part of the shared platform, add **`packages/some_package/`** with `pubspec.yaml`, `lib/`, tests — see [packages.md](packages.md). Add that glob to **`melos.yaml`** if you introduce a new local package. **Shared** libraries belong in **ecosystem-platform** instead.
+
+1. Wire **`path:`** or **`git:`** from consumers (`apps/...`).
+2. Run **`dart run melos bootstrap`**, **`dart run melos run analyze:all`**, and tests that touch the new surface.
 
 Open a **PR to `upstream`** (target **`main`** unless your org uses another default). Keep the PR **scoped** (prefer one package or one theme per PR so review and rollback stay simple).
 
@@ -38,12 +41,12 @@ Open a **PR to `upstream`** (target **`main`** unless your org uses another defa
 3. Implement routes/screens, flags if needed, and at least a **smoke widget test** when the mini-app is meant for reuse.
 4. PR to upstream with a short **note for other teams** (how to register the mini-app in *their* host if the entry is optional).
 
-### 4. Updates to **existing** packages (e.g. `emp_ai_core`, `emp_ai_ds_widgets`)
+### 4. Updates to **platform** packages (`emp_ai_core`, `emp_ai_ds_widgets`, …)
 
-Same as any shared library change:
+Contribute in **[ecosystem-platform](https://github.com/maplepam/ecosystem-platform)** (separate clone/PRs). After a release, bump the **`ref`** in this repo’s **`pubspec.yaml`** (and **[BOM](../meta/platform_bom.yaml)**) to match.
 
-- Prefer **additive** API changes; document **breaking** changes in PR description and bump **`version`** + **CHANGELOG** when your process requires it.
-- Run **analyze** across the workspace (`melos run analyze:all`) because many packages depend on core and DS.
+- Prefer **additive** API changes; document **breaking** changes and bump **`version`** + **CHANGELOG** when your process requires it.
+- Run **analyze** in **both** repos as appropriate.
 
 ### 5. PR hygiene (aligns with [contributing.md](contributing.md))
 
@@ -73,17 +76,11 @@ dart run melos run test:boilerplate
 
 Resolve conflicts in **`pubspec.yaml` / `pubspec_overrides.yaml`**, host-only files, and any paths you customized.
 
-### B. Bring **only specific paths** from upstream (one package or mini-app)
+### B. Bring **only specific paths** from upstream (host / mini-apps in this repo)
 
-After **`git fetch upstream`**, check out **paths from `upstream/main`** into your branch:
+After **`git fetch upstream`**, check out **paths from `upstream/main`** into your branch (examples):
 
 ```bash
-# Example: only refresh emp_ai_core from upstream
-git checkout upstream/main -- packages/emp_ai_core
-
-# Example: only refresh DS widgets + barrel exports (adjust paths as needed)
-git checkout upstream/main -- packages/emp_ai_ds_widgets
-
 # Example: one mini-app slice + registry + generated catalog (all three should stay consistent)
 git checkout upstream/main -- apps/emp_ai_boilerplate_app/lib/src/miniapps/my_feature
 git checkout upstream/main -- miniapps_registry.yaml
@@ -91,13 +88,15 @@ git checkout upstream/main -- miniapps_registry.yaml
 dart run melos run generate:miniapps
 ```
 
+**Platform** package sources are **not** in this tree — refresh them by changing **`ref`** in **`apps/emp_ai_boilerplate_app/pubspec.yaml`** / **[BOM](../meta/platform_bom.yaml)** or by opening a PR on **ecosystem-platform**.
+
 Then **commit** the result on your branch. Fix any **merge conflicts** if those paths were edited on your side.
 
 **Caveats**
 
-- Path-based checkout **does not** apply upstream commits you did not select; you may need **transitive** paths (e.g. if upstream split a package or renamed folders).
+- Path-based checkout **does not** apply upstream commits you did not select; you may need **transitive** paths if upstream renamed folders.
 - If upstream changed **shared** files (`melos.yaml`, root `pubspec.yaml`, CI), you may still need a **full merge** occasionally.
-- **`packages/emp_ai_auth`** is often **cloned by Melos** from another remote — pulling “only auth” is a different process; see [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md).
+- **`emp_ai_auth`** and transitive **`emp_ai_ds`** are **Git** dependencies — bump **`ref`** in **`pubspec.yaml`** / BOM; see [emp_ai_auth_dependency.md](../integrations/emp_ai_auth_dependency.md).
 
 ### C. **Cherry-pick** known upstream commits
 
@@ -121,8 +120,9 @@ Some teams **extract** a package to a **versioned** pub dependency later. That f
 | Goal | Approach |
 |------|----------|
 | Share a **new package** or **mini-app** with all teams | Open a **PR to upstream** `main`; keep changes scoped; run **melos** + **analyze** + tests. |
-| Ship **fixes/features** in `emp_ai_core` / `emp_ai_ds_*` for everyone | Same: **PR upstream**; avoid drive-by unrelated edits. |
+| Ship **fixes/features** in `emp_ai_core` / `emp_ai_ds_*` for everyone | **PR** to **[ecosystem-platform](https://github.com/maplepam/ecosystem-platform)**; then bump **`ref`** here. |
 | Refresh your fork from upstream | **`git merge upstream/main`** (or rebase), then **bootstrap** + **generate:miniapps** if needed. |
-| Take **only** `packages/emp_ai_core` (or one mini-app) | **`git checkout upstream/main -- <paths>`** + regenerate + commit; or **cherry-pick** specific SHAs. |
+| Bump **platform** (`emp_ai_core`, …) | New **tag/SHA** on **ecosystem-platform** → update **`pubspec.yaml`** + **[BOM](../meta/platform_bom.yaml)**. |
+| Take **only** one mini-app (this repo) | **`git checkout upstream/main -- <paths>`** + **`generate:miniapps`** + commit; or **cherry-pick** specific SHAs. |
 
 For day-to-day code standards and layer rules, use [contributing.md](contributing.md). For scaffolding details, use [packages.md](packages.md) and [miniapps.md](miniapps.md).

@@ -2,7 +2,7 @@
 
 Practical guide for **adding routes**, **calling navigation**, **redirects**, and **what to avoid**. The host uses `**go_router`** plus `**emp_ai_core**`’s `**CoreGoRouterFactory**` and `**emp_ai_app_shell**`’s `**MiniAppRouteFactory**`.
 
-**Related:** [shell_and_patterns.md](shell_and_patterns.md) (RBAC types, Riverpod), [super_app_and_demo_shell.md](../engineering/super_app_and_demo_shell.md) (shell layout, `BoilerplateShellPaths`), [miniapps.md](../engineering/miniapps.md) (new mini-app scaffold), [auth.md](auth.md) (login, `authNavigationRefreshListenableProvider`).
+**Related:** [shell_and_patterns.md](shell_and_patterns.md) (RBAC types, Riverpod), [miniapps.md](../engineering/miniapps.md) (new mini-app scaffold), [auth.md](auth.md) (login, `authNavigationRefreshListenableProvider`). **Super-app vs main shell:** [§ below](#super-app-and-main-shell).
 
 ---
 
@@ -53,10 +53,68 @@ Think in **three bands**:
 | **Top-level routes** | Landing, `/login`, `/unauthorized`, dev tools, and (super-app) `/` + `/hub` + merged **mini-app** trees.                                                                                          |
 | **Main shell**       | Shared **Overview / theme / widget catalog / Hub** under a `**ShellRoute`** — same tree for super-app (`**/main/...**`), standalone (`**/home**`, …), embedded (`**/<prefix>/...**`).             |
 | **Mini-apps**        | Each `**MiniApp`** contributes a `**List<RouteBase>**`; the shell mounts them under `**/<miniAppId>/...**` (e.g. `**/samples/demo**`).                                                            |
-| **Redirects**        | A **chain**: landing/auth → optional custom (maintenance) → **RBAC + auth** (`[createRouteAccessRedirect](../../packages/emp_ai_core/lib/src/router/route_access_redirect.dart)`).                |
+| **Redirects**        | A **chain**: landing/auth → optional custom (maintenance) → **RBAC + auth** ([`createRouteAccessRedirect`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_core/lib/src/router/route_access_redirect.dart)).                |
 
 
 Paths **change with host mode**. Prefer `**[BoilerplateShellPaths](../../apps/emp_ai_boilerplate_app/lib/src/shell/navigation/boilerplate_shell_paths.dart)`** for main-shell URLs instead of hard-coding `**/main/...**`.
+
+<a id="super-app-and-main-shell"></a>
+
+## Super-app shell vs main shell (Northstar)
+
+How the boilerplate layers **outer** super-app chrome (mini-app branches) and **inner** product chrome (Overview, Components, Hub, …), and how to **customize** shell behavior. Host config: [`host_mode.dart`](../../apps/emp_ai_boilerplate_app/lib/src/config/host_mode.dart).
+
+### Two layers
+
+| Layer | Responsibility | Primary files |
+|--------|----------------|---------------|
+| **Super-app shell** | Hosts one `StatefulNavigationShell` branch per registered `MiniApp` (main shell, announcements, resources, samples, …). Can show an **Apps** rail + (on narrow) a bottom bar **or** hide that chrome entirely. | [`super_app_stateful_shell_scaffold.dart`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/super_app_stateful_shell_scaffold.dart), [`mini_app_route_factory.dart`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart) |
+| **Main shell (Northstar)** | Inside the **main** mini-app only: left nav / drawer / bottom bar driven by **`boilerplateShellNavConfigProvider`**; narrow **segmented** sibling switch in **`WideHubSplit`** reads the same config. | **`boilerplate_shell_nav_config.dart`**, `boilerplate_shell_scaffold.dart`, `boilerplate_shell_routes.dart`, `wide_hub_split.dart` |
+
+Example paths: `/main/home`, `/main/hub/samples`, `/announcements/home`, `/samples/demo`.
+
+### Wide layout (breakpoint ≥ `kSuperAppShellWideBreakpoint`)
+
+The **side rail** runs **full height** (within `SafeArea`). The **strip with the page title** (Overview, Components, …) sits only in the **content column** to the right of the rail — it does **not** span above the rail. Narrow layouts use `AppBar` / bottom nav or drawer instead.
+
+### Flags in `host_mode.dart`
+
+- **`kBoilerplateHostMode`** — `superApp` vs `standaloneMiniApp` vs `embeddedMiniApp` (path prefix for embedded).
+- **`kSuperAppUseStatefulShell`** — `true`: `StatefulShellRoute.indexedStack` so each mini-app keeps its own stack. `false`: flat `GoRoute` list from `MiniAppRouteFactory.buildTree` (no indexed shell).
+- **`kSuperAppShowMiniAppRail`** — `false` (**default in boilerplate**): hides the outer **Apps** rail and the mini-app **bottom** `NavigationBar`. Users rely on **main shell + Hub** (and deep links). Set to `true` for the classic multi-column “Apps” UI.
+
+Wiring: `boilerplate_router.dart` passes `showMiniAppRail: kSuperAppShowMiniAppRail` into `MiniAppRouteFactory.buildTreeWithStatefulShell`.
+
+**Narrow layout:** When the outer rail is hidden, `BoilerplateShellScaffold` can use its own bottom `NavigationBar` for Overview / Components / Look & feel / Hub (see `avoidBottomBarStack` in `boilerplate_shell_scaffold.dart`).
+
+### `BoilerplateShellPaths`, Hub, and direct mini-app URLs
+
+Use **`context.go` / `context.push`** with stable paths from **`BoilerplateShellPaths`** (`boilerplate_shell_paths.dart`):
+
+- Main shell: `BoilerplateShellPaths.home`, `.widgets`, `.theme`, `.hubSamples`, `.hubResources`, `.hubAnnouncements`, `.widgetDetail(id)`, `.designSystemShowcase`
+- Paths adapt to host mode (`/main/...` in super-app, `/...` in standalone, `/demo/...` embedded).
+
+**Hub:** `/main/hub` redirects to `/main/hub/samples`; sub-routes `hub/resources`, `hub/announcements` mirror standalone mini-apps inside `WideHubSplit`.
+
+**Direct mini-app URLs:** e.g. `context.go('/announcements/home')` — `StatefulNavigationShell` switches branch when the location matches another mini-app.
+
+### Customizing the main shell (inner nav)
+
+1. **Menu** — [`boilerplate_shell_nav_config.dart`](../../apps/emp_ai_boilerplate_app/lib/src/shell/navigation/boilerplate_shell_nav_config.dart): **`defaultBoilerplateShellNavItems()`** or override **`boilerplateShellNavConfigProvider`**. **`ShellNavTopLeaf`** vs **`ShellNavTopParent`** + **`ShellNavLeaf`**; **parent rows never `go()`** — only leaves navigate. Details: **Main shell side navigation (configurable)** below.
+2. **Routes** — Extend **`boilerplate_shell_routes.dart`** and **`BoilerplateShellPaths`** so each **`ShellNavLeaf.location`** matches a real **`GoRoute`**.
+3. **Home cards** — [`MainShellHomeScreen`](../../apps/emp_ai_boilerplate_app/lib/src/screens/main_shell_home_screen.dart) (often replaced with a product landing page).
+4. **Narrow Hub segments** — **`WideHubSplit.breakpointWidth`** in [`wide_hub_split.dart`](../../apps/emp_ai_boilerplate_app/lib/src/shell/navigation/wide_hub_split.dart).
+5. **Chrome** (gradient header, copy, rail width, footer) — [`boilerplate_shell_scaffold.dart`](../../apps/emp_ai_boilerplate_app/lib/src/shell/navigation/boilerplate_shell_scaffold.dart).
+
+### Customizing the super-app shell (`emp_ai_app_shell`)
+
+- Prefer **`kSuperAppShowMiniAppRail`** in the host before forking layout.
+- **`SuperAppStatefulShellScaffold`** accepts `showMiniAppRail` (defaults `true` for other consumers).
+
+### Shell layout troubleshooting
+
+- **Side nav overflow** — Rail animates 72→280px; labels render only above **`_kMinWidthForExpandedLabels`**; tiles use `ClipRect` + `TextOverflow.ellipsis`.
+- **Double app bars** — Hub embeds mini-app screens that may ship their own `AppBar`; consider an embed flag per screen if you need one bar.
 
 ---
 
@@ -159,7 +217,7 @@ Execution order is `**chainGoRouterRedirects**` in `[boilerplate_redirect_provid
 ## Do’s
 
 - **Do** use `**BoilerplateShellPaths`** (or mini-app **absolute** paths like `**/samples/demo`**) from UI code instead of string literals that assume one host mode.
-- **Do** add **RBAC rules** when you introduce **new authenticated subtrees**; align **longest-prefix** rules with how `**normalizePath`** works (`[RouteAccessPolicy](../../packages/emp_ai_core/lib/src/router/route_access_policy.dart)`).
+- **Do** add **RBAC rules** when you introduce **new authenticated subtrees**; align **longest-prefix** rules with how **`normalizePath`** works ([`RouteAccessPolicy`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_core/lib/src/router/route_access_policy.dart)).
 - **Do** mirror **router rules** in **widgets** when hiding buttons (same permissions) — [auth.md — Permissions in UI](auth.md#permissions-in-ui).
 - **Do** use `**authLoginPathProvider`** / `**authDefaultHomePathProvider**` when sending users to login or home (`[boilerplate_route_access.dart](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_route_access.dart)`).
 - **Do** run `**generate:miniapps`** after `**miniapps_registry.yaml**` changes.
@@ -274,7 +332,6 @@ Keep **out** of shared packages: your `**/orders`**, `**/main/hub/...**` strings
 ## Further reading
 
 - [shell_and_patterns.md](shell_and_patterns.md) — `**AppResult**`, design system, redirect overview.  
-- [super_app_and_demo_shell.md](../engineering/super_app_and_demo_shell.md) — **StatefulShell**, **Apps rail**, **Hub**.  
 - [miniapps.md](../engineering/miniapps.md) — **codegen**, **feature flags**, **MiniAppGate**.  
 - [getting_started.md — §6](../onboarding/getting_started.md#gs-6) — copy-paste examples (host mode, RBAC, custom redirect, deep links).  
 - [platform/troubleshooting.md](../platform/troubleshooting.md) — deep links / platforms.

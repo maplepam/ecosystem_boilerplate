@@ -1,0 +1,29 @@
+# Bill of materials for Git dependencies consumed by apps/emp_ai_boilerplate_app.
+#
+# Forks: replace platform_git.url, auth_git.url, and legacy_ds_git with your remotes;
+# bump platform_git.ref (same SHA for every emp_ai_* path in pubspec.yaml) when you
+# advance ecosystem-platform. CI can grep this file for drift against pubspec.yaml.
+#
+# See docs/engineering/repositories_overview.md for repository roles and upgrade flow.
+
+platform_git:
+  url: git@github.com:maplepam/ecosystem-platform.git
+  # Same SHA for every path: Pub must unify transitive in-repo path deps (e.g. ds_widgets → northstar).
+  ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
+
+platform_packages:
+  - emp_ai_foundation
+  - emp_ai_core
+  - emp_ai_ds_northstar
+  - emp_ai_ds_widgets
+  - emp_ai_app_shell
+
+auth_git:
+  url: git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git
+  ref: ecosystem_boilerplate
+
+# Transitive: emp_ai_auth pubspec should declare emp_ai_ds via git (not path).
+# Mirror the auth repo’s url/ref here so upgrades stay intentional.
+legacy_ds_git:
+  url: git@bitbucket.org:empowerteams/emp-ai-flutter-design-system.git
+  ref: myemapta_main

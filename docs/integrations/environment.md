@@ -6,17 +6,17 @@
 
 <a id="flavor-catalog-emapta-style"></a>
 
-## Flavor catalog (emapta-style env)
+## Flavor catalog (multi-environment)
 
 **Template defaults:** values in [`boilerplate_environment_catalog.dart`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_environment_catalog.dart) are **placeholders** so a fresh clone builds. After you **fork or clone** into your product repo, **re-populate** every flavor row (API, identity, titles, mobile/web OAuth client ids and redirects) for your environments. See [getting_started.md](../onboarding/getting_started.md) — **Replace template environment values**.
 
-The host mirrors **`emapta/lib/src/main/app_env.dart`** + **`EnvInfo.initialize(environment)`**:
+**Conceptual mapping** (if you are porting from another app that uses a central env object):
 
-| emapta                                                                | ecosystem boilerplate                                                                                                                                                                                               |
+| Common pattern in large apps                                           | This boilerplate                                                                                                                                                                                               |
 | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `AppEnvironment` enum + maps per env                                  | [`AppBuildFlavor`](../../packages/emp_ai_core/lib/src/environment/app_build_flavor.dart) + [`BoilerplateEnvironmentCatalog`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_environment_catalog.dart) |
-| `main_dev.dart` / `main_prod.dart` → `mainCommon(AppEnvironment.xxx)` | Single entrypoint; flavor from **`--dart-define=FLAVOR`** (`development`, `staging`, `prod`, …) via [`AppBuildFlavorParser`](../../packages/emp_ai_core/lib/src/environment/app_build_flavor.dart)                  |
-| `EnvInfo` getters for API, identity, titles                           | [`BoilerplateFlavorEndpoints`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_environment_catalog.dart): `apiBaseUrl`, `identityBaseUrl`, app title, mobile/web client ids + redirects                |
+| `AppEnvironment` enum + maps per env                                  | [`AppBuildFlavor`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_core/lib/src/environment/app_build_flavor.dart) + [`BoilerplateEnvironmentCatalog`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_environment_catalog.dart) |
+| Per-flavor entrypoints (`main_dev.dart`, `main_prod.dart`, …)         | Single entrypoint; flavor from **`--dart-define=FLAVOR`** (`development`, `staging`, `prod`, …) via [`AppBuildFlavorParser`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_core/lib/src/environment/app_build_flavor.dart)                  |
+| Central getters for API, identity, titles                             | [`BoilerplateFlavorEndpoints`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_environment_catalog.dart): `apiBaseUrl`, `identityBaseUrl`, app title, mobile/web client ids + redirects                |
 
 **Wiring**
 
@@ -26,7 +26,7 @@ The host mirrors **`emapta/lib/src/main/app_env.dart`** + **`EnvInfo.initialize(
 
 Treat the committed catalog as a **starting point** only; replace it entirely for your product. Keep **secrets** out of the catalog.
 
-**Optional:** add `lib/main_staging.dart` that only calls `main()` after a **wrapper** exporting a different default `FLAVOR` is **not** how Dart defines work — instead use **`--target`** with a tiny `main_prod.dart` that sets nothing (defines come from CI) or duplicate `main` with the same code; emapta uses **`flutter build ios --target lib/src/main/main_$FLAVOR.dart`** so each file calls `mainCommon(AppEnvironment.xxx)` **without** relying on `FLAVOR` define. You can do the same here by reading a **const** flavor in that entrypoint and passing it into a shared `void runBoilerplate(AppBuildFlavor flavor)` if you want **zero** `FLAVOR` define on iOS flavors.
+**Optional iOS entrypoints:** some teams use **`flutter build ios --target lib/main_prod.dart`** (one file per flavor) that calls a shared `runApp` with a **const** `AppBuildFlavor`, avoiding a `FLAVOR` define. This template defaults to **`--dart-define=FLAVOR`** + a single `main.dart`; either approach is valid.
 
 <a id="host-profile-overrides-api-url-verbose-logs"></a>
 
@@ -60,7 +60,7 @@ Extra options (white-label, one-off):
 
 ## CI/CD: Bitbucket / GitHub Actions — `.env` vs `--dart-define`
 
-**Step-by-step for Bitbucket / Bitrise / web + mobile (emapta-style):** [../platform/ci_cd.md](../platform/ci_cd.md).
+**Step-by-step for Bitbucket / Bitrise / web + mobile:** [../platform/ci_cd.md](../platform/ci_cd.md).
 
 **Many keys at once:** copy [`build_defines.example.json`](../../apps/emp_ai_boilerplate_app/config/build_defines.example.json) to **`config/build_defines.json`** (gitignored), fill values, then `flutter run --dart-define-from-file=config/build_defines.json` from the app directory. Most teams **do not** commit secrets; CI generates the JSON from vault variables.
 
@@ -74,7 +74,7 @@ Extra options (white-label, one-off):
 
    (Or a few flags: `flutter build apk --release --dart-define=FLAVOR=production`. Add **`API_BASE_URL`** / **`AUTH_*`** only for [advanced overrides](#host-profile-overrides-api-url-verbose-logs) / [define-only auth](#auth-dart-defines-advanced).)
 
-   Your **emapta** repo uses this style: **`setenv.sh`** artifacts and **`source setenv.sh`** before Flutter (`bitbucket-pipelines.yml`), then iOS may use **`flutter build ios --flavor $FLAVOR --target lib/src/main/main_$FLAVOR.dart`** (see `emapta/.bitbucket/scripts/build_ipa.sh` in the main app repo).
+   A typical internal pipeline uses **`setenv.sh`** (or exports) before Flutter, then iOS may use **`flutter build ios --flavor $FLAVOR --target lib/main_$FLAVOR.dart`** — mirror the **same secret → define** flow in your org’s YAML.
 
 2. **`--dart-define-from-file=`** — CI or local dev uses one JSON file (see [`build_defines.example.json`](../../apps/emp_ai_boilerplate_app/config/build_defines.example.json)); generate it from secured variables in a **masked** step, then pass it to `flutter build` / `flutter run` (Flutter 3.16+).
 
