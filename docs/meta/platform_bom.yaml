@@ -9,7 +9,7 @@
 platform_git:
   url: git@github.com:maplepam/ecosystem-platform.git
   # Same SHA for every path: Pub must unify transitive in-repo path deps (e.g. ds_widgets → northstar).
-  ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
+  ref: 13e79151b660f713a64ba971addd34b9cebd7302
 
 platform_packages:
   - emp_ai_foundation
@@ -20,7 +20,7 @@ platform_packages:
 
 auth_git:
   url: git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git
-  ref: ecosystem_boilerplate
+  ref: fa115fca2abbed2ee4999cafc135e33a63b2e1de
 
 # Transitive: emp_ai_auth pubspec should declare emp_ai_ds via git (not path).
 # Mirror the auth repo’s url/ref here so upgrades stay intentional.

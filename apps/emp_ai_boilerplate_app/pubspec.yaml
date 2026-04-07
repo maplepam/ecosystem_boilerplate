@@ -26,33 +26,33 @@ dependencies:
     git:
       url: git@github.com:maplepam/ecosystem-platform.git
       path: packages/emp_ai_app_shell
-      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
+      ref: 13e79151b660f713a64ba971addd34b9cebd7302
   emp_ai_core:
     git:
       url: git@github.com:maplepam/ecosystem-platform.git
       path: packages/emp_ai_core
-      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
+      ref: 13e79151b660f713a64ba971addd34b9cebd7302
   emp_ai_ds_northstar:
     git:
       url: git@github.com:maplepam/ecosystem-platform.git
       path: packages/emp_ai_ds_northstar
-      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
+      ref: 13e79151b660f713a64ba971addd34b9cebd7302
   emp_ai_ds_widgets:
     git:
       url: git@github.com:maplepam/ecosystem-platform.git
       path: packages/emp_ai_ds_widgets
-      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
+      ref: 13e79151b660f713a64ba971addd34b9cebd7302
   emp_ai_foundation:
     git:
       url: git@github.com:maplepam/ecosystem-platform.git
       path: packages/emp_ai_foundation
-      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
+      ref: 13e79151b660f713a64ba971addd34b9cebd7302
 
   # Separate auth repo; branch must declare emp_ai_ds via Git (ref: myemapta_main) — no local patch.
   emp_ai_auth:
     git:
       url: git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git
-      ref: ecosystem_boilerplate
+      ref: fa115fca2abbed2ee4999cafc135e33a63b2e1de
 
   cached_query: ^3.5.1
   cached_query_flutter: ^3.3.6

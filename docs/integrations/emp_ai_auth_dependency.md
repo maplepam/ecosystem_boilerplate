@@ -22,12 +22,12 @@ dependencies:
     git:
       url: git@github.com:maplepam/ecosystem-platform.git
       path: packages/emp_ai_app_shell
-      ref: 34e72cb61fc72e9d64a4a23ae3ff96f6455f4b68
+      ref: 13e79151b660f713a64ba971addd34b9cebd7302
   # …same url + ref for other platform packages…
   emp_ai_auth:
     git:
       url: git@bitbucket.org:empowerteams/emp-ai-flutter-auth.git
-      ref: ecosystem_boilerplate
+      ref: fa115fca2abbed2ee4999cafc135e33a63b2e1de
 ```
 
 Adjust **`ref`** values to tags or SHAs for release builds.
