@@ -4,6 +4,19 @@ Use this when you advance **[ecosystem-platform](https://github.com/maplepam/eco
 
 ---
 
+## Automation (Melos)
+
+From the **ecosystem_boilerplate** root (after `dart pub get` so workspace deps resolve):
+
+| Command | What it does |
+|---------|----------------|
+| **`melos run bump:platform-refs -- [<40-char-platform-sha>] [--auth-sha=<sha>] [--dry-run] [--no-pub]`** | If you pass a **platform SHA** (positional or **`--platform-sha=`**), replaces the **current** `platform_git.ref` from **[`platform_bom.yaml`](platform_bom.yaml)** everywhere it appears in **`apps/emp_ai_boilerplate_app/pubspec.yaml`**, the BOM, **[`emp_ai_auth_dependency.md`](../integrations/emp_ai_auth_dependency.md)**, and **[`miniapp_packages_and_extract.md`](../engineering/miniapp_packages_and_extract.md)**. Omit the platform SHA to leave it unchanged (**auth-only** bump). If **`--auth-sha`** is set and the BOM **`auth_git.ref`** is already a **40-character SHA**, it updates auth refs in the BOM, **`pubspec.yaml`**, and **`emp_ai_auth_dependency.md`**. Then runs **`flutter pub get`** in the app (unless **`--no-pub`** or **`--dry-run`**). You must still bump **`emp_ai_core`** in **emp-ai-flutter-auth** when the platform SHA changes (see §1). |
+| **`melos run sync:northstar-dtcg -- --light=PATH --dark=PATH --white-labeled=PATH [--output=...] [--dry-run]`** | Rewrites **`NorthstarBaseTokens`** `Color(0x…)` values in **`northstar_base_tokens.dart`** from three Figma DTCG JSON exports. Default **`--output`**: **`../ecosystem-platform/packages/emp_ai_ds_northstar/lib/src/northstar_base_tokens.dart`** (sibling clone). Then run **`dart format`** on that file and **`dart analyze`** / **`flutter analyze`** in **ecosystem-platform**. |
+
+Underlying scripts: **[`tool/bump_platform_refs.dart`](../../tool/bump_platform_refs.dart)**, **[`tool/sync_northstar_base_tokens_from_dtcg.dart`](../../tool/sync_northstar_base_tokens_from_dtcg.dart)**.
+
+---
+
 ## 1. Outside this repo (required for a clean `pub get`)
 
 | Where | What to change |

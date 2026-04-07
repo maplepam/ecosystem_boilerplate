@@ -32,5 +32,21 @@ scripts:
     packageFilters:
       scope: emp_ai_boilerplate_app
 
+  bump:platform-refs:
+    description: >
+      Bump ecosystem-platform Git SHA in pubspec, BOM, doc examples; optional --auth-sha= for
+      auth-only when BOM uses a 40-char auth ref; then flutter pub get. Pass flags after --. Examples:
+      melos run bump:platform-refs -- <platform-sha> [--auth-sha=...] [--dry-run]
+      melos run bump:platform-refs -- --auth-sha=<new-auth-sha>
+    run: dart run tool/bump_platform_refs.dart
+
+  sync:northstar-dtcg:
+    description: >
+      Regenerate ecosystem-platform northstar_base_tokens.dart from Figma DTCG JSON
+      (Light / Dark / White Labeled). Pass paths after --. Example:
+      melos run sync:northstar-dtcg -- --light=./Light.tokens.json --dark=./Dark.tokens.json
+      --white-labeled="./White Labeled.tokens.json" [--output=...] [--dry-run]
+    run: dart run tool/sync_northstar_base_tokens_from_dtcg.dart
+
 ide:
   intellij: false
