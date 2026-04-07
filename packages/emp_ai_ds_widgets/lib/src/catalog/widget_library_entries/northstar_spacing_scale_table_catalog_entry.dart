@@ -7,15 +7,13 @@ WidgetCatalogEntry northstarSpacingScaleTableCatalogEntry() {
     id: 'northstar_spacing_scale_table',
     title: 'NorthstarSpacing / NorthstarSpacingScaleTable',
     description:
-        'Figma V3 spacing scale (space-2 … space-96) as [NorthstarSpacing] '
-        'constants plus [NorthstarSpacingToken] metadata. '
-        '[NorthstarSpacingScaleTable] is a reusable token/rem/px/swatch reference.',
-    code: '''
+        'Northstar V3 spacing: map Figma **space-16** → **[NorthstarSpacing.space16]** '
+        '(and **space-2** … **space-96** the same way). Use those constants for '
+        'padding, gaps, and [SizedBox] in product UI. ',
+    code: r'''
+  // space-16 in Figma → space16 in code:
   const EdgeInsets pad = EdgeInsets.all(NorthstarSpacing.space16);
-  
-  NorthstarSpacing.scale // List<NorthstarSpacingToken>
-  
-  const NorthstarSpacingScaleTable()
+  const SizedBox(height: NorthstarSpacing.space24);
   ''',
     preview: (BuildContext context) => const SingleChildScrollView(
       scrollDirection: Axis.horizontal,
