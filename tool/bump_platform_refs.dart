@@ -1,10 +1,16 @@
 // Bumps ecosystem-platform (and optionally emp_ai_auth) Git refs across the repo.
 //
 // Run from repo root:
-//   dart run tool/bump_platform_refs.dart [--platform-sha=<sha>] [<sha>] [--auth-sha=<sha>] [--dry-run] [--no-pub]
-//   melos run bump:platform-refs -- [<sha>] [--auth-sha=...] [--platform-sha=...]
+//   dart run tool/bump_platform_refs.dart [--platform-sha=<sha>] [<sha>] [--auth-sha=<sha>]
+//     [--auth-repo=<path>] [--dry-run] [--no-pub]
+//   melos run bump:platform-refs -- [<sha>] [--auth-sha=...] [--platform-sha=...] [--auth-repo=...]
 //
 // Omit platform SHA to keep the current BOM `platform_git.ref` (auth-only bump).
+//
+// Optional `--auth-repo=` (or env `EMP_AI_AUTH_REPO`): path to a local **emp-ai-flutter-auth**
+// clone. When set, sets `emp_ai_core` → `git` → `ref` in that repo’s **pubspec.yaml** to the
+// **target platform SHA** (`newPlatform`) so Pub can resolve one `emp_ai_core` revision. Does not
+// commit or push the auth repo.
 
 import 'dart:io';
 
@@ -16,6 +22,7 @@ Future<void> main(List<String> args) async {
   final bool noPub = args.contains('--no-pub');
   String? platformArg;
   String? authSha;
+  String? authRepoPath;
   final List<String> pos = <String>[];
   for (final String a in args) {
     if (a == '--dry-run' || a == '--no-pub') {
@@ -23,6 +30,12 @@ Future<void> main(List<String> args) async {
     }
     if (a.startsWith('--auth-sha=')) {
       authSha = _normalizeSha(a.split('=').skip(1).join('='));
+      continue;
+    }
+    if (a.startsWith('--auth-repo=')) {
+      final String expanded =
+          _expandUserPath(a.substring('--auth-repo='.length).trim());
+      authRepoPath = expanded.isEmpty ? null : expanded;
       continue;
     }
     if (a.startsWith('--platform-sha=')) {
@@ -34,6 +47,11 @@ Future<void> main(List<String> args) async {
       exit(64);
     }
     pos.add(a);
+  }
+  if (authRepoPath == null) {
+    final String fromEnv =
+        _expandUserPath(Platform.environment['EMP_AI_AUTH_REPO']?.trim() ?? '');
+    authRepoPath = fromEnv.isEmpty ? null : fromEnv;
   }
   if (pos.isNotEmpty) {
     if (platformArg != null) {
@@ -84,14 +102,16 @@ Future<void> main(List<String> args) async {
     exit(64);
   }
 
-  if (newPlatform == oldPlatform &&
+  final bool noBoilerplateBump = newPlatform == oldPlatform &&
       (authSha == null ||
           oldAuth == null ||
           oldAuth.length != 40 ||
-          authSha == oldAuth)) {
+          authSha == oldAuth);
+  if (noBoilerplateBump && authRepoPath == null) {
     stderr.writeln(
       'Nothing to bump (platform unchanged and no auth SHA change). '
-      'Pass a new 40-char platform SHA, or --auth-sha= when BOM auth_git.ref is a full SHA.',
+      'Pass a new 40-char platform SHA, or --auth-sha= when BOM auth_git.ref is a full SHA, '
+      'or --auth-repo= / \$EMP_AI_AUTH_REPO to sync emp_ai_core in a local auth clone.',
     );
     exit(0);
   }
@@ -156,7 +176,7 @@ Future<void> main(List<String> args) async {
     }
   }
 
-  if (patches.isEmpty) {
+  if (patches.isEmpty && authRepoPath == null) {
     stderr.writeln('No file patches queued.');
     exit(0);
   }
@@ -176,11 +196,21 @@ Future<void> main(List<String> args) async {
         stdout.writeln('  $n× ${x.path}');
       }
     }
-    if (total == 0) {
+    if (total == 0 && patches.isNotEmpty) {
       stdout.writeln('  (no matching strings in files — check BOM vs disk)');
+    }
+    if (authRepoPath != null) {
+      _syncAuthEmpAiCorePubspec(
+        authRepoRoot: authRepoPath,
+        newPlatformRef: newPlatform,
+        dryRun: true,
+      );
     }
     if (!noPub && total > 0) {
       stdout.writeln('  (then) flutter pub get in apps/emp_ai_boilerplate_app');
+    }
+    if (total == 0 && authRepoPath == null) {
+      stdout.writeln('  (no boilerplate file patches)');
     }
     return;
   }
@@ -203,12 +233,23 @@ Future<void> main(List<String> args) async {
     stdout.writeln('Updated $n× ${x.path}');
   }
 
-  if (replacements == 0) {
-    stdout.writeln('No matching strings — files unchanged.');
+  if (replacements == 0 && patches.isNotEmpty) {
+    stdout.writeln('No matching strings — boilerplate files unchanged.');
+  }
+
+  if (authRepoPath != null) {
+    _syncAuthEmpAiCorePubspec(
+      authRepoRoot: authRepoPath,
+      newPlatformRef: newPlatform,
+      dryRun: false,
+    );
+  }
+
+  if (replacements == 0 && authRepoPath == null) {
     return;
   }
 
-  if (!noPub) {
+  if (!noPub && replacements > 0) {
     final appDir = p.join(root, 'apps', 'emp_ai_boilerplate_app');
     stdout.writeln('\nRunning flutter pub get in $appDir ...');
     final int code = await _run(Process.start(
@@ -219,14 +260,21 @@ Future<void> main(List<String> args) async {
     if (code != 0) {
       stderr.writeln(
         'pub get failed (exit $code). If auth still pins an older emp_ai_core, '
-        'bump emp_ai_core in emp-ai-flutter-auth and pass --auth-sha=... '
-        'or see docs/meta/platform_bump_checklist.md',
+        'run again with --auth-repo=<path> (or \$EMP_AI_AUTH_REPO) to patch the auth '
+        'clone, then commit/push auth and pass --auth-sha=... '
+        '— see docs/meta/platform_bump_checklist.md',
       );
       exit(code);
     }
   }
 
   stdout.writeln('\nDone. Review diff, run analyze/tests, then commit.');
+  if (authRepoPath != null) {
+    stdout.writeln(
+      'Auth clone updated in-place — commit and push that repo, then bump host '
+      '`emp_ai_auth` ref with --auth-sha=<new-auth-commit>.',
+    );
+  }
 }
 
 class _Patch {
@@ -245,6 +293,66 @@ String _normalizeSha(String s) {
     t = t.substring(4).trim();
   }
   return t;
+}
+
+/// Expands a leading `~/` using [HOME] / [USERPROFILE].
+String _expandUserPath(String input) {
+  final String t = input.trim();
+  if (t.isEmpty) {
+    return '';
+  }
+  if (t.startsWith('~/')) {
+    final String? home = Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'];
+    if (home == null || home.isEmpty) {
+      return p.normalize(t);
+    }
+    return p.normalize(p.join(home, t.substring(2)));
+  }
+  return p.normalize(t);
+}
+
+/// Sets `emp_ai_core` → `ref` in **[authRepoRoot]/pubspec.yaml** to [newPlatformRef].
+void _syncAuthEmpAiCorePubspec({
+  required String authRepoRoot,
+  required String newPlatformRef,
+  required bool dryRun,
+}) {
+  final String pubPath = p.join(p.normalize(p.absolute(authRepoRoot)), 'pubspec.yaml');
+  final File file = File(pubPath);
+  if (!file.existsSync()) {
+    stderr.writeln('Auth repo pubspec not found: $pubPath');
+    return;
+  }
+  String content = file.readAsStringSync();
+  final RegExp refLine = RegExp(
+    r'(path:\s+packages/emp_ai_core\s*\n\s*ref:\s+)([0-9a-f]{40})\b',
+    multiLine: true,
+    caseSensitive: false,
+  );
+  final Match? match = refLine.firstMatch(content);
+  if (match == null) {
+    stderr.writeln(
+      'Could not find emp_ai_core block (path: packages/emp_ai_core + 40-char ref) in $pubPath',
+    );
+    return;
+  }
+  final String oldRefRaw = match.group(2)!;
+  if (oldRefRaw.toLowerCase() == newPlatformRef.toLowerCase()) {
+    stdout.writeln('Auth emp_ai_core ref already $newPlatformRef — $pubPath');
+    return;
+  }
+  if (dryRun) {
+    stdout.writeln(
+      '[dry-run] Auth emp_ai_core: $oldRefRaw -> $newPlatformRef ($pubPath)',
+    );
+    return;
+  }
+  content = content.replaceFirstMapped(
+    refLine,
+    (Match m) => '${m.group(1)}$newPlatformRef',
+  );
+  file.writeAsStringSync(content);
+  stdout.writeln('Auth emp_ai_core: $oldRefRaw -> $newPlatformRef ($pubPath)');
 }
 
 Future<int> _run(Future<Process> start) async {

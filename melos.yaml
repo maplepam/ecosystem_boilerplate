@@ -35,8 +35,9 @@ scripts:
   bump:platform-refs:
     description: >
       Bump ecosystem-platform Git SHA in pubspec, BOM, doc examples; optional --auth-sha= for
-      auth-only when BOM uses a 40-char auth ref; then flutter pub get. Pass flags after --. Examples:
-      melos run bump:platform-refs -- <platform-sha> [--auth-sha=...] [--dry-run]
+      auth-only when BOM uses a 40-char auth ref; optional --auth-repo= (or EMP_AI_AUTH_REPO) to
+      set emp_ai_core ref in a local emp-ai-flutter-auth clone; then flutter pub get. Pass flags after --. Examples:
+      melos run bump:platform-refs -- <platform-sha> [--auth-repo=../emp-ai-flutter-auth] [--dry-run]
       melos run bump:platform-refs -- --auth-sha=<new-auth-sha>
     run: dart run tool/bump_platform_refs.dart
 
