@@ -9,6 +9,128 @@ import 'package:flutter/material.dart';
 /// is enabled; body cells use the same inset so columns align.
 const double _kHeaderColumnReorderGutterWidth = 22;
 
+/// How much the row-reorder drag handle narrows the body cell row vs the header
+/// (matches [ReorderableDragStartListener] icon + padding in [_BodyRow]).
+const double _kBodyRowReorderLeadingWidth = 30;
+
+/// Lays out fixed column **display** widths: [baseWidths] stay what resize
+/// drags mutate; extra table width is split by [NorthstarDataTableColumn.flex].
+/// Uses the tighter of header vs body data slots so row reorder does not overflow.
+List<double> _northstarFixedColumnLayoutWidths({
+  required List<NorthstarDataTableColumn> columns,
+  required List<double> baseWidths,
+  required double tableWidth,
+  required bool showCheckboxColumn,
+  required bool headerResizeEnabled,
+  required bool rowReorder,
+}) {
+  final int n = columns.length;
+  if (n == 0) {
+    return <double>[];
+  }
+  if (baseWidths.length != n) {
+    return List<double>.from(baseWidths);
+  }
+  const double hPad = NorthstarSpacing.space8 * 2;
+  final double rowOuter = tableWidth - hPad;
+  final double headerInner = rowOuter;
+  final double bodyInner = rowOuter - (rowReorder ? _kBodyRowReorderLeadingWidth : 0);
+
+  final double cb = showCheckboxColumn ? 40.0 : 0.0;
+  final double sepTotal =
+      headerResizeEnabled && n > 1 ? 6.0 * (n - 1) : 0.0;
+
+  final double slotH = math.max(0.0, headerInner - cb - sepTotal);
+  final double slotB = math.max(0.0, bodyInner - cb);
+  final double slot = math.min(slotH, slotB);
+
+  if (slot <= 0) {
+    return List<double>.from(baseWidths);
+  }
+
+  double baseSum = 0;
+  for (final double w in baseWidths) {
+    baseSum += w;
+  }
+  if (baseSum <= 0) {
+    return List<double>.from(baseWidths);
+  }
+
+  if (baseSum > slot) {
+    return _northstarShrinkColumnWidthsToSlot(columns, baseWidths, slot);
+  }
+
+  final double extra = slot - baseSum;
+  int tf = 0;
+  for (final NorthstarDataTableColumn c in columns) {
+    tf += c.flex;
+  }
+  if (extra <= 0 || tf == 0) {
+    return List<double>.from(baseWidths);
+  }
+
+  return List<double>.generate(
+    n,
+    (int i) => baseWidths[i] + extra * columns[i].flex / tf,
+  );
+}
+
+List<double> _northstarShrinkColumnWidthsToSlot(
+  List<NorthstarDataTableColumn> columns,
+  List<double> baseWidths,
+  double slot,
+) {
+  final int n = columns.length;
+  double baseSum = 0;
+  for (final double w in baseWidths) {
+    baseSum += w;
+  }
+  if (baseSum <= 0) {
+    return List<double>.from(baseWidths);
+  }
+  final double scale = slot / baseSum;
+  final List<double> w = List<double>.generate(
+    n,
+    (int i) => math.max(columns[i].minWidth, baseWidths[i] * scale),
+  );
+  for (var iter = 0; iter < n + 8; iter++) {
+    double sum = 0;
+    for (var i = 0; i < n; i++) {
+      sum += w[i];
+    }
+    if (sum <= slot + 0.5) {
+      final double remainder = slot - sum;
+      if (remainder > 0.5) {
+        int tf = 0;
+        for (final NorthstarDataTableColumn c in columns) {
+          tf += c.flex;
+        }
+        if (tf > 0) {
+          return List<double>.generate(
+            n,
+            (int i) => w[i] + remainder * columns[i].flex / tf,
+          );
+        }
+      }
+      return w;
+    }
+    double flexible = 0;
+    for (var i = 0; i < n; i++) {
+      flexible += math.max(0.0, w[i] - columns[i].minWidth);
+    }
+    if (flexible < 1e-6) {
+      return w;
+    }
+    final double over = sum - slot;
+    for (var i = 0; i < n; i++) {
+      final double room = w[i] - columns[i].minWidth;
+      w[i] -= over * (room / flexible);
+      w[i] = math.max(columns[i].minWidth, w[i]);
+    }
+  }
+  return w;
+}
+
 /// Header sort cycle: inactive → ascending → descending → inactive.
 enum NorthstarTableColumnSort {
   inactive,
@@ -172,6 +294,10 @@ class NorthstarDataTableSelectionBanner extends StatelessWidget {
 /// [rowKey]), optional row reorder, optional fixed [columnWidths] + resize
 /// drag + **shared** horizontal scroll with the body, optional [columnOrder]
 /// permutation, optional header **drag reorder** via [onColumnOrderChanged].
+/// When [columnWidths] is set, stored widths are **resize anchors**; the table
+/// **lays out** wider columns by splitting extra width using [NorthstarDataTableColumn.flex]
+/// (and shrinks proportionally if space is tight). Dragging separators still
+/// updates [columnWidths] / [onColumnWidthsChanged].
 /// Place [NorthstarPaginationBar] under the table in a [Column].
 class NorthstarDataTable extends StatefulWidget {
   const NorthstarDataTable({
@@ -482,6 +608,107 @@ class _NorthstarDataTableState extends State<NorthstarDataTable> {
     return math.max(header, body);
   }
 
+  List<double>? _layoutColumnWidthsFor(
+    double tableWidth,
+    List<NorthstarDataTableColumn> orderedCols,
+  ) {
+    if (!_useSharedHorizontalScroll) {
+      return null;
+    }
+    final List<double>? w = widget.columnWidths;
+    if (w == null || w.length != orderedCols.length) {
+      return null;
+    }
+    return _northstarFixedColumnLayoutWidths(
+      columns: orderedCols,
+      baseWidths: w,
+      tableWidth: tableWidth,
+      showCheckboxColumn: widget.showCheckboxColumn,
+      headerResizeEnabled: widget.onColumnWidthsChanged != null,
+      rowReorder: widget.onReorderRows != null,
+    );
+  }
+
+  Widget _buildTableContents({
+    required BuildContext context,
+    required ColorScheme scheme,
+    required TextTheme textTheme,
+    required NorthstarDataTableViewState vs,
+    required List<NorthstarDataTableColumn> orderedCols,
+    required List<List<Widget>> orderedCells,
+    required List<NorthstarTableColumnSort> displaySorts,
+    required int? displaySortIndex,
+    required void Function(int from, int to)? reorderDisplay,
+    required List<double>? layoutColumnWidths,
+  }) {
+    final Widget body = switch (vs) {
+      NorthstarDataTableViewState.loading => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            for (var r = 0; r < widget.loadingRowCount; r++)
+              _ShimmerRow(
+                key: ValueKey<String>('shimmer_$r'),
+                columns: orderedCols,
+                checkboxGap: widget.showCheckboxColumn,
+                columnWidths: layoutColumnWidths ?? widget.columnWidths,
+                expandFixedColumns: _useSharedHorizontalScroll,
+                columnReorderLeadingGutter: widget.onColumnOrderChanged != null
+                    ? _kHeaderColumnReorderGutterWidth
+                    : 0,
+              ),
+          ],
+        ),
+      NorthstarDataTableViewState.error => _ErrorBody(
+          message: widget.errorMessage ?? 'Something went wrong.',
+          onRetry: widget.onErrorRetry,
+        ),
+      NorthstarDataTableViewState.empty =>
+        widget.emptyState ?? const _DefaultEmptyBody(),
+      NorthstarDataTableViewState.ready => _buildRowsSection(
+          context,
+          scheme,
+          textTheme,
+          orderedCols,
+          orderedCells,
+          displaySorts,
+          displaySortIndex,
+          layoutColumnWidths,
+        ),
+    };
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        if (vs != NorthstarDataTableViewState.loading)
+          _HeaderRow(
+            automationId: widget.automationId,
+            columns: orderedCols,
+            sortColumnIndex: displaySortIndex,
+            sortStates: displaySorts,
+            onSortColumn:
+                widget.onSortColumn != null ? _onSortDisplayColumn : null,
+            textTheme: textTheme,
+            scheme: scheme,
+            showCheckboxColumn: widget.showCheckboxColumn,
+            headerCheckboxValue: _headerCheckboxValue(widget.rows),
+            onHeaderCheckbox: widget.showCheckboxColumn &&
+                    widget.selectionEnabled &&
+                    widget.onSelectedRowKeysChanged != null
+                ? () => _toggleSelectAllVisible(widget.rows)
+                : null,
+            selectionEnabled: widget.selectionEnabled,
+            columnWidths: widget.columnWidths,
+            layoutColumnWidths: layoutColumnWidths,
+            onColumnWidthsChanged: widget.onColumnWidthsChanged,
+            useSharedHorizontalScroll: _useSharedHorizontalScroll,
+            onReorderDisplayColumns: reorderDisplay,
+          ),
+        body,
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -509,70 +736,6 @@ class _NorthstarDataTableState extends State<NorthstarDataTable> {
     final void Function(int from, int to)? reorderDisplay =
         widget.onColumnOrderChanged != null ? _onReorderDisplayColumns : null;
 
-    final Widget body = switch (vs) {
-      NorthstarDataTableViewState.loading => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            for (var r = 0; r < widget.loadingRowCount; r++)
-              _ShimmerRow(
-                key: ValueKey<String>('shimmer_$r'),
-                columns: orderedCols,
-                checkboxGap: widget.showCheckboxColumn,
-                columnWidths: widget.columnWidths,
-                columnReorderLeadingGutter: widget.onColumnOrderChanged != null
-                    ? _kHeaderColumnReorderGutterWidth
-                    : 0,
-              ),
-          ],
-        ),
-      NorthstarDataTableViewState.error => _ErrorBody(
-          message: widget.errorMessage ?? 'Something went wrong.',
-          onRetry: widget.onErrorRetry,
-        ),
-      NorthstarDataTableViewState.empty =>
-        widget.emptyState ?? const _DefaultEmptyBody(),
-      NorthstarDataTableViewState.ready => _buildRowsSection(
-          context,
-          scheme,
-          textTheme,
-          orderedCols,
-          orderedCells,
-          displaySorts,
-          displaySortIndex,
-        ),
-    };
-
-    final Widget column = Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        if (vs != NorthstarDataTableViewState.loading)
-          _HeaderRow(
-            automationId: widget.automationId,
-            columns: orderedCols,
-            sortColumnIndex: displaySortIndex,
-            sortStates: displaySorts,
-            onSortColumn:
-                widget.onSortColumn != null ? _onSortDisplayColumn : null,
-            textTheme: textTheme,
-            scheme: scheme,
-            showCheckboxColumn: widget.showCheckboxColumn,
-            headerCheckboxValue: _headerCheckboxValue(widget.rows),
-            onHeaderCheckbox: widget.showCheckboxColumn &&
-                    widget.selectionEnabled &&
-                    widget.onSelectedRowKeysChanged != null
-                ? () => _toggleSelectAllVisible(widget.rows)
-                : null,
-            selectionEnabled: widget.selectionEnabled,
-            columnWidths: widget.columnWidths,
-            onColumnWidthsChanged: widget.onColumnWidthsChanged,
-            useSharedHorizontalScroll: _useSharedHorizontalScroll,
-            onReorderDisplayColumns: reorderDisplay,
-          ),
-        body,
-      ],
-    );
-
     // Horizontal scroll gives unbounded width on the scroll axis; use an
     // explicit table width (not [IntrinsicWidth]) so [ReorderableListView]
     // and nested rows lay out reliably.
@@ -583,6 +746,20 @@ class _NorthstarDataTableState extends State<NorthstarDataTable> {
                 orderedCols.length,
               );
               final double childW = math.max(constraints.maxWidth, tableW);
+              final List<double>? layoutW =
+                  _layoutColumnWidthsFor(childW, orderedCols);
+              final Widget column = _buildTableContents(
+                context: context,
+                scheme: scheme,
+                textTheme: textTheme,
+                vs: vs,
+                orderedCols: orderedCols,
+                orderedCells: orderedCells,
+                displaySorts: displaySorts,
+                displaySortIndex: displaySortIndex,
+                reorderDisplay: reorderDisplay,
+                layoutColumnWidths: layoutW,
+              );
               return SingleChildScrollView(
                 controller: _horizontalScrollController,
                 scrollDirection: Axis.horizontal,
@@ -598,7 +775,18 @@ class _NorthstarDataTableState extends State<NorthstarDataTable> {
               );
             },
           )
-        : column;
+        : _buildTableContents(
+            context: context,
+            scheme: scheme,
+            textTheme: textTheme,
+            vs: vs,
+            orderedCols: orderedCols,
+            orderedCells: orderedCells,
+            displaySorts: displaySorts,
+            displaySortIndex: displaySortIndex,
+            reorderDisplay: reorderDisplay,
+            layoutColumnWidths: null,
+          );
 
     return DecoratedBox(
       key: DsAutomationKeys.part(
@@ -628,6 +816,7 @@ class _NorthstarDataTableState extends State<NorthstarDataTable> {
     List<List<Widget>> orderedCells,
     List<NorthstarTableColumnSort> displaySorts,
     int? displaySortIndex,
+    List<double>? layoutColumnWidths,
   ) {
     final List<NorthstarDataTableRow> displayRows = <NorthstarDataTableRow>[
       for (var i = 0; i < widget.rows.length; i++)
@@ -669,6 +858,7 @@ class _NorthstarDataTableState extends State<NorthstarDataTable> {
                   widget.selectedRowKeys.contains(displayRows[i].rowKey),
               onCheckboxChanged: () => _toggleRowKey(displayRows[i].rowKey),
               columnWidths: widget.columnWidths,
+              layoutColumnWidths: layoutColumnWidths,
               useSharedHorizontalScroll: _useSharedHorizontalScroll,
               columnReorderLeadingGutter: widget.onColumnOrderChanged != null
                   ? _kHeaderColumnReorderGutterWidth
@@ -699,6 +889,7 @@ class _NorthstarDataTableState extends State<NorthstarDataTable> {
                 widget.selectedRowKeys.contains(displayRows[i].rowKey),
             onCheckboxChanged: () => _toggleRowKey(displayRows[i].rowKey),
             columnWidths: widget.columnWidths,
+            layoutColumnWidths: layoutColumnWidths,
             useSharedHorizontalScroll: _useSharedHorizontalScroll,
             columnReorderLeadingGutter: widget.onColumnOrderChanged != null
                 ? _kHeaderColumnReorderGutterWidth
@@ -797,6 +988,7 @@ class _HeaderRow extends StatelessWidget {
     this.onHeaderCheckbox,
     this.selectionEnabled = true,
     this.columnWidths,
+    this.layoutColumnWidths,
     this.onColumnWidthsChanged,
     this.useSharedHorizontalScroll = false,
     this.onReorderDisplayColumns,
@@ -814,6 +1006,8 @@ class _HeaderRow extends StatelessWidget {
   final VoidCallback? onHeaderCheckbox;
   final bool selectionEnabled;
   final List<double>? columnWidths;
+  /// Per-build layout widths (base + flex fill); null uses [columnWidths].
+  final List<double>? layoutColumnWidths;
   final ValueChanged<List<double>>? onColumnWidthsChanged;
   final bool useSharedHorizontalScroll;
   final void Function(int from, int to)? onReorderDisplayColumns;
@@ -825,6 +1019,7 @@ class _HeaderRow extends StatelessWidget {
             ? _FixedWidthHeader(
                 columns: columns,
                 widths: columnWidths!,
+                displayWidths: layoutColumnWidths ?? columnWidths!,
                 sortColumnIndex: sortColumnIndex,
                 sortStates: sortStates,
                 onSortColumn: onSortColumn,
@@ -836,6 +1031,7 @@ class _HeaderRow extends StatelessWidget {
                 onHeaderCheckbox: onHeaderCheckbox,
                 selectionEnabled: selectionEnabled,
                 onColumnWidthsChanged: onColumnWidthsChanged,
+                expandFixedColumns: useSharedHorizontalScroll,
                 onReorderDisplayColumns: onReorderDisplayColumns,
               )
             : Padding(
@@ -911,6 +1107,7 @@ class _FixedWidthHeader extends StatefulWidget {
   const _FixedWidthHeader({
     required this.columns,
     required this.widths,
+    required this.displayWidths,
     required this.sortColumnIndex,
     required this.sortStates,
     required this.onSortColumn,
@@ -922,11 +1119,15 @@ class _FixedWidthHeader extends StatefulWidget {
     this.onHeaderCheckbox,
     this.selectionEnabled = true,
     this.onColumnWidthsChanged,
+    this.expandFixedColumns = false,
     this.onReorderDisplayColumns,
   });
 
   final List<NorthstarDataTableColumn> columns;
+  /// Values written by resize drags ([onColumnWidthsChanged]).
   final List<double> widths;
+  /// Widths used for layout (may be wider than [widths] when the table fills).
+  final List<double> displayWidths;
   final int? sortColumnIndex;
   final List<NorthstarTableColumnSort> sortStates;
   final ValueChanged<int>? onSortColumn;
@@ -938,6 +1139,10 @@ class _FixedWidthHeader extends StatefulWidget {
   final VoidCallback? onHeaderCheckbox;
   final bool selectionEnabled;
   final ValueChanged<List<double>>? onColumnWidthsChanged;
+  /// When true, [Row] fills width and a [Spacer] after the last column absorbs
+  /// slack; data columns keep exact [SizedBox] [widths] so resize drags apply.
+  /// When false, shrink-wrapped row (e.g. unbounded horizontal scroll parent).
+  final bool expandFixedColumns;
   final void Function(int from, int to)? onReorderDisplayColumns;
 
   @override
@@ -970,28 +1175,29 @@ class _FixedWidthHeaderState extends State<_FixedWidthHeader> {
       );
     }
     for (var c = 0; c < widget.columns.length; c++) {
+      final Widget shell = _HeaderColumnDragShell(
+        displayIndex: c,
+        automationId: widget.automationId,
+        onReorderDisplayColumns: widget.onReorderDisplayColumns,
+        child: _HeaderCell(
+          key: DsAutomationKeys.part(
+            widget.automationId,
+            '${DsAutomationKeys.elementDataTableHeader}_$c',
+          ),
+          column: widget.columns[c],
+          sort: widget.sortStates[c],
+          isActiveSortKey: widget.sortColumnIndex == c,
+          textTheme: widget.textTheme,
+          scheme: widget.scheme,
+          onTap: widget.columns[c].sortable && widget.onSortColumn != null
+              ? () => widget.onSortColumn!(c)
+              : null,
+        ),
+      );
       cells.add(
         SizedBox(
-          width: widget.widths[c],
-          child: _HeaderColumnDragShell(
-            displayIndex: c,
-            automationId: widget.automationId,
-            onReorderDisplayColumns: widget.onReorderDisplayColumns,
-            child: _HeaderCell(
-              key: DsAutomationKeys.part(
-                widget.automationId,
-                '${DsAutomationKeys.elementDataTableHeader}_$c',
-              ),
-              column: widget.columns[c],
-              sort: widget.sortStates[c],
-              isActiveSortKey: widget.sortColumnIndex == c,
-              textTheme: widget.textTheme,
-              scheme: widget.scheme,
-              onTap: widget.columns[c].sortable && widget.onSortColumn != null
-                  ? () => widget.onSortColumn!(c)
-                  : null,
-            ),
-          ),
+          width: widget.displayWidths[c],
+          child: shell,
         ),
       );
       if (c < widget.columns.length - 1 &&
@@ -1040,12 +1246,20 @@ class _FixedWidthHeaderState extends State<_FixedWidthHeader> {
         );
       }
     }
+    if (widget.expandFixedColumns && widget.columns.isNotEmpty) {
+      cells.add(const Spacer());
+    }
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: NorthstarSpacing.space8,
         vertical: NorthstarSpacing.space12,
       ),
-      child: Row(mainAxisSize: MainAxisSize.min, children: cells),
+      child: Row(
+        mainAxisSize: widget.expandFixedColumns
+            ? MainAxisSize.max
+            : MainAxisSize.min,
+        children: cells,
+      ),
     );
   }
 }
@@ -1246,6 +1460,7 @@ class _BodyRow extends StatefulWidget {
     this.checkboxSelected = false,
     this.onCheckboxChanged,
     this.columnWidths,
+    this.layoutColumnWidths,
     this.useSharedHorizontalScroll = false,
     this.columnReorderLeadingGutter = 0,
     this.reorderListIndex,
@@ -1264,6 +1479,7 @@ class _BodyRow extends StatefulWidget {
   final bool checkboxSelected;
   final VoidCallback? onCheckboxChanged;
   final List<double>? columnWidths;
+  final List<double>? layoutColumnWidths;
   final bool useSharedHorizontalScroll;
   final double columnReorderLeadingGutter;
   final int? reorderListIndex;
@@ -1305,7 +1521,7 @@ class _BodyRowState extends State<_BodyRow> {
       child: fixedLayout
           ? (widget.useSharedHorizontalScroll
               ? Row(
-                  mainAxisSize: MainAxisSize.min,
+                  mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: _fixedCells(),
                 )
@@ -1369,6 +1585,9 @@ class _BodyRowState extends State<_BodyRow> {
 
   List<Widget> _fixedCells() {
     final List<Widget> out = <Widget>[];
+    final bool expand = widget.useSharedHorizontalScroll;
+    final List<double> fixedW =
+        widget.layoutColumnWidths ?? widget.columnWidths!;
     if (widget.showCheckboxColumn) {
       out.add(
         SizedBox(
@@ -1393,20 +1612,24 @@ class _BodyRowState extends State<_BodyRow> {
           child: cell,
         );
       }
-      out.add(
-        SizedBox(
-          width: widget.columnWidths![c],
-          child: Align(
-            alignment: widget.columns[c].numeric
-                ? Alignment.centerRight
-                : Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: cell,
-            ),
-          ),
+      final Widget aligned = Align(
+        alignment: widget.columns[c].numeric
+            ? Alignment.centerRight
+            : Alignment.centerLeft,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: cell,
         ),
       );
+      out.add(
+        SizedBox(
+          width: fixedW[c],
+          child: aligned,
+        ),
+      );
+    }
+    if (expand && widget.columns.isNotEmpty) {
+      out.add(const Spacer());
     }
     return out;
   }
@@ -1459,12 +1682,14 @@ class _ShimmerRow extends StatelessWidget {
     required this.columns,
     this.checkboxGap = false,
     this.columnWidths,
+    this.expandFixedColumns = false,
     this.columnReorderLeadingGutter = 0,
   });
 
   final List<NorthstarDataTableColumn> columns;
   final bool checkboxGap;
   final List<double>? columnWidths;
+  final bool expandFixedColumns;
   final double columnReorderLeadingGutter;
 
   @override
@@ -1480,6 +1705,11 @@ class _ShimmerRow extends StatelessWidget {
         vertical: NorthstarSpacing.space12,
       ),
       child: Row(
+        mainAxisSize: expandFixedColumns &&
+                columnWidths != null &&
+                columnWidths!.length == columns.length
+            ? MainAxisSize.max
+            : MainAxisSize.min,
         children: <Widget>[
           if (checkboxGap) const SizedBox(width: 40),
           for (var i = 0; i < columns.length; i++)
@@ -1506,6 +1736,11 @@ class _ShimmerRow extends StatelessWidget {
                           )
                         : _shimmerBar(),
                   ),
+          if (expandFixedColumns &&
+              columnWidths != null &&
+              columnWidths!.length == columns.length &&
+              columns.isNotEmpty)
+            const Spacer(),
         ],
       ),
     );

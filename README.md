@@ -1,115 +1,86 @@
 # EMP AI Flutter ecosystem boilerplate
 
-Self-contained **Melos workspace** (its own git repository) that models how to split **auth**, **design system**, **core infrastructure**, **foundation utilities**, and a **host app**. It usually lives as a sibling of the main `emapta` app repo under the same parent folder.
+Self-contained **Melos** monorepo that shows how to split **auth**, **design system (tokens + widgets)**, **core infrastructure**, **foundation utilities**, and a **host app** behind a single workspace. Use it as a template or reference for multi-package Flutter products.
 
 ## Documentation
 
-Guides live under **`docs/`** (grouped by **onboarding**, **platform**, **integrations**, **engineering**, **design**, **meta**): **[docs/README.md](docs/README.md)**. **New to this repo?** **[docs/onboarding/getting_started.md](docs/onboarding/getting_started.md)** — or **[docs/onboarding/first_day.md](docs/onboarding/first_day.md)** for commands only. **Stuck?** **[docs/platform/troubleshooting.md](docs/platform/troubleshooting.md)**. **Integrations hub:** **[docs/README.md#integrations-hub](docs/README.md#integrations-hub)**. **Flavor catalog / defines:** **[docs/integrations/environment.md](docs/integrations/environment.md)**. **Toggles / `FLAVOR`:** **[docs/platform/dart_defines.md](docs/platform/dart_defines.md)**, **[apps/emp_ai_boilerplate_app/config/build_defines.example.json](apps/emp_ai_boilerplate_app/config/build_defines.example.json)**. **CI/CD:** **[docs/platform/ci_cd.md](docs/platform/ci_cd.md)** (includes **GitHub Actions** and optional **GitHub Pages** web deploy in this repo).
+
+| Start here                                                                   | Purpose                                                              |
+| ---------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| **[docs/onboarding/getting_started.md](docs/onboarding/getting_started.md)** | Clone → bootstrap → run → where code lives → env catalog → platforms |
+| **[docs/onboarding/first_day.md](docs/onboarding/first_day.md)**             | Command-only cheat sheet after clone                                 |
+| **[docs/README.md](docs/README.md)**                                         | Full doc map, **integrations hub**, and role-based index             |
+| **[docs/platform/troubleshooting.md](docs/platform/troubleshooting.md)**     | Bootstrap, codegen, defines, web, deep links                         |
+
+
+**Also useful:** [environment / flavors](docs/integrations/environment.md), [dart defines & `FLAVOR](docs/platform/dart_defines.md)`, `[build_defines.example.json](apps/emp_ai_boilerplate_app/config/build_defines.example.json)`, [CI / GitHub Actions](docs/platform/ci_cd.md).
 
 ## Packages
 
-| Package                       | Role                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `emp_ai_foundation`           | Contracts only: feature-flag reader, lightweight platform helpers. No UI, no Split/Dio.                                                                                                                                                                                                                                                                                                                                |
-| `emp_ai_ds_northstar`         | Northstar V3 **tokens + ThemeData**. **DTCG JSON** from `1 Tokens.zip` is under `design_tokens/dtcg/` with Dart **[NorthstarDtcgPresets](packages/emp_ai_ds_northstar/lib/src/northstar_dtcg_presets.dart)**; legacy [v3] remains available.                                                                                                                                                                           |
-| `emp_ai_core`                 | **Router assembly** (super-app vs mini-app prefix) and **Dio factory** config. Host apps extend via config objects.                                                                                                                                                                                                                                                                                                    |
-| `emp_ai_app_shell`            | **[MiniApp](packages/emp_ai_app_shell/lib/src/mini_app.dart)** + [MiniAppAlwaysOn](packages/emp_ai_app_shell/lib/src/mini_app.dart), route merging, [SuperAppHubPage](packages/emp_ai_app_shell/lib/src/super_app_hub_page.dart), [StatefulShellRoute](packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart) scaffold, feature-flag [filter](packages/emp_ai_app_shell/lib/src/mini_app_feature_filter.dart). |
-| `apps/emp_ai_boilerplate_app` | Wires Riverpod + `go_router` + the packages above; `emp_ai_auth` via Git (see [docs/integrations/emp_ai_auth_dependency.md](docs/integrations/emp_ai_auth_dependency.md)). Host **token refresh**: `TokenRefreshAdapter` + `CoreTokenRefreshService` + Dio interceptors — [docs/README.md#integrations-hub](docs/README.md#integrations-hub).                                                                          |
 
-## Figma tokens (local file / Cursor)
+| Package                       | Role                                                                                                                                                                                                                                                                                  |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `emp_ai_foundation`           | Contracts: feature flags, platform helpers. No UI, no Split/Dio.                                                                                                                                                                                                                      |
+| `emp_ai_ds_northstar`         | Northstar **tokens** + `ThemeData` builders; DTCG JSON assets and Dart presets. See [design/design_system.md](docs/design/design_system.md).                                                                                                                                          |
+| `emp_ai_ds_widgets`           | Reusable **Northstar-aligned UI** (navigation shell pieces, layouts, data table, snackbars, catalog, etc.) on top of `emp_ai_ds_northstar`. See [design/design_system_widgets.md](docs/design/design_system_widgets.md).                                                              |
+| `emp_ai_core`                 | Router assembly (super-app vs mini-app prefix), Dio factory config; host extends via config objects.                                                                                                                                                                                  |
+| `emp_ai_app_shell`            | `MiniApp` contract, route merging, hub, `StatefulShellRoute` scaffold, feature-flag filtering.                                                                                                                                                                                        |
+| `apps/emp_ai_boilerplate_app` | Host: Riverpod + `go_router` + packages above; `**emp_ai_auth`** via Git path (see [emp_ai_auth_dependency.md](docs/integrations/emp_ai_auth_dependency.md)). Token refresh: `TokenRefreshAdapter` + `CoreTokenRefreshService` — [integrations hub](docs/README.md#integrations-hub). |
 
-**Downloaded `.fig` files:** the outer archive is a ZIP with `meta.json` (canvas background, file name) and `canvas.fig` (**`fig-kiwij`** binary). This repo includes [tool/extract_fig_meta.dart](tool/extract_fig_meta.dart) for the ZIP metadata only — it does **not** decode the full canvas, so color styles / variables inside the design file are not auto-imported.
 
-```bash
-dart run melos run extract:fig-meta -- "/path/to/V3 NORTHSTAR_ DESIGNSYSTEM.fig"
-```
+**Design tokens from Figma:** export variables / DTCG-style JSON and map into Dart (see [design_system.md](docs/design/design_system.md)). Optional: [tool/extract_fig_meta.dart](tool/extract_fig_meta.dart) reads **ZIP metadata** from a downloaded `.fig` archive only — not full canvas decode; details in **getting_started** §8 and **melos** script `extract:fig-meta`.
 
-**For every semantic color:** use Figma **Variables** (or Tokens Studio), **export to JSON**, and map into [NorthstarColorTokens](packages/emp_ai_ds_northstar/lib/src/northstar_color_tokens.dart) (or extend a codegen script). Paste that JSON into the repo if you want help generating Dart.
+**Auth:** `emp_ai_auth` is resolved under `packages/emp_ai_auth` (clone during `melos bootstrap` per [emp_ai_auth_dependency.md](docs/integrations/emp_ai_auth_dependency.md)). Prefer `**emp_ai_ds_northstar` / `emp_ai_ds_widgets`** for new UI rather than legacy DS packages in other repos.
 
-**This environment cannot read the Figma desktop app or Cursor’s Figma plugin** unless you export files into the workspace.
-
-## vs `flutter_superapp_boilerplate` (Downloads)
-
-The folder you referenced is a **minimal sketch** (no `pubspec.yaml` in the tree we inspected): `MiniApp` + hand-written `miniapps.g.dart` + flat `go_router` list. The README you quoted describes a **target** architecture (generators, clean layers, CI) that **is not fully implemented** in those files.
-
-| Topic                           | Downloads sample                                                      | `ecosystem_boilerplate`                                                                                                                                                                                                                                                                                                           |
-| ------------------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Melos                           | Yes                                                                   | Yes                                                                                                                                                                                                                                                                                                                               |
-| MiniApp contract                | `MiniApp` (name, routes, home)                                        | `MiniApp` (id, displayName, entryLocation, routes) + **redirect** on `/${id}` for valid `go_router` parents                                                                                                                                                                                                                       |
-| Route aggregation               | `...expand((a) => a.routes)`                                          | [MiniAppRouteFactory](packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart) **nested** (default) or **flat**                                                                                                                                                                                                             |
-| Hub                             | `HomePage` used **Navigator.pushNamed** (mismatched with `go_router`) | [SuperAppHubPage](packages/emp_ai_app_shell/lib/src/super_app_hub_page.dart) uses **`context.go`**                                                                                                                                                                                                                                |
-| Host modes                      | N/A                                                                   | **Super-app / standalone / embedded** via [AppHostMode](packages/emp_ai_core/lib/src/router/app_host_mode.dart) + [CoreGoRouterFactory](packages/emp_ai_core/lib/src/router/core_go_router_factory.dart)                                                                                                                          |
-| Design system                   | Not present                                                           | **Token-only** `emp_ai_ds_northstar`                                                                                                                                                                                                                                                                                              |
-| Foundation (flags, platform)    | Not present                                                           | `emp_ai_foundation`                                                                                                                                                                                                                                                                                                               |
-| Network                         | Not present                                                           | `NetworkStackConfig` + sample Dio provider                                                                                                                                                                                                                                                                                        |
-| Auth                            | Stub controller only                                                  | Path to real **`emp_ai_auth`** + stub reference                                                                                                                                                                                                                                                                                   |
-| Clean architecture per mini-app | Described only                                                        | **Implemented** under `samples/` (`domain` / `data` / `presentation`)                                                                                                                                                                                                                                                             |
-| Auto mini-app generator         | Described only                                                        | **`miniapps_registry.yaml`** + `melos run generate:miniapps`; **`melos run create:miniapp -- name`** scaffolds a new slice                                                                                                                                                                                                        |
-| Stateful shell                  | N/A                                                                   | **`StatefulShellRoute.indexedStack`** + bottom [NavigationBar](packages/emp_ai_app_shell/lib/src/super_app_stateful_shell_scaffold.dart); toggle `kSuperAppUseStatefulShell` in [host_mode.dart](apps/emp_ai_boilerplate_app/lib/src/config/host_mode.dart)                                                                       |
-| Feature-flagged mini-apps       | N/A                                                                   | [MiniApp.requiredFeatureFlagKey](packages/emp_ai_app_shell/lib/src/mini_app.dart) + [MiniAppGate](apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart) + [BoilerplateFeatureFlags.samplesMiniAppEnabled](apps/emp_ai_boilerplate_app/lib/src/platform/feature_flags/boilerplate_feature_flags.dart) |
-| CI                              | N/A                                                                   | [`.github/workflows/ci.yml`](.github/workflows/ci.yml) in this repository                                                                                                                                                                                                                                                         |
-
-**Compatibility:** The Downloads `MiniApp` idea maps directly to `emp_ai_app_shell`; this repo adds redirects, hub/`go`, **stateful tabs**, **flag gating**, **codegen registry**, and **CI**.
-
-### Auth (`emp_ai_auth`)
-
-The sample app uses **`emp_ai_auth`** at **`packages/emp_ai_auth`**. **`melos bootstrap`** runs a **pre-hook** that **clones** the repo when needed and **patches** auth’s `pubspec.yaml` so **`emp_ai_ds`** comes from **Git** (no `packages/emp_ai_ds` checkout). See **[docs/integrations/emp_ai_auth_dependency.md](docs/integrations/emp_ai_auth_dependency.md)**. New UI should use **`emp_ai_ds_northstar`**.
-
-### Utilities outside the design system
-
-Yes—**feature flags, platform detection, device info, date/currency helpers** belong in `emp_ai_foundation` (interfaces) and small implementation packages (e.g. `emp_ai_split`, `emp_ai_device`), not in the DS. The current `emp_ai_ds` mix of Split, network, and widgets is exactly what this layout avoids.
+**Where “extra” utilities go:** flags, platform detection, analytics interfaces → `emp_ai_foundation` and small focused packages — not the design-system layer ([design_system_widgets.md](docs/design/design_system_widgets.md)).
 
 ## Router choice
 
-**Recommendation: stay on `go_router`.** It matches your production app, supports **shell routes**, **redirects** (auth / feature flags), **named routes**, and **deep links**. For super-app vs mini-app:
+**Recommendation: `go_router`.** It supports shell routes, redirects (auth / flags), named routes, and deep links — aligned with common production setups.
 
-- **Standalone mini-app:** `AppHostMode.standaloneMiniApp` + top-level routes (`/home`, …).
-- **Embedded mini-app:** `AppHostMode.embeddedMiniApp` + `pathPrefix` (e.g. `demo` → `/demo/...`) via `CoreGoRouterFactory`.
-- **Super-app:** compose multiple modules by merging route trees or using a `StatefulShellRoute` in the host; keep **one** `GoRouter` at the root.
+- **Standalone mini-app:** `AppHostMode.standaloneMiniApp` + top-level routes.
+- **Embedded mini-app:** `AppHostMode.embeddedMiniApp` + `pathPrefix` via `CoreGoRouterFactory`.
+- **Super-app:** merge route trees or use `StatefulShellRoute` at the host; **one** `GoRouter` at the root.
 
-`auto_route` is viable if you want codegen; **avoid** mixing two routers in one app.
-
-Try embedded mode by editing `apps/emp_ai_boilerplate_app/lib/src/config/host_mode.dart`:
+Avoid running two router libraries in the same app. Try embedded mode in [host_mode.dart](apps/emp_ai_boilerplate_app/lib/src/config/host_mode.dart):
 
 ```dart
 const AppHostMode kBoilerplateHostMode = AppHostMode.embeddedMiniApp;
 ```
 
-## Tooling
+## Tooling & commands
 
-| Command                                                    | Purpose                                                                       |
-| ---------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `dart pub get`                                             | Resolve workspace `yaml` / `path` deps for `tool/*.dart`                      |
-| `dart run melos bootstrap`                                 | Link all Flutter packages                                                     |
-| `dart run melos run generate:miniapps`                     | Regenerate `miniapp_catalog.g.dart` from `miniapps_registry.yaml`             |
-| `dart run melos run extract:fig-meta -- /path/to/file.fig` | Print `meta.json` canvas background (see `emp_ai_ds_northstar` docs below)    |
-| `dart run melos run create:miniapp -- my_feature`          | Scaffold `lib/src/miniapps/my_feature/` (clean-arch layout) + append registry |
-| `dart run melos run analyze:all`                           | `flutter analyze` in every package with `lib/`                                |
-| `dart run melos run test:boilerplate`                      | `flutter test` in `emp_ai_boilerplate_app`                                    |
+**Day-to-day commands** (prerequisites, `flutter run`, flavors, web/iOS/Android) live in **[getting_started.md](docs/onboarding/getting_started.md)** and **[first_day.md](docs/onboarding/first_day.md)** — use those as the source of truth.
 
-After editing `miniapps_registry.yaml` or running `create:miniapp`, always run **`generate:miniapps`** before commit.
+**Melos scripts** (see [melos.yaml](melos.yaml)) include:
 
-## Commands
 
-```bash
-cd ecosystem_boilerplate   # repository root
-dart pub get
-dart run melos bootstrap
-dart run melos run generate:miniapps
-cd apps/emp_ai_boilerplate_app && flutter run
-```
+| Script              | Purpose                                          |
+| ------------------- | ------------------------------------------------ |
+| `generate:miniapps` | Regenerate catalog from `miniapps_registry.yaml` |
+| `create:miniapp`    | Scaffold a new mini-app slice                    |
+| `analyze:all`       | `flutter analyze` on packages with `lib/`        |
+| `test:boilerplate`  | Tests in `emp_ai_boilerplate_app`                |
+| `extract:fig-meta`  | `.fig` ZIP metadata helper                       |
+
+
+After changing `miniapps_registry.yaml` or running `create:miniapp`, run `**generate:miniapps`** before commit.
 
 ## Mono-repo vs multi-repo (dependency versions)
 
-| Approach                  | When it helps                                                             | Tradeoff                                                                           |
-| ------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| **Mono-repo (Melos)**     | Same release train, shared refactors, one `melos bootstrap` / unified CI. | Large clone; needs discipline on package boundaries.                               |
-| **Multi-repo + git refs** | Teams own packages; smaller checkouts.                                    | Version drift, painful `dependency_overrides`, duplicate `pubspec.lock` debugging. |
 
-**Pragmatic recommendation:** use a **mono-repo for “platform” packages** (`foundation`, `core`, `ds_northstar`, `auth`, shared modules) and **Melos** to align versions; publish **versioned tags** or **pub server** only when a package must be consumed outside the mono-repo. If you stay multi-repo, add a **single “bill of materials”** repo or script that pins **git refs + SDK** for every app, and run CI that runs `flutter pub get` on all consumers when a shared package changes.
+| Approach                  | When it helps                                                           | Tradeoff                                                  |
+| ------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------- |
+| **Mono-repo (Melos)**     | Same release train, shared refactors, one `melos bootstrap`, unified CI | Large clone; clear package boundaries still matter        |
+| **Multi-repo + git refs** | Teams own packages; smaller checkouts                                   | Version drift, `dependency_overrides`, multiple lockfiles |
 
-Submodule vs path: submodules are fine for **read-only** consumption; for daily development, **path** or **Melos** linking is less fragile.
 
-## Renaming `emp_ai_ds_northstar`
+**Pragmatic approach:** mono-repo for **platform** packages (foundation, core, DS, auth, shared modules) with Melos; publish versioned artifacts only when a package must be consumed outside the monorepo. If you stay multi-repo, maintain a **single bill of materials** (pinned git refs + SDK) and CI that validates all consumers on shared changes.
 
-When you are ready to replace the old package in Git, rename this package to `emp_ai_ds` in `pubspec.yaml` and update dependents—keep **scope** limited to tokens/themes/widgets that map to Northstar Figma, not feature infrastructure.
+Submodules work for read-only consumption; for daily work, **path** or **Melos** linking is usually simpler. More detail: [engineering/dependencies.md](docs/engineering/dependencies.md), [engineering/packages.md](docs/engineering/packages.md).
+
+## Contributing & merge policy
+
+- **Contributors:** [engineering/contributing.md](docs/engineering/contributing.md) (scope, layers, PR checklist).
+- **Maintainers (squash vs merge, versioning, pre-merge checks):** [engineering/maintainer_policy.md](docs/engineering/maintainer_policy.md).
+
