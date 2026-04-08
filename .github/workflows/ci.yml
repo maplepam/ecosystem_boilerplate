@@ -26,7 +26,7 @@ jobs:
 
       - uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.GITHUB_SSH_PRIVATE_KEY }}
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB }}
 
       - name: Fetch submodules (SSH)
         run: git submodule update --init --recursive

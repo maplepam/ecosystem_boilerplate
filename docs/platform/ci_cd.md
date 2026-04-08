@@ -127,7 +127,7 @@ pipelines:
 
 This workspace ships [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) as a **reference** pipeline (Ubuntu, Flutter stable):
 
-1. **`actions/checkout@v4`** with **`submodules: recursive`**, then **`dart pub get`** and **`dart run melos bootstrap`** — same order as local (submodules first). Configure **SSH** so Actions can **fetch** submodules from **GitHub** (`ecosystem-platform`) and **Bitbucket** (`emp_ai_auth`, **`emp_ai_ds`**). This repo expects **`BITBUCKET_SSH_PRIVATE_KEY`** and **`GITHUB_SSH_PRIVATE_KEY`** (see [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)).
+1. **`actions/checkout@v4`** with **`submodules: recursive`**, then **`dart pub get`** and **`dart run melos bootstrap`** — same order as local (submodules first). Configure **SSH** so Actions can **fetch** submodules from **GitHub** (`ecosystem-platform`) and **Bitbucket** (`emp_ai_auth`, **`emp_ai_ds`**). This repo expects **`BITBUCKET_SSH_PRIVATE_KEY`** and **`SSH_PRIVATE_KEY_GITHUB`** (GitHub disallows secret names starting with **`GITHUB_`**; see [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)).
 2. **`dart run tool/generate_miniapps.dart`** — verifies the generated mini-app catalog matches the registry (catches forgotten **`generate:miniapps`** after editing **`miniapps_registry.yaml`**).
 3. **`dart run melos exec … flutter analyze .`** — every package with a **`lib/`** directory.
 4. **`flutter test`** in **`apps/emp_ai_boilerplate_app`**.
