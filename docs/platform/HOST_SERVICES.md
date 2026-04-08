@@ -34,6 +34,8 @@ ProviderScope(
 
 Keep `emp_ai_foundation` free of Mixpanel/Firebase dependencies so core packages stay lightweight.
 
+**External mini-app packages** (separate repo) should use **`AnalyticsSink`** from **`emp_ai_foundation`**, expose a **`Provider<AnalyticsSink>`** defaulting to **`NoOpAnalyticsSink`**, and rely on the host to **`override`** it to **`analyticsSinkProvider`** at **`ProviderScope`** — see [miniapp_packages_and_extract.md §A.4](../engineering/miniapp_packages_and_extract.md).
+
 ## Network
 
 - **`NetworkStackConfig`** — timeouts, interceptors, optional `LogInterceptor` in debug.

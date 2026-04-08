@@ -1,10 +1,68 @@
 # Onboarding external mini-apps (package, submodule, WebView)
 
-This is the **only** supported pattern. Teams **must** follow the syntax below; the super-app **must** integrate only through **`kHostMiniAppsCatalog`**.
+This is the **only** supported pattern for **super-app** builds. Teams **must** follow the syntax below; the host **must** merge external modules only through **`kHostMiniAppsCatalog`**.
 
 **Contract:** every onboarded module is a [`MiniApp`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app.dart) from **`emp_ai_app_shell`**, mounted under **`/${MiniApp.id}/`** ([`MiniAppRouteFactory`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app_route_factory.dart)).
 
-**Host merge file (do not bypass):** [`miniapp_host_catalog.dart`](../../apps/emp_ai_boilerplate_app/lib/src/miniapps/miniapp_host_catalog.dart) exports **`kHostMiniAppsCatalog`**. [`MiniAppGate`](../../apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart) and the router use that list. **`miniapp_catalog.g.dart`** stays codegen-only; you **append** external apps here.
+**Host merge file (do not bypass):** [`miniapp_host_catalog.dart`](../../apps/emp_ai_boilerplate_app/lib/src/miniapps/miniapp_host_catalog.dart) exports **`kHostMiniAppsCatalog`**. In **super-app** mode, [`MiniAppGate`](../../apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart) filters that list and [`boilerplateGoRouterProvider`](../../apps/emp_ai_boilerplate_app/lib/src/shell/router/boilerplate_router.dart) feeds it into **`MiniAppRouteFactory`**. **`miniapp_catalog.g.dart`** stays codegen-only; you **append** external apps in the host catalog. **Do not** register the same **`id`** twice (codegen + external).
+
+---
+
+## Contract at a glance (package team vs host team)
+
+| **Mini-app / package team delivers** | **Boilerplate host team integrates** |
+| ------------------------------------ | ------------------------------------ |
+| Dart package with **`emp_ai_app_shell`** + **`go_router`** aligned to the host’s major versions (see §A.1). | **`pubspec.yaml`**: `path:` or pinned `git:` dependency on the package. |
+| **`lib/<package_name>_miniapp_registration.dart`** exporting **`<camelCasePackageName>MiniappRegistrations`** → `List<MiniApp>`. | **[`miniapp_host_catalog.dart`](../../apps/emp_ai_boilerplate_app/lib/src/miniapps/miniapp_host_catalog.dart):** `import` registration + `...<camelCase>MiniappRegistrations` into **`kHostMiniAppsCatalog`**. |
+| One **`MiniApp`** subclass per product area: stable **`id`**, **`displayName`**, **`entryLocation`**, **`routes`** (child segments only), optional **`requiredFeatureFlagKey`** or **`MiniAppAlwaysOn`**. | **RBAC:** prefix rules for **`/<id>`** in [`boilerplate_route_access.dart`](../../apps/emp_ai_boilerplate_app/lib/src/config/boilerplate_route_access.dart) (and **public** prefixes in [`boilerplate_public_paths.dart`](../../apps/emp_ai_boilerplate_app/lib/src/shell/router/boilerplate_public_paths.dart) if unauthenticated). |
+| **Navigation:** deep links and in-app **`go`/`push`** use **`/$id/...`** (or **`goNamed`** on your routes); no reliance on **`/main/hub/...`** unless the host runs **standalone** and you added matching shell routes. | **Remote registry (optional):** include **`id`** in server allow-list ([`miniapps_registry.json`](../fixtures/miniapps_registry.json)); coordinate **feature-flag keys** and **analytics** as in **Platform integrations** below. |
+| **Platform:** see **Platform integrations (shell ↔ package)** — flags, analytics, optional notifications; **do not** import the host app package from a reusable mini-app library. | **Platform:** register flag keys, wire **`ProviderScope` overrides** for package providers, keep **`MiniAppGate`** authoritative for app visibility ([`feature_flags.md`](../integrations/feature_flags.md), [`HOST_SERVICES.md`](../platform/HOST_SERVICES.md)). |
+| **Tests** and README documenting **stable URLs** and **host mode** assumptions. | **Verify** **`AppHostMode.superApp`** for this integration path; see **Host mode vs route merge** below if you ship **standalone** / **embedded**. |
+
+---
+
+## How the shell merges mini-app routes (super-app)
+
+Only **`AppHostMode.superApp`** composes **`MiniApp.routes`** into the root **`GoRouter`**. Flow:
+
+```mermaid
+flowchart LR
+  subgraph package [External package]
+    Reg["*_miniapp_registration.dart"]
+    MA[MiniApp subclass]
+    RT["routes: List of RouteBase"]
+  end
+  subgraph host [Boilerplate host]
+    Cat["kHostMiniAppsCatalog"]
+    Gate[MiniAppGate]
+    Prov[boilerplateGoRouterProvider]
+    Fact[MiniAppRouteFactory]
+  end
+  Reg --> Cat
+  MA --> Reg
+  RT --> MA
+  Cat --> Gate
+  Gate -->|"enabledMiniApps"| Prov
+  Prov --> Fact
+```
+
+- **`kHostMiniAppsCatalog`** = **`...kAllMiniApps`** (codegen from YAML) **plus** **`...externalRegistrations`**.
+- **`MiniAppGate`** applies optional **remote allow-list** + **feature flags**, then notifies **`GoRouter`** via **`refreshListenable`** when the enabled set changes ([`mini_app_gate.dart`](../../apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart)).
+- **`MiniAppRouteFactory.buildTree` / `buildTreeWithStatefulShell`** mounts each app under **`/$id/`** with nested child paths from **`MiniApp.routes`**.
+
+**Shell (Northstar) vs mini-app:** **`boilerplateShellRoutes()`** (Overview, Hub tabs, widget catalog) is **not** defined inside your package’s **`MiniApp`**; it is host-owned. Your package owns only the subtree **`/$id/*`**. Jumping from shell UI to a package is **`context.go('/<id>/<segment>')`** or the package’s **`entryLocation`**. See [navigation.md — Super-app vs main shell](../integrations/navigation.md#super-app-and-main-shell).
+
+---
+
+## Host mode vs route merge (read before integrating)
+
+| `AppHostMode` | Are **`MiniApp.routes`** from **`kHostMiniAppsCatalog`** on the router? | Where “hub” / product switching lives |
+| ------------- | ------------------------------------------------------------------------ | --------------------------------------- |
+| **`superApp`** | **Yes** — [`boilerplate_router.dart`](../../apps/emp_ai_boilerplate_app/lib/src/shell/router/boilerplate_router.dart) uses **`MiniAppGate`** + **`MiniAppRouteFactory`**. | **`/hub`**, outer rail (optional), branches **`/$id/*`**. |
+| **`standaloneMiniApp`** | **No** — router uses **`boilerplateShellRoutes()`** only at the root; demo hub tabs are **inline** `GoRoute`s in the host, not **`MiniAppRouteFactory`**. | **Main shell** paths via **`BoilerplateShellPaths`** ([`boilerplate_shell_paths.dart`](../../apps/emp_ai_boilerplate_app/lib/src/shell/navigation/boilerplate_shell_paths.dart)). |
+| **`embeddedMiniApp`** | **No** — same shell tree as standalone, under **`/$kEmbeddedPathPrefix/`**. | Prefixed shell URLs only. |
+
+**Implication:** the **registration file + `MiniApp` contract** in §A is the supported way to attach **package-owned** route trees in **super-app** mode. If you need the same package in **standalone** or **embedded**, the host must **add** explicit **`GoRoute`s** (or a small adapter) under **`boilerplate_shell_routes.dart`** / **`boilerplate_router.dart`** — that is a **product fork** decision, not something the external package can do without host changes.
 
 ---
 
@@ -162,6 +220,25 @@ List<MiniApp> get kHostMiniAppsCatalog => <MiniApp>[
 
 ---
 
+### A.4 Platform integrations (feature flags, analytics, registry, auth, notifications)
+
+**Boundary:** **`lib/src/platform/`** in the host owns cross-cutting **capabilities** (flags, analytics sinks, **`MiniAppGate`**, Firebase bootstrap, notification ports). **`shell/`** owns **routing + auth refresh** wiring. A **reusable** external mini-app package **must not** depend on **`emp_ai_boilerplate_app`**; integrate through **shared packages** (`**emp_ai_foundation**`, `**emp_ai_app_shell**`, …) plus **documented keys** and **Riverpod overrides** at the host composition root ([`host_structure.md`](host_structure.md)).
+
+| Concern | Package (mini-app) team | Host (boilerplate) team |
+| ------- | ------------------------ | ------------------------ |
+| **Feature flags (whole app on/off)** | Set **`MiniApp.requiredFeatureFlagKey`** to a **stable string** you publish in your README (e.g. **`miniapp_acme_leave_enabled`**). Use **`MiniAppAlwaysOn`** only when the app is never flag-gated. | Implement that key in **`FeatureFlagSource`** / **`BoilerplateFeatureFlags`** ([`boilerplate_feature_flags.dart`](../../apps/emp_ai_boilerplate_app/lib/src/platform/feature_flags/boilerplate_feature_flags.dart)). **[`MiniAppGate`](../../apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart)** calls **`filterMiniAppsByFeatureFlags`** — the hub and **super-app** router only see enabled apps. |
+| **Feature flags (in-app UI toggles)** | Read flags from a **`Provider`** you own: default to safe **`false`** / no-op, and **document** the keys. Optionally depend on **`emp_ai_foundation`**’s **`FeatureFlagSource`** and take **`Future<bool> isEnabled`** in notifiers if you avoid **`emp_ai_boilerplate_app`**. | Override the package’s providers (or expose a thin **`FeatureFlagSource`** wrapper) from **`featureFlagSourceProvider`** / **`boilerplateFeatureFlagsProvider`** at **`ProviderScope`** in **`app/`**. |
+| **Remote mini-app registry** | Document **`MiniApp.id`** for ops; expect the host to **omit** your app from **`enabled_miniapp_ids`** when the server should hide it (before flags). | Configure **`MINIAPPS_REGISTRY_URL`** / DTO; gate still combines with **feature flags** ([`miniapps.md`](miniapps.md)). |
+| **Analytics** | Prefer **`AnalyticsSink`** from **`emp_ai_foundation`** ([`HOST_SERVICES.md`](../platform/HOST_SERVICES.md)): define e.g. **`Provider<AnalyticsSink>`** in the package with default **`NoOpAnalyticsSink`**, call **`track` / `identify` / `reset`** from presentation only — **not** from **`domain/`**. Document **event name** conventions (prefix with **`id`** to avoid collisions, e.g. **`acme_leave_submit`**). | In **`ProviderScope.overrides`**, map the package’s analytics provider to **`ref.watch(analyticsSinkProvider)`** (or **`boilerplateAnalyticsSinkProvider`**) so events fan out to Mixpanel / Firebase as configured. **In-repo** mini-apps may import [`observability_providers.dart`](../../apps/emp_ai_boilerplate_app/lib/src/platform/analytics/observability_providers.dart) directly; **external** packages should **not**. Details: [analytics_mixpanel.md](../integrations/analytics_mixpanel.md), [analytics_firebase.md](../integrations/analytics_firebase.md). |
+| **Auth / session (UI hints)** | Use types from **`emp_ai_foundation`** where possible. If you need **`AuthSessionReader`**, expose a **`Provider<AuthSessionReader>`** (or a thin façade) in the package with a **fake / no-op** default for tests — **do not** import **`emp_ai_boilerplate_app`** from the library. **Do not** embed IdP clients or token storage in the package. | Wires **`EmpAuth`** bootstrap and **`authSessionReaderProvider`** ([`emp_ai_auth_session_reader.dart`](../../apps/emp_ai_boilerplate_app/lib/src/shell/auth/session/emp_ai_auth_session_reader.dart)). **Override** the package’s session provider to **`ref.watch(authSessionReaderProvider)`** when types match. **RBAC** remains **`boilerplate_route_access.dart`** only on the host. |
+| **HTTP** | Use **`HostNetwork` / `Dio`** patterns from host docs or inject a **`Dio`** / **`BaseOptions`** via provider overrides so the package stays testable. | **`boilerplateDioProvider`**, interceptors, token refresh ([`network.md`](../integrations/network.md), [`auth.md`](../integrations/auth.md)). |
+| **Push / local notifications** | Optional: depend on **`emp_ai_foundation`** notification **ports**; default to **`NoOp*`** in the package; document if you need **`registerToken`**. | Override **`pushNotificationPortProvider`** / **`localNotificationPortProvider`** ([`HOST_SERVICES.md`](../platform/HOST_SERVICES.md)). |
+| **Deep links** | Same **`/$id/...`** contract as navigation; respect **`MiniAppGate`** — do not bypass disabled apps. | **`MiniAppGate`** on router **`refreshListenable`**; public paths + RBAC unchanged. |
+
+**Checklist before release:** (1) Flag key names agreed in writing. (2) Host has **`ProviderScope`** overrides for package analytics (and optional flag providers). (3) RBAC covers **`/<id>`**. (4) Event names documented. (5) No **`import 'package:emp_ai_boilerplate_app/...'`** inside the published mini-app library (tests / example app in host monorepo may import the host for golden tests only if your policy allows).
+
+---
+
 ## B. WebView-only mini-app (no partner Dart code in this repo)
 
 Use this when the product is **only** a URL inside the shell.
@@ -211,7 +288,7 @@ List<MiniApp> get kHostMiniAppsCatalog => <MiniApp>[
 
 ## Navigation: host (boilerplate / super-app) vs mini-app routes
 
-Use a **single** [`GoRouter`](https://pub.dev/documentation/go_router/latest/go_router/GoRouter-class.html) tree assembled by the host. Where you navigate from (**shell**, **hub**, or **inside a mini-app**) depends on [`AppHostMode`](../../apps/emp_ai_boilerplate_app/lib/src/config/host_mode.dart) and how routes were merged.
+Use a **single** [`GoRouter`](https://pub.dev/documentation/go_router/latest/go_router/GoRouter-class.html) tree assembled by the host. Where you navigate from (**shell**, **hub**, or **inside a mini-app**) depends on [`AppHostMode`](../../apps/emp_ai_boilerplate_app/lib/src/config/host_mode.dart) and how routes were merged. For **external Dart packages**, the **contract** for **`routes` / `entryLocation` / registration** is §A; this section is the **behavioral** guide for **`context.go`** and path assumptions.
 
 ### Host modes (where shell vs mini-apps live)
 
@@ -270,5 +347,6 @@ Document the choice in your mini-app README so integrators know which **`context
 
 ## Related
 
+- [navigation.md](../integrations/navigation.md) — redirects, **`BoilerplateShellPaths`**, main shell nav config, what to avoid
 - [miniapps.md](miniapps.md) — YAML codegen, flags, remote registry HTTP
 - [host_structure.md](host_structure.md) — `miniapps/` vs `platform/miniapps_registry`

@@ -2,7 +2,7 @@
 
 Practical guide for **adding routes**, **calling navigation**, **redirects**, and **what to avoid**. The host uses `**go_router`** plus `**emp_ai_core**`’s `**CoreGoRouterFactory**` and `**emp_ai_app_shell**`’s `**MiniAppRouteFactory**`.
 
-**Related:** [shell_and_patterns.md](shell_and_patterns.md) (RBAC types, Riverpod), [miniapps.md](../engineering/miniapps.md) (new mini-app scaffold), [auth.md](auth.md) (login, `authNavigationRefreshListenableProvider`). **Super-app vs main shell:** [§ below](#super-app-and-main-shell).
+**Related:** [shell_and_patterns.md](shell_and_patterns.md) (RBAC types, Riverpod), [miniapps.md](../engineering/miniapps.md) (new mini-app scaffold), [miniapp_packages_and_extract.md](../engineering/miniapp_packages_and_extract.md) (external package + `MiniApp` contract, host merge), [auth.md](auth.md) (login, `authNavigationRefreshListenableProvider`). **Super-app vs main shell:** [§ below](#super-app-and-main-shell).
 
 ---
 
@@ -174,6 +174,8 @@ Use **`context.go` / `context.push`** with stable paths from **`BoilerplateShell
 4. Run `**dart run melos run generate:miniapps**` after registry changes.
 5. Add `**RouteAccessRule**` entries for `**/<yourMiniAppId>**` if the default **unmatched** policy is not what you want (see current rules for `**/announcements`**, `**/resources**`, `**/samples**`).
 
+**External / separate-repo package** (team ships a Dart package with its own `**MiniApp**` and routes): follow the **two-party contract**, registration file name, and host merge steps in [miniapp_packages_and_extract.md](../engineering/miniapp_packages_and_extract.md). Those routes are merged in **`AppHostMode.superApp`** via **`kHostMiniAppsCatalog`** and **`MiniAppRouteFactory`**; **standalone** / **embedded** hosts do not mount **`MiniApp.routes`** unless you extend the host router (same doc — **Host mode vs route merge**).
+
 ### C. **Top-level** route (alongside `/login`, landing, …)
 
 - Prefer **not** to fork `**boilerplate_router.dart`** lightly: append to `**boilerplateTopLevelAuthAndDevRoutes()**` or the `**routes**` list in the `**switch (kBoilerplateHostMode)**` branch that matches your case.
@@ -333,6 +335,7 @@ Keep **out** of shared packages: your `**/orders`**, `**/main/hub/...**` strings
 
 - [shell_and_patterns.md](shell_and_patterns.md) — `**AppResult**`, design system, redirect overview.  
 - [miniapps.md](../engineering/miniapps.md) — **codegen**, **feature flags**, **MiniAppGate**.  
+- [miniapp_packages_and_extract.md](../engineering/miniapp_packages_and_extract.md) — **external repos**, registration API, **super-app vs standalone** route merge.  
 - [getting_started.md — §6](../onboarding/getting_started.md#gs-6) — copy-paste examples (host mode, RBAC, custom redirect, deep links).  
 - [platform/troubleshooting.md](../platform/troubleshooting.md) — deep links / platforms.
 

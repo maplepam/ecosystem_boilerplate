@@ -41,7 +41,7 @@ Compile-time and host-level feature toggles without calling vendors from **`doma
    final String? variant = await source.treatment(BoilerplateFeatureFlagKeys.samplesDashboardLayout);
    ```
 
-6. **Mini-app gating:** set **`MiniApp.requiredFeatureFlagKey`** to the same string; **[`MiniAppGate`](../../apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart)** calls **[`filterMiniAppsByFeatureFlags`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app_feature_filter.dart)** so hub tabs respect flags. Use **`MiniAppAlwaysOn`** only for demos ([miniapps.md](../engineering/miniapps.md)).
+6. **Mini-app gating:** set **`MiniApp.requiredFeatureFlagKey`** to the same string; **[`MiniAppGate`](../../apps/emp_ai_boilerplate_app/lib/src/platform/miniapps_registry/mini_app_gate.dart)** calls **[`filterMiniAppsByFeatureFlags`](https://github.com/maplepam/ecosystem-platform/blob/main/packages/emp_ai_app_shell/lib/src/mini_app_feature_filter.dart)** so hub tabs respect flags. Use **`MiniAppAlwaysOn`** only for demos ([miniapps.md](../engineering/miniapps.md)). **External / separate-repo packages:** coordinate flag key strings with the host and read **in-app** flags via **`ProviderScope` overrides** — see **§A.4** in [miniapp_packages_and_extract.md](../engineering/miniapp_packages_and_extract.md).
 
 **Defaults:** today they are **constructor defaults** on **`BoilerplateFeatureFlags`** (and **`boilerplateFeatureFlagsProvider`**). To “change defaults,” edit those fields or override **`boilerplateFeatureFlagsProvider`** / **`featureFlagSourceProvider`** in tests / **`ProviderScope`**.
 
